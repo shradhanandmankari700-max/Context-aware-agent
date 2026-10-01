@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "appId": "hotel",
+  "name": "Hotel Management",
+  "description": "Hotel operations: room availability, bookings and revenue.",
+  "referenceDate": "2026-10-07",
+  "roles": ["admin", "staff", "viewer"],
+  "datasets": [
+    {
+      "name": "room_availability", "label": "Room availability", "description": "One row per room per night with price and status (Available/Occupied).", "table": "room_availability", "timeField": "stay_date",
+      "fields": [
+        { "name": "room", "label": "Room", "type": "string", "roles": ["key", "label"], "synonyms": ["room number"] },
+        { "name": "room_type", "label": "Room type", "type": "string", "roles": ["dimension"], "enumValues": ["Standard", "Deluxe", "Suite"] },
+        { "name": "price", "label": "Price", "type": "number", "format": "currency", "unit": "INR", "roles": ["metric"], "synonyms": ["rate", "cost per night"] },
+        { "name": "status", "label": "Status", "type": "string", "roles": ["dimension"], "enumValues": ["Available", "Occupied"], "synonyms": ["availability"] },
+        { "name": "stay_date", "label": "Date", "type": "date", "roles": ["time"], "synonyms": ["night", "day"] }
+      ]
+    },
+    {
+      "name": "bookings", "label": "Bookings", "description": "Guest bookings with channel and cancellation status.", "table": "bookings", "timeField": "check_in",
+      "fields": [
+        { "name": "booking_id", "label": "Booking", "type": "string", "roles": ["key"] },
+        { "name": "room", "label": "Room", "type": "string", "roles": ["dimension"] },
+        { "name": "guest", "label": "Guest", "type": "string", "roles": ["label"] },
+        { "name": "check_in", "label": "Check-in", "type": "date", "roles": ["time"] },
+        { "name": "check_out", "label": "Check-out", "type": "date" },
+        { "name": "amount", "label": "Amount", "type": "number", "format": "currency", "unit": "INR", "roles": ["metric"] },
+        { "name": "channel", "label": "Channel", "type": "string", "roles": ["dimension"], "enumValues": ["Direct", "OTA", "Corporate"] },
+        { "name": "status", "label": "Status", "type": "string", "roles": ["dimension"], "enumValues": ["Confirmed", "Cancelled", "Completed"] }
+      ],
+      "relations": [{ "field": "room", "toDataset": "room_availability", "toField": "room" }]
+    },
+    {
+      "name": "revenue", "label": "Revenue", "description": "Daily revenue by category.", "table": "revenue", "timeField": "revenue_date",
+      "fields": [
+        { "name": "revenue_date", "label": "Date", "type": "date", "roles": ["time"] },
+        { "name": "category", "label": "Category", "type": "string", "roles": ["dimension"], "enumValues": ["Room Bookings", "Restaurant", "Spa", "Events"] },
+        { "name": "amount", "label": "Revenue", "type": "number", "format": "currency", "unit": "INR", "roles": ["metric"], "synonyms": ["sales", "income"] }
+      ]
+    },
+    {
+      "name": "occupancy_history", "label": "Occupancy history", "description": "Daily rooms occupied vs total.", "table": "occupancy_history", "timeField": "occupancy_date",
+      "fields": [
+        { "name": "occupancy_date", "label": "Date", "type": "date", "roles": ["time"] },
+        { "name": "occupied_rooms", "label": "Occupied rooms", "type": "number", "format": "integer", "roles": ["metric"] },
+        { "name": "total_rooms", "label": "Total rooms", "type": "number", "format": "integer", "roles": ["metric"] }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "id": "dashboard", "name": "Dashboard", "route": "/dashboard", "parent": null, "icon": "layout-dashboard",
+      "description": "Overview of revenue and occupancy.",
+      "widgets": [
+        { "id": "kpiRevenue", "name": "Total revenue", "type": "kpi", "dataset": "revenue", "kpi": { "field": "amount", "agg": "sum", "where": [] } },
+        { "id": "revenueTrend", "name": "Revenue trend", "type": "chart", "dataset": "revenue", "chart": { "kind": "line", "x": { "field": "revenue_date", "grain": "week" }, "y": { "field": "amount", "agg": "sum" } } }
+      ],
+      "filters": []
+    },
+    {
+      "id": "rooms", "name": "Rooms", "route": "/rooms", "parent": null, "icon": "bed",
+      "description": "Room list with price and availability for a chosen date. Use to find available rooms by type, price and date.",
+      "widgets": [
+        { "id": "roomList", "name": "Room list", "type": "table", "dataset": "room_availability",
+          "columns": [{ "field": "room" }, { "field": "room_type" }, { "field": "price" }, { "field": "status" }, { "field": "stay_date" }],
+          "sortable": ["room", "price"], "defaultSort": { "field": "room", "direction": "asc" } }
+      ],
+      "filters": [
+        { "id": "roomType", "label": "Room type", "type": "enum", "field": "room_type", "options": [{ "value": "Standard", "label": "Standard" }, { "value": "Deluxe", "label": "Deluxe" }, { "value": "Suite", "label": "Suite" }] },
+        { "id": "price", "label": "Price", "type": "number", "field": "price", "operators": ["lt", "lte", "gt", "gte", "between"] },
+        { "id": "availability", "label": "Availability", "type": "enum", "field": "status", "options": [{ "value": "Available", "label": "Available" }, { "value": "Occupied", "label": "Occupied" }] },
+        { "id": "stayDate", "label": "Date", "description": "The night to check availability for. Rooms page defaults to today.", "type": "date", "field": "stay_date", "defaultValue": { "op": "eq", "value": "2026-10-07" } }
+      ]
+    },
+    {
+      "id": "bookings", "name": "Bookings", "route": "/bookings", "parent": null, "icon": "calendar",
+      "description": "All guest bookings with channel and status, including cancellations.",
+      "widgets": [
+        { "id": "bookingList", "name": "Booking list", "type": "table", "dataset": "bookings",
+          "columns": [{ "field": "booking_id" }, { "field": "guest" }, { "field": "room" }, { "field": "check_in" }, { "field": "check_out" }, { "field": "amount" }, { "field": "channel" }, { "field": "status" }],
+          "sortable": ["check_in", "amount"], "defaultSort": { "field": "check_in", "direction": "desc" } }
+      ],
+      "filters": [
+        { "id": "bookingStatus", "label": "Status", "type": "enum", "field": "status", "options": [{ "value": "Confirmed", "label": "Confirmed" }, { "value": "Cancelled", "label": "Cancelled" }, { "value": "Completed", "label": "Completed" }] },
+        { "id": "channel", "label": "Channel", "type": "enum", "field": "channel", "options": [{ "value": "Direct", "label": "Direct" }, { "value": "OTA", "label": "OTA" }, { "value": "Corporate", "label": "Corporate" }] },
+        { "id": "checkIn", "label": "Check-in date", "type": "dateRange", "field": "check_in" }
+      ]
+    },
+    {
+      "id": "revenue", "name": "Revenue", "route": "/revenue", "parent": null, "icon": "banknote",
+      "description": "Revenue by category over time.",
+      "widgets": [
+        { "id": "revenueByCategory", "name": "Revenue by category", "type": "chart", "dataset": "revenue", "chart": { "kind": "bar", "x": { "field": "revenue_date", "grain": "month" }, "y": { "field": "amount", "agg": "sum" }, "series": "category" } }
+      ],
+      "filters": [
+        { "id": "revenuePeriod", "label": "Period", "type": "dateRange", "field": "revenue_date" },
+        { "id": "revenueCategory", "label": "Category", "type": "enum", "field": "category", "options": [{ "value": "Room Bookings", "label": "Room Bookings" }, { "value": "Restaurant", "label": "Restaurant" }, { "value": "Spa", "label": "Spa" }, { "value": "Events", "label": "Events" }] }
+      ]
+    }
+  ],
+  "actions": [
+    { "id": "cancelBooking", "label": "Cancel booking", "description": "Permanently cancels a booking.", "pageId": "bookings", "destructive": true, "requiredRole": "admin", "params": [{ "name": "booking_id", "type": "string", "required": true }] }
+  ]
+}

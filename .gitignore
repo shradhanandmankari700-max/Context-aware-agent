@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+.vite/
+backend/.llm-cache/
+evaluation/results/*.json
+!evaluation/results/.gitkeep
+playwright-report/

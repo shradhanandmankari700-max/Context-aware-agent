@@ -1,0 +1,13 @@
+name: ci
+on: [pull_request, push]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm install
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run check:metadata -- ../metadata/hospital.json ../metadata/hotel.json

@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "appId": "hospital",
+  "name": "Hospital Management",
+  "description": "Hospital operations: patients, pharmacy inventory, purchasing and usage reports.",
+  "referenceDate": "2026-10-07",
+  "roles": ["admin", "staff", "viewer"],
+  "datasets": [
+    {
+      "name": "medicines", "label": "Medicines", "description": "Current pharmacy stock per medicine.", "table": "medicines",
+      "fields": [
+        { "name": "medicine", "label": "Medicine", "type": "string", "roles": ["key", "label"], "synonyms": ["drug", "tablet", "medication"] },
+        { "name": "category", "label": "Category", "type": "string", "roles": ["dimension"], "enumValues": ["Painkiller", "Antibiotic", "Diabetes", "Respiratory", "Cardiac", "Gastro"] },
+        { "name": "stock", "label": "Stock", "type": "number", "format": "integer", "unit": "units", "roles": ["metric"], "synonyms": ["quantity", "units left", "inventory"] },
+        { "name": "daily_usage", "label": "Daily usage", "type": "number", "format": "decimal", "unit": "units/day", "roles": ["metric"], "synonyms": ["consumption", "burn rate"] },
+        { "name": "expiry_date", "label": "Expiry date", "type": "date", "format": "date", "roles": ["time"] },
+        { "name": "days_remaining", "label": "Days remaining", "type": "number", "format": "decimal", "unit": "days", "roles": ["metric"],
+          "description": "Estimated days until stock runs out = stock / daily_usage.",
+          "synonyms": ["run out", "runway", "days left"],
+          "derived": { "op": "round", "args": [{ "op": "div", "args": ["stock", "daily_usage"] }, 1] } }
+      ]
+    },
+    {
+      "name": "medicine_usage", "label": "Medicine usage history", "description": "Daily quantity of each medicine dispensed.", "table": "medicine_usage", "timeField": "usage_date",
+      "fields": [
+        { "name": "usage_date", "label": "Date", "type": "date", "roles": ["time"] },
+        { "name": "medicine", "label": "Medicine", "type": "string", "roles": ["dimension"] },
+        { "name": "quantity", "label": "Quantity used", "type": "number", "format": "integer", "roles": ["metric"] }
+      ],
+      "relations": [{ "field": "medicine", "toDataset": "medicines", "toField": "medicine" }]
+    },
+    {
+      "name": "purchases", "label": "Purchase orders", "description": "Replenishment orders placed with suppliers.", "table": "purchases", "timeField": "order_date",
+      "fields": [
+        { "name": "order_date", "label": "Order date", "type": "date", "roles": ["time"] },
+        { "name": "medicine", "label": "Medicine", "type": "string", "roles": ["dimension"] },
+        { "name": "quantity", "label": "Quantity ordered", "type": "number", "format": "integer", "roles": ["metric"] },
+        { "name": "supplier", "label": "Supplier", "type": "string", "roles": ["dimension"] },
+        { "name": "status", "label": "Status", "type": "string", "roles": ["dimension"], "enumValues": ["Delivered", "Delayed", "Pending"] }
+      ],
+      "relations": [{ "field": "medicine", "toDataset": "medicines", "toField": "medicine" }]
+    },
+    {
+      "name": "prescriptions", "label": "Prescriptions", "description": "Prescriptions written, with diagnosis.", "table": "prescriptions", "timeField": "prescribed_on",
+      "fields": [
+        { "name": "prescribed_on", "label": "Prescribed on", "type": "date", "roles": ["time"] },
+        { "name": "medicine", "label": "Medicine", "type": "string", "roles": ["dimension"] },
+        { "name": "diagnosis", "label": "Diagnosis", "type": "string", "roles": ["dimension"] },
+        { "name": "quantity", "label": "Quantity", "type": "number", "format": "integer", "roles": ["metric"] }
+      ],
+      "relations": [{ "field": "medicine", "toDataset": "medicines", "toField": "medicine" }]
+    },
+    {
+      "name": "stock_history", "label": "Stock history", "description": "Daily stock level snapshots per medicine.", "table": "stock_history", "timeField": "snapshot_date",
+      "fields": [
+        { "name": "snapshot_date", "label": "Date", "type": "date", "roles": ["time"] },
+        { "name": "medicine", "label": "Medicine", "type": "string", "roles": ["dimension"] },
+        { "name": "stock", "label": "Stock", "type": "number", "format": "integer", "roles": ["metric"] }
+      ],
+      "relations": [{ "field": "medicine", "toDataset": "medicines", "toField": "medicine" }]
+    },
+    {
+      "name": "patients", "label": "Patients", "description": "Admitted and discharged patients.", "table": "patients", "timeField": "admitted_on",
+      "fields": [
+        { "name": "patient_id", "label": "Patient ID", "type": "string", "roles": ["key"] },
+        { "name": "name", "label": "Name", "type": "string", "roles": ["label"] },
+        { "name": "age", "label": "Age", "type": "number", "format": "integer", "roles": ["metric"] },
+        { "name": "ward", "label": "Ward", "type": "string", "roles": ["dimension"], "enumValues": ["General", "ICU", "Pediatrics", "Maternity"] },
+        { "name": "admitted_on", "label": "Admitted on", "type": "date", "roles": ["time"] },
+        { "name": "status", "label": "Status", "type": "string", "roles": ["dimension"], "enumValues": ["Admitted", "Discharged"] }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "id": "dashboard", "name": "Dashboard", "route": "/dashboard", "parent": null, "icon": "layout-dashboard",
+      "description": "Overview of key hospital numbers: medicines tracked, low-stock items and weekly medicine usage.",
+      "widgets": [
+        { "id": "kpiMedicines", "name": "Medicines tracked", "type": "kpi", "dataset": "medicines", "kpi": { "field": "medicine", "agg": "count", "where": [] } },
+        { "id": "kpiLowStock", "name": "Low-stock medicines", "type": "kpi", "dataset": "medicines", "description": "Medicines with fewer than 5 days of stock left.", "kpi": { "field": "medicine", "agg": "count", "where": [{ "field": "days_remaining", "op": "lt", "value": 5 }] } },
+        { "id": "weeklyUsage", "name": "Weekly medicine usage", "type": "chart", "dataset": "medicine_usage", "description": "Total units dispensed per week.", "chart": { "kind": "line", "x": { "field": "usage_date", "grain": "week" }, "y": { "field": "quantity", "agg": "sum" } } }
+      ],
+      "filters": []
+    },
+    {
+      "id": "patients", "name": "Patients", "route": "/patients", "parent": null, "icon": "users",
+      "description": "Patient register with ward and admission status.",
+      "widgets": [
+        { "id": "patientList", "name": "Patient list", "type": "table", "dataset": "patients", "description": "All patients with ward, admission date and status.",
+          "columns": [{ "field": "patient_id" }, { "field": "name" }, { "field": "age" }, { "field": "ward" }, { "field": "admitted_on" }, { "field": "status" }],
+          "sortable": ["name", "age", "admitted_on"], "defaultSort": { "field": "admitted_on", "direction": "desc" } }
+      ],
+      "filters": [
+        { "id": "ward", "label": "Ward", "type": "enum", "field": "ward", "options": [{ "value": "General", "label": "General" }, { "value": "ICU", "label": "ICU" }, { "value": "Pediatrics", "label": "Pediatrics" }, { "value": "Maternity", "label": "Maternity" }] },
+        { "id": "patientStatus", "label": "Status", "type": "enum", "field": "status", "options": [{ "value": "Admitted", "label": "Admitted" }, { "value": "Discharged", "label": "Discharged" }] },
+        { "id": "admittedOn", "label": "Admission date", "type": "dateRange", "field": "admitted_on" }
+      ]
+    },
+    {
+      "id": "inventory", "name": "Inventory", "route": "/inventory", "parent": null, "icon": "package",
+      "description": "Pharmacy inventory section. Contains Medicines and Purchase orders.", "widgets": [], "filters": []
+    },
+    {
+      "id": "medicines", "name": "Medicines", "route": "/inventory/medicines", "parent": "inventory", "icon": "pill",
+      "description": "Medicine stock levels, daily usage and expiry. Use to find low-stock or soon-to-expire medicines.",
+      "widgets": [
+        { "id": "medicineStock", "name": "Medicine Stock", "type": "table", "dataset": "medicines", "description": "Stock, daily usage, days remaining and expiry for every medicine.",
+          "columns": [{ "field": "medicine" }, { "field": "category" }, { "field": "stock" }, { "field": "daily_usage" }, { "field": "days_remaining" }, { "field": "expiry_date" }],
+          "sortable": ["medicine", "stock", "daily_usage", "days_remaining", "expiry_date"], "defaultSort": { "field": "medicine", "direction": "asc" } }
+      ],
+      "filters": [
+        { "id": "category", "label": "Category", "type": "enum", "field": "category",
+          "options": [{ "value": "Painkiller", "label": "Painkiller" }, { "value": "Antibiotic", "label": "Antibiotic" }, { "value": "Diabetes", "label": "Diabetes" }, { "value": "Respiratory", "label": "Respiratory" }, { "value": "Cardiac", "label": "Cardiac" }, { "value": "Gastro", "label": "Gastro" }] },
+        { "id": "stockLevel", "label": "Stock level", "description": "Preset stock bands based on days of stock remaining.", "synonyms": ["running low", "low stock", "shortage"], "type": "enum", "field": "days_remaining",
+          "options": [
+            { "value": "low", "label": "Low (under 5 days)", "synonyms": ["running low", "running out", "critical"], "where": [{ "field": "days_remaining", "op": "lt", "value": 5 }] },
+            { "value": "medium", "label": "Medium (5-14 days)", "where": [{ "field": "days_remaining", "op": "gte", "value": 5 }, { "field": "days_remaining", "op": "lt", "value": 15 }] },
+            { "value": "high", "label": "High (15+ days)", "synonyms": ["well stocked"], "where": [{ "field": "days_remaining", "op": "gte", "value": 15 }] }
+          ] },
+        { "id": "daysRemaining", "label": "Days remaining", "description": "Custom threshold on days until stock runs out, e.g. run out within 2 days.", "synonyms": ["run out within", "days left"], "type": "number", "field": "days_remaining", "operators": ["lt", "lte", "gt", "gte", "between"] },
+        { "id": "expiryDate", "label": "Expiry date", "type": "dateRange", "field": "expiry_date" }
+      ]
+    },
+    {
+      "id": "purchases", "name": "Purchase orders", "route": "/inventory/purchases", "parent": "inventory", "icon": "truck",
+      "description": "Replenishment orders placed with suppliers, with delivery status.",
+      "widgets": [
+        { "id": "purchaseOrders", "name": "Purchase orders", "type": "table", "dataset": "purchases",
+          "columns": [{ "field": "order_date" }, { "field": "medicine" }, { "field": "quantity" }, { "field": "supplier" }, { "field": "status" }],
+          "sortable": ["order_date", "quantity"], "defaultSort": { "field": "order_date", "direction": "desc" } }
+      ],
+      "filters": [
+        { "id": "orderStatus", "label": "Status", "type": "enum", "field": "status", "options": [{ "value": "Delivered", "label": "Delivered" }, { "value": "Delayed", "label": "Delayed" }, { "value": "Pending", "label": "Pending" }] },
+        { "id": "orderDate", "label": "Order date", "type": "dateRange", "field": "order_date" }
+      ]
+    },
+    {
+      "id": "reports", "name": "Reports", "route": "/reports", "parent": null, "icon": "bar-chart",
+      "description": "Usage and prescription reports over time.",
+      "widgets": [
+        { "id": "monthlyUsage", "name": "Monthly medicine usage", "type": "chart", "dataset": "medicine_usage", "description": "Units dispensed per month.", "chart": { "kind": "bar", "x": { "field": "usage_date", "grain": "month" }, "y": { "field": "quantity", "agg": "sum" } } },
+        { "id": "prescriptionsByDiagnosis", "name": "Prescriptions by diagnosis", "type": "chart", "dataset": "prescriptions", "chart": { "kind": "donut", "x": { "field": "diagnosis" }, "y": { "field": "quantity", "agg": "sum" } } }
+      ],
+      "filters": [
+        { "id": "reportPeriod", "label": "Period", "type": "dateRange", "field": "usage_date" }
+      ]
+    }
+  ],
+  "actions": [
+    { "id": "discardExpiredStock", "label": "Discard expired stock", "description": "Permanently removes expired medicines from inventory.", "pageId": "medicines", "destructive": true, "requiredRole": "admin", "params": [{ "name": "medicine", "type": "string", "required": true }] }
+  ]
+}

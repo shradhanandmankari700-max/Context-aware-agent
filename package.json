@@ -1,0 +1,23 @@
+{
+  "name": "context-aware-agent",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "contracts",
+    "backend",
+    "frontend",
+    "evaluation"
+  ],
+  "scripts": {
+    "typecheck": "npm run typecheck -w contracts && npm run typecheck -w backend",
+    "test": "npm run test -w contracts",
+    "db:up": "docker compose up -d db",
+    "dev:backend": "npm run dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "check:metadata": "npm run check:metadata -w contracts",
+    "eval": "npm run eval -w evaluation",
+    "smoke": "npm run smoke -w evaluation",
+    "seed": "npm run seed -w backend",
+    "import:app": "npm run import:app -w backend --"
+  }
+}

@@ -1,0 +1,18 @@
+# Dev default: only the database runs in Docker. Run backend/frontend natively (`npm run dev:*`) = faster, less RAM.
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: cab
+      POSTGRES_PASSWORD: cab
+      POSTGRES_DB: cab
+    ports: ["5432:5432"]
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cab -d cab"]
+      interval: 5s
+      retries: 10
+volumes:
+  dbdata:

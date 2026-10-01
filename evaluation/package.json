@@ -1,0 +1,20 @@
+{
+  "name": "@cab/evaluation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "eval": "tsx src/run.ts",
+    "gen:corpus": "tsx src/generateCorpus.ts",
+    "gen:scale": "tsx src/generateScaleApps.ts",
+    "smoke": "tsx src/smoke.ts"
+  },
+  "dependencies": {
+    "@cab/contracts": "*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4",
+    "@types/node": "^20.14.0"
+  }
+}
