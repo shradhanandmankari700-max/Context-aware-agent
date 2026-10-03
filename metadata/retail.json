@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "schemaVersion": 1,
+    "appId": "retail",
+    "name": "Retail Operations",
+    "description": "Retail inventory, sales orders and replenishment operations.",
+    "referenceDate": "2026-10-07",
+    "roles": ["admin", "staff", "viewer"],
+    "datasets": [
+      {
+        "name": "products",
+        "label": "Products",
+        "description": "Product catalog with category, price, stock and reorder threshold.",
+        "table": "products",
+        "fields": [
+          { "name": "product_id", "label": "Product ID", "type": "string", "roles": ["key"] },
+          { "name": "product_name", "label": "Product", "type": "string", "roles": ["label"], "synonyms": ["item", "merchandise"] },
+          { "name": "category", "label": "Category", "type": "string", "roles": ["dimension"], "enumValues": ["Electronics", "Home", "Apparel", "Grocery", "Beauty"], "synonyms": ["department", "product type"] },
+          { "name": "unit_price", "label": "Unit price", "type": "number", "format": "currency", "unit": "INR", "roles": ["metric"], "synonyms": ["price", "cost"] },
+          { "name": "stock", "label": "Stock on hand", "type": "number", "format": "integer", "roles": ["metric"], "synonyms": ["inventory", "quantity available", "units left"] },
+          { "name": "reorder_level", "label": "Reorder level", "type": "number", "format": "integer", "roles": ["metric"], "synonyms": ["restock threshold", "minimum stock"] }
+        ]
+      },
+      {
+        "name": "sales_orders",
+        "label": "Sales orders",
+        "description": "Customer orders with quantities, totals, dates and fulfillment status.",
+        "table": "sales_orders",
+        "timeField": "order_date",
+        "fields": [
+          { "name": "order_id", "label": "Order ID", "type": "string", "roles": ["key"] },
+          { "name": "product_id", "label": "Product ID", "type": "string", "roles": ["dimension"] },
+          { "name": "customer", "label": "Customer", "type": "string", "roles": ["label"] },
+          { "name": "order_date", "label": "Order date", "type": "date", "roles": ["time"], "synonyms": ["purchase date", "sale date"] },
+          { "name": "quantity", "label": "Quantity", "type": "number", "format": "integer", "roles": ["metric"], "synonyms": ["units sold"] },
+          { "name": "total", "label": "Order total", "type": "number", "format": "currency", "unit": "INR", "roles": ["metric"], "synonyms": ["sales", "revenue", "amount"] },
+          { "name": "status", "label": "Fulfillment status", "type": "string", "roles": ["dimension"], "enumValues": ["Pending", "Packed", "Shipped", "Delivered", "Cancelled"] }
+        ],
+        "relations": [{ "field": "product_id", "toDataset": "products", "toField": "product_id" }]
+      }
+    ],
+    "pages": [
+      {
+        "id": "dashboard",
+        "name": "Retail dashboard",
+        "route": "/dashboard",
+        "parent": null,
+        "description": "Overview of retail sales and order activity.",
+        "widgets": [
+          { "id": "totalSales", "name": "Total sales", "type": "kpi", "dataset": "sales_orders", "kpi": { "field": "total", "agg": "sum", "where": [] } },
+          { "id": "salesByDate", "name": "Sales over time", "type": "chart", "dataset": "sales_orders", "description": "Daily sales totals by order date.", "chart": { "kind": "line", "x": { "field": "order_date", "grain": "day" }, "y": { "field": "total", "agg": "sum" } } }
+        ],
+        "filters": []
+      },
+      {
+        "id": "inventory",
+        "name": "Product inventory",
+        "route": "/inventory",
+        "parent": null,
+        "description": "Product stock levels, prices, categories and restocking thresholds.",
+        "widgets": [
+          { "id": "productCatalog", "name": "Product catalog", "type": "table", "dataset": "products", "description": "Browse merchandise, stock on hand and reorder levels.", "columns": [{ "field": "product_id" }, { "field": "product_name" }, { "field": "category" }, { "field": "unit_price" }, { "field": "stock" }, { "field": "reorder_level" }], "sortable": ["product_name", "unit_price", "stock"], "defaultSort": { "field": "product_name", "direction": "asc" } }
+        ],
+        "filters": [
+          { "id": "productCategory", "label": "Product category", "type": "enum", "field": "category", "synonyms": ["department"], "options": [{ "value": "Electronics", "label": "Electronics" }, { "value": "Home", "label": "Home" }, { "value": "Apparel", "label": "Apparel" }, { "value": "Grocery", "label": "Grocery" }, { "value": "Beauty", "label": "Beauty" }] },
+          { "id": "stockLevel", "label": "Stock level", "type": "number", "field": "stock", "description": "Filter by the quantity currently available.", "synonyms": ["low inventory", "units left"], "operators": ["lt", "lte", "gt", "gte", "between"] }
+        ]
+      },
+      {
+        "id": "orders",
+        "name": "Sales orders",
+        "route": "/orders",
+        "parent": null,
+        "description": "Customer sales orders, totals and fulfillment progress.",
+        "widgets": [
+          { "id": "orderList", "name": "Order list", "type": "table", "dataset": "sales_orders", "columns": [{ "field": "order_id" }, { "field": "product_id" }, { "field": "customer" }, { "field": "order_date" }, { "field": "quantity" }, { "field": "total" }, { "field": "status" }], "sortable": ["order_date", "quantity", "total"], "defaultSort": { "field": "order_date", "direction": "desc" } }
+        ],
+        "filters": [
+          { "id": "orderStatus", "label": "Fulfillment status", "type": "enum", "field": "status", "synonyms": ["delivery status"], "options": [{ "value": "Pending", "label": "Pending" }, { "value": "Packed", "label": "Packed" }, { "value": "Shipped", "label": "Shipped" }, { "value": "Delivered", "label": "Delivered" }, { "value": "Cancelled", "label": "Cancelled" }] },
+          { "id": "orderDate", "label": "Order date", "type": "dateRange", "field": "order_date", "synonyms": ["sales date", "purchase date"] }
+        ]
+      }
+    ],
+    "actions": []
+  },
+  "data": {
+    "products": [
+      { "product_id": "P-1001", "product_name": "Wireless Headphones", "category": "Electronics", "unit_price": 2499, "stock": 18, "reorder_level": 10 },
+      { "product_id": "P-1002", "product_name": "USB-C Charger", "category": "Electronics", "unit_price": 899, "stock": 7, "reorder_level": 12 },
+      { "product_id": "P-1003", "product_name": "Cotton T-Shirt", "category": "Apparel", "unit_price": 599, "stock": 42, "reorder_level": 15 },
+      { "product_id": "P-1004", "product_name": "Running Shoes", "category": "Apparel", "unit_price": 3299, "stock": 9, "reorder_level": 10 },
+      { "product_id": "P-1005", "product_name": "Table Lamp", "category": "Home", "unit_price": 1499, "stock": 16, "reorder_level": 8 },
+      { "product_id": "P-1006", "product_name": "Storage Basket", "category": "Home", "unit_price": 449, "stock": 5, "reorder_level": 10 },
+      { "product_id": "P-1007", "product_name": "Arabica Coffee Beans", "category": "Grocery", "unit_price": 699, "stock": 24, "reorder_level": 12 },
+      { "product_id": "P-1008", "product_name": "Organic Green Tea", "category": "Grocery", "unit_price": 349, "stock": 31, "reorder_level": 14 },
+      { "product_id": "P-1009", "product_name": "Vitamin C Serum", "category": "Beauty", "unit_price": 1199, "stock": 6, "reorder_level": 10 },
+      { "product_id": "P-1010", "product_name": "Mineral Sunscreen", "category": "Beauty", "unit_price": 799, "stock": 21, "reorder_level": 9 }
+    ],
+    "sales_orders": [
+      { "order_id": "SO-5001", "product_id": "P-1001", "customer": "Aarav Shah", "order_date": "2026-10-07", "quantity": 1, "total": 2499, "status": "Delivered" },
+      { "order_id": "SO-5002", "product_id": "P-1002", "customer": "Mira Joshi", "order_date": "2026-10-07", "quantity": 2, "total": 1798, "status": "Packed" },
+      { "order_id": "SO-5003", "product_id": "P-1003", "customer": "Kabir Rao", "order_date": "2026-10-06", "quantity": 3, "total": 1797, "status": "Shipped" },
+      { "order_id": "SO-5004", "product_id": "P-1004", "customer": "Anaya Nair", "order_date": "2026-10-06", "quantity": 1, "total": 3299, "status": "Pending" },
+      { "order_id": "SO-5005", "product_id": "P-1005", "customer": "Ishaan Kulkarni", "order_date": "2026-10-05", "quantity": 2, "total": 2998, "status": "Delivered" },
+      { "order_id": "SO-5006", "product_id": "P-1006", "customer": "Sana Khan", "order_date": "2026-10-05", "quantity": 1, "total": 449, "status": "Cancelled" },
+      { "order_id": "SO-5007", "product_id": "P-1007", "customer": "Dev Patel", "order_date": "2026-10-04", "quantity": 2, "total": 1398, "status": "Delivered" },
+      { "order_id": "SO-5008", "product_id": "P-1008", "customer": "Tara Menon", "order_date": "2026-10-04", "quantity": 4, "total": 1396, "status": "Shipped" },
+      { "order_id": "SO-5009", "product_id": "P-1009", "customer": "Neel Desai", "order_date": "2026-10-03", "quantity": 1, "total": 1199, "status": "Pending" },
+      { "order_id": "SO-5010", "product_id": "P-1010", "customer": "Riya Shetty", "order_date": "2026-10-03", "quantity": 2, "total": 1598, "status": "Delivered" },
+      { "order_id": "SO-5011", "product_id": "P-1002", "customer": "Vihaan Reddy", "order_date": "2026-10-02", "quantity": 1, "total": 899, "status": "Packed" },
+      { "order_id": "SO-5012", "product_id": "P-1007", "customer": "Myra Iyer", "order_date": "2026-10-01", "quantity": 3, "total": 2097, "status": "Delivered" }
+    ]
+  }
+}

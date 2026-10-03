@@ -1,0 +1,400 @@
+{"id":"manual-hospital-001","appId":"hospital","query":"Where can I see medicines that are running low?","goldIds":["stockLevel","medicines","medicineStock","daysRemaining"]}
+{"id":"manual-hospital-002","appId":"hospital","query":"Find medicines that may run out within two days","goldIds":["daysRemaining","medicines","medicineStock","stockLevel"]}
+{"id":"manual-hospital-003","appId":"hospital","query":"Show the pharmacy inventory","goldIds":["inventory","medicines","medicineStock","purchases"]}
+{"id":"manual-hospital-004","appId":"hospital","query":"Where are medicine purchase orders?","goldIds":["purchases","purchaseOrders","orderStatus"]}
+{"id":"manual-hospital-005","appId":"hospital","query":"Find medicines expiring soon","goldIds":["expiryDate","medicines","medicineStock"]}
+{"id":"manual-hospital-006","appId":"hospital","query":"Show patient admissions by ward","goldIds":["patients","patientList","ward","admittedOn"]}
+{"id":"manual-hospital-007","appId":"hospital","query":"Find patients who are still admitted","goldIds":["patients","patientList","patientStatus"]}
+{"id":"manual-hospital-008","appId":"hospital","query":"Where can I see the weekly medicine usage chart?","goldIds":["weeklyUsage","dashboard","medicine_usage"]}
+{"id":"manual-hospital-009","appId":"hospital","query":"Show monthly medicine consumption","goldIds":["monthlyUsage","reports","medicine_usage"]}
+{"id":"manual-hospital-010","appId":"hospital","query":"Find prescriptions grouped by diagnosis","goldIds":["prescriptionsByDiagnosis","reports","prescriptions"]}
+{"id":"manual-hospital-011","appId":"hospital","query":"Filter inventory to antibiotics","goldIds":["category","medicines","medicineStock"]}
+{"id":"manual-hospital-012","appId":"hospital","query":"Show the stock shortage preset","goldIds":["stockLevel","medicines","daysRemaining"]}
+{"id":"manual-hospital-013","appId":"hospital","query":"Find medicine quantity left in inventory","goldIds":["medicines.stock","medicineStock","medicines"]}
+{"id":"manual-hospital-014","appId":"hospital","query":"Search by drug or medication name","goldIds":["medicines.medicine","medicineStock","medicines"]}
+{"id":"manual-hospital-015","appId":"hospital","query":"Where are delayed supplier orders?","goldIds":["orderStatus","purchaseOrders","purchases"]}
+{"id":"manual-hospital-016","appId":"hospital","query":"Show the patient register","goldIds":["patients","patientList"]}
+{"id":"manual-hospital-017","appId":"hospital","query":"Filter patients by ICU ward","goldIds":["ward","patients","patientList"]}
+{"id":"manual-hospital-018","appId":"hospital","query":"Show the date range for medicine usage reports","goldIds":["reportPeriod","reports","monthlyUsage"]}
+{"id":"manual-hospital-019","appId":"hospital","query":"Find stock snapshots over time","goldIds":["stock_history","reports"]}
+{"id":"manual-hospital-020","appId":"hospital","query":"How much medicine is dispensed each day?","goldIds":["medicine_usage.quantity","medicine_usage","weeklyUsage","monthlyUsage"]}
+{"id":"manual-hospital-021","appId":"hospital","query":"Show prescription quantity and diagnosis","goldIds":["prescriptions.quantity","prescriptions.diagnosis","prescriptionsByDiagnosis"]}
+{"id":"manual-hospital-022","appId":"hospital","query":"Filter purchase orders by delivery status","goldIds":["orderStatus","purchases","purchaseOrders"]}
+{"id":"manual-hospital-023","appId":"hospital","query":"When was this medicine ordered?","goldIds":["purchases.order_date","orderDate","purchaseOrders"]}
+{"id":"manual-hospital-024","appId":"hospital","query":"How many days of supply remain?","goldIds":["medicines.days_remaining","daysRemaining","stockLevel"]}
+{"id":"manual-hospital-025","appId":"hospital","query":"Open the hospital dashboard","goldIds":["dashboard","kpiMedicines","kpiLowStock"]}
+{"id":"manual-hospital-026","appId":"hospital","query":"Find the number of medicines being tracked","goldIds":["kpiMedicines","dashboard","medicines"]}
+{"id":"manual-hospital-027","appId":"hospital","query":"Show medicines with less than five days remaining","goldIds":["kpiLowStock","daysRemaining","stockLevel","medicines"]}
+{"id":"manual-hospital-028","appId":"hospital","query":"Filter the admission list by admission date","goldIds":["admittedOn","patients","patientList"]}
+{"id":"manual-hospital-029","appId":"hospital","query":"Where can I discard expired medicine stock?","goldIds":["discardExpiredStock","medicines","expiryDate"]}
+{"id":"manual-hospital-030","appId":"hospital","query":"Show the date of each patient's admission","goldIds":["patients.admitted_on","admittedOn","patientList"]}
+{"id":"generated-hospital-001","appId":"hospital","query":"Find Dashboard on the Dashboard page","goldIds":["dashboard"]}
+{"id":"generated-hospital-002","appId":"hospital","query":"Find Medicines tracked on the Dashboard page","goldIds":["kpiMedicines"]}
+{"id":"generated-hospital-003","appId":"hospital","query":"Find Low-stock medicines on the Dashboard page","goldIds":["kpiLowStock"]}
+{"id":"generated-hospital-004","appId":"hospital","query":"Find Weekly medicine usage on the Dashboard page","goldIds":["weeklyUsage"]}
+{"id":"generated-hospital-005","appId":"hospital","query":"Find Patients on the Patients page","goldIds":["patients"]}
+{"id":"generated-hospital-006","appId":"hospital","query":"Find Patient list on the Patients page","goldIds":["patientList"]}
+{"id":"generated-hospital-007","appId":"hospital","query":"Find Ward on the Patients page","goldIds":["ward"]}
+{"id":"generated-hospital-008","appId":"hospital","query":"Find Status on the Patients page","goldIds":["patientStatus"]}
+{"id":"generated-hospital-009","appId":"hospital","query":"Find Admission date on the Patients page","goldIds":["admittedOn"]}
+{"id":"generated-hospital-010","appId":"hospital","query":"Find Inventory on the Inventory page","goldIds":["inventory"]}
+{"id":"generated-hospital-011","appId":"hospital","query":"Find Medicines on the Medicines page","goldIds":["medicines"]}
+{"id":"generated-hospital-012","appId":"hospital","query":"Find Medicine Stock on the Medicines page","goldIds":["medicineStock"]}
+{"id":"generated-hospital-013","appId":"hospital","query":"Find Category on the Medicines page","goldIds":["category"]}
+{"id":"generated-hospital-014","appId":"hospital","query":"Find Stock level on the Medicines page","goldIds":["stockLevel"]}
+{"id":"generated-hospital-015","appId":"hospital","query":"Find Days remaining on the Medicines page","goldIds":["daysRemaining"]}
+{"id":"generated-hospital-016","appId":"hospital","query":"Find Expiry date on the Medicines page","goldIds":["expiryDate"]}
+{"id":"generated-hospital-017","appId":"hospital","query":"Find Purchase orders on the Purchase orders page","goldIds":["purchases"]}
+{"id":"generated-hospital-018","appId":"hospital","query":"Find Status on the Purchase orders page","goldIds":["orderStatus"]}
+{"id":"generated-hospital-019","appId":"hospital","query":"Find Order date on the Purchase orders page","goldIds":["orderDate"]}
+{"id":"generated-hospital-020","appId":"hospital","query":"Find Reports on the Reports page","goldIds":["reports"]}
+{"id":"generated-hospital-021","appId":"hospital","query":"Find Monthly medicine usage on the Reports page","goldIds":["monthlyUsage"]}
+{"id":"generated-hospital-022","appId":"hospital","query":"Find Prescriptions by diagnosis on the Reports page","goldIds":["prescriptionsByDiagnosis"]}
+{"id":"generated-hospital-023","appId":"hospital","query":"Find Period on the Reports page","goldIds":["reportPeriod"]}
+{"id":"generated-hospital-024","appId":"hospital","query":"Find Medicines in Hospital Management","goldIds":["medicines"]}
+{"id":"generated-hospital-025","appId":"hospital","query":"Find Medicines Medicine in Hospital Management","goldIds":["medicines.medicine"]}
+{"id":"generated-hospital-026","appId":"hospital","query":"Find Medicines Category in Hospital Management","goldIds":["medicines.category"]}
+{"id":"generated-hospital-027","appId":"hospital","query":"Find Medicines Stock in Hospital Management","goldIds":["medicines.stock"]}
+{"id":"generated-hospital-028","appId":"hospital","query":"Find Medicines Daily usage in Hospital Management","goldIds":["medicines.daily_usage"]}
+{"id":"generated-hospital-029","appId":"hospital","query":"Find Medicines Expiry date in Hospital Management","goldIds":["medicines.expiry_date"]}
+{"id":"generated-hospital-030","appId":"hospital","query":"Find Medicines Days remaining in Hospital Management","goldIds":["medicines.days_remaining"]}
+{"id":"generated-hospital-031","appId":"hospital","query":"Find Medicine usage history in Hospital Management","goldIds":["medicine_usage"]}
+{"id":"generated-hospital-032","appId":"hospital","query":"Find Medicine usage history Date in Hospital Management","goldIds":["medicine_usage.usage_date"]}
+{"id":"generated-hospital-033","appId":"hospital","query":"Find Medicine usage history Medicine in Hospital Management","goldIds":["medicine_usage.medicine"]}
+{"id":"generated-hospital-034","appId":"hospital","query":"Find Medicine usage history Quantity used in Hospital Management","goldIds":["medicine_usage.quantity"]}
+{"id":"generated-hospital-035","appId":"hospital","query":"Find Purchase orders in Hospital Management","goldIds":["purchases"]}
+{"id":"generated-hospital-036","appId":"hospital","query":"Find Purchase orders Order date in Hospital Management","goldIds":["purchases.order_date"]}
+{"id":"generated-hospital-037","appId":"hospital","query":"Find Purchase orders Medicine in Hospital Management","goldIds":["purchases.medicine"]}
+{"id":"generated-hospital-038","appId":"hospital","query":"Find Purchase orders Quantity ordered in Hospital Management","goldIds":["purchases.quantity"]}
+{"id":"generated-hospital-039","appId":"hospital","query":"Find Purchase orders Supplier in Hospital Management","goldIds":["purchases.supplier"]}
+{"id":"generated-hospital-040","appId":"hospital","query":"Find Purchase orders Status in Hospital Management","goldIds":["purchases.status"]}
+{"id":"generated-hospital-041","appId":"hospital","query":"Find Prescriptions in Hospital Management","goldIds":["prescriptions"]}
+{"id":"generated-hospital-042","appId":"hospital","query":"Find Prescriptions Prescribed on in Hospital Management","goldIds":["prescriptions.prescribed_on"]}
+{"id":"generated-hospital-043","appId":"hospital","query":"Find Prescriptions Medicine in Hospital Management","goldIds":["prescriptions.medicine"]}
+{"id":"generated-hospital-044","appId":"hospital","query":"Find Prescriptions Diagnosis in Hospital Management","goldIds":["prescriptions.diagnosis"]}
+{"id":"generated-hospital-045","appId":"hospital","query":"Find Prescriptions Quantity in Hospital Management","goldIds":["prescriptions.quantity"]}
+{"id":"generated-hospital-046","appId":"hospital","query":"Find Stock history in Hospital Management","goldIds":["stock_history"]}
+{"id":"generated-hospital-047","appId":"hospital","query":"Find Stock history Date in Hospital Management","goldIds":["stock_history.snapshot_date"]}
+{"id":"generated-hospital-048","appId":"hospital","query":"Find Stock history Medicine in Hospital Management","goldIds":["stock_history.medicine"]}
+{"id":"generated-hospital-049","appId":"hospital","query":"Find Stock history Stock in Hospital Management","goldIds":["stock_history.stock"]}
+{"id":"generated-hospital-050","appId":"hospital","query":"Find Patients in Hospital Management","goldIds":["patients"]}
+{"id":"generated-hospital-051","appId":"hospital","query":"Find Patients Patient ID in Hospital Management","goldIds":["patients.patient_id"]}
+{"id":"generated-hospital-052","appId":"hospital","query":"Find Patients Name in Hospital Management","goldIds":["patients.name"]}
+{"id":"generated-hospital-053","appId":"hospital","query":"Find Patients Age in Hospital Management","goldIds":["patients.age"]}
+{"id":"generated-hospital-054","appId":"hospital","query":"Find Patients Ward in Hospital Management","goldIds":["patients.ward"]}
+{"id":"generated-hospital-055","appId":"hospital","query":"Find Patients Admitted on in Hospital Management","goldIds":["patients.admitted_on"]}
+{"id":"generated-hospital-056","appId":"hospital","query":"Find Patients Status in Hospital Management","goldIds":["patients.status"]}
+{"id":"generated-hospital-057","appId":"hospital","query":"Find Discard expired stock on the Medicines page","goldIds":["discardExpiredStock"]}
+{"id":"generated-hospital-058","appId":"hospital","query":"Show me Dashboard on the Dashboard page","goldIds":["dashboard"]}
+{"id":"generated-hospital-059","appId":"hospital","query":"Show me Medicines tracked on the Dashboard page","goldIds":["kpiMedicines"]}
+{"id":"generated-hospital-060","appId":"hospital","query":"Show me Low-stock medicines on the Dashboard page","goldIds":["kpiLowStock"]}
+{"id":"generated-hospital-061","appId":"hospital","query":"Show me Weekly medicine usage on the Dashboard page","goldIds":["weeklyUsage"]}
+{"id":"generated-hospital-062","appId":"hospital","query":"Show me Patients on the Patients page","goldIds":["patients"]}
+{"id":"generated-hospital-063","appId":"hospital","query":"Show me Patient list on the Patients page","goldIds":["patientList"]}
+{"id":"generated-hospital-064","appId":"hospital","query":"Show me Ward on the Patients page","goldIds":["ward"]}
+{"id":"generated-hospital-065","appId":"hospital","query":"Show me Status on the Patients page","goldIds":["patientStatus"]}
+{"id":"generated-hospital-066","appId":"hospital","query":"Show me Admission date on the Patients page","goldIds":["admittedOn"]}
+{"id":"generated-hospital-067","appId":"hospital","query":"Show me Inventory on the Inventory page","goldIds":["inventory"]}
+{"id":"generated-hospital-068","appId":"hospital","query":"Show me Medicines on the Medicines page","goldIds":["medicines"]}
+{"id":"generated-hospital-069","appId":"hospital","query":"Show me Medicine Stock on the Medicines page","goldIds":["medicineStock"]}
+{"id":"generated-hospital-070","appId":"hospital","query":"Show me Category on the Medicines page","goldIds":["category"]}
+{"id":"generated-hospital-071","appId":"hospital","query":"Show me Stock level on the Medicines page","goldIds":["stockLevel"]}
+{"id":"generated-hospital-072","appId":"hospital","query":"Show me Days remaining on the Medicines page","goldIds":["daysRemaining"]}
+{"id":"generated-hospital-073","appId":"hospital","query":"Show me Expiry date on the Medicines page","goldIds":["expiryDate"]}
+{"id":"generated-hospital-074","appId":"hospital","query":"Show me Purchase orders on the Purchase orders page","goldIds":["purchases"]}
+{"id":"generated-hospital-075","appId":"hospital","query":"Show me Status on the Purchase orders page","goldIds":["orderStatus"]}
+{"id":"generated-hospital-076","appId":"hospital","query":"Show me Order date on the Purchase orders page","goldIds":["orderDate"]}
+{"id":"generated-hospital-077","appId":"hospital","query":"Show me Reports on the Reports page","goldIds":["reports"]}
+{"id":"generated-hospital-078","appId":"hospital","query":"Show me Monthly medicine usage on the Reports page","goldIds":["monthlyUsage"]}
+{"id":"generated-hospital-079","appId":"hospital","query":"Show me Prescriptions by diagnosis on the Reports page","goldIds":["prescriptionsByDiagnosis"]}
+{"id":"generated-hospital-080","appId":"hospital","query":"Show me Period on the Reports page","goldIds":["reportPeriod"]}
+{"id":"generated-hospital-081","appId":"hospital","query":"Show me Medicines in Hospital Management","goldIds":["medicines"]}
+{"id":"generated-hospital-082","appId":"hospital","query":"Show me Medicines Medicine in Hospital Management","goldIds":["medicines.medicine"]}
+{"id":"generated-hospital-083","appId":"hospital","query":"Show me Medicines Category in Hospital Management","goldIds":["medicines.category"]}
+{"id":"generated-hospital-084","appId":"hospital","query":"Show me Medicines Stock in Hospital Management","goldIds":["medicines.stock"]}
+{"id":"generated-hospital-085","appId":"hospital","query":"Show me Medicines Daily usage in Hospital Management","goldIds":["medicines.daily_usage"]}
+{"id":"generated-hospital-086","appId":"hospital","query":"Show me Medicines Expiry date in Hospital Management","goldIds":["medicines.expiry_date"]}
+{"id":"generated-hospital-087","appId":"hospital","query":"Show me Medicines Days remaining in Hospital Management","goldIds":["medicines.days_remaining"]}
+{"id":"generated-hospital-088","appId":"hospital","query":"Show me Medicine usage history in Hospital Management","goldIds":["medicine_usage"]}
+{"id":"generated-hospital-089","appId":"hospital","query":"Show me Medicine usage history Date in Hospital Management","goldIds":["medicine_usage.usage_date"]}
+{"id":"generated-hospital-090","appId":"hospital","query":"Show me Medicine usage history Medicine in Hospital Management","goldIds":["medicine_usage.medicine"]}
+{"id":"generated-hospital-091","appId":"hospital","query":"Show me Medicine usage history Quantity used in Hospital Management","goldIds":["medicine_usage.quantity"]}
+{"id":"generated-hospital-092","appId":"hospital","query":"Show me Purchase orders in Hospital Management","goldIds":["purchases"]}
+{"id":"generated-hospital-093","appId":"hospital","query":"Show me Purchase orders Order date in Hospital Management","goldIds":["purchases.order_date"]}
+{"id":"generated-hospital-094","appId":"hospital","query":"Show me Purchase orders Medicine in Hospital Management","goldIds":["purchases.medicine"]}
+{"id":"generated-hospital-095","appId":"hospital","query":"Show me Purchase orders Quantity ordered in Hospital Management","goldIds":["purchases.quantity"]}
+{"id":"generated-hospital-096","appId":"hospital","query":"Show me Purchase orders Supplier in Hospital Management","goldIds":["purchases.supplier"]}
+{"id":"generated-hospital-097","appId":"hospital","query":"Show me Purchase orders Status in Hospital Management","goldIds":["purchases.status"]}
+{"id":"generated-hospital-098","appId":"hospital","query":"Show me Prescriptions in Hospital Management","goldIds":["prescriptions"]}
+{"id":"generated-hospital-099","appId":"hospital","query":"Show me Prescriptions Prescribed on in Hospital Management","goldIds":["prescriptions.prescribed_on"]}
+{"id":"generated-hospital-100","appId":"hospital","query":"Show me Prescriptions Medicine in Hospital Management","goldIds":["prescriptions.medicine"]}
+{"id":"generated-hospital-101","appId":"hospital","query":"Show me Prescriptions Diagnosis in Hospital Management","goldIds":["prescriptions.diagnosis"]}
+{"id":"generated-hospital-102","appId":"hospital","query":"Show me Prescriptions Quantity in Hospital Management","goldIds":["prescriptions.quantity"]}
+{"id":"generated-hospital-103","appId":"hospital","query":"Show me Stock history in Hospital Management","goldIds":["stock_history"]}
+{"id":"generated-hospital-104","appId":"hospital","query":"Show me Stock history Date in Hospital Management","goldIds":["stock_history.snapshot_date"]}
+{"id":"generated-hospital-105","appId":"hospital","query":"Show me Stock history Medicine in Hospital Management","goldIds":["stock_history.medicine"]}
+{"id":"generated-hospital-106","appId":"hospital","query":"Show me Stock history Stock in Hospital Management","goldIds":["stock_history.stock"]}
+{"id":"generated-hospital-107","appId":"hospital","query":"Show me Patients in Hospital Management","goldIds":["patients"]}
+{"id":"generated-hospital-108","appId":"hospital","query":"Show me Patients Patient ID in Hospital Management","goldIds":["patients.patient_id"]}
+{"id":"generated-hospital-109","appId":"hospital","query":"Show me Patients Name in Hospital Management","goldIds":["patients.name"]}
+{"id":"generated-hospital-110","appId":"hospital","query":"Show me Patients Age in Hospital Management","goldIds":["patients.age"]}
+{"id":"generated-hospital-111","appId":"hospital","query":"Show me Patients Ward in Hospital Management","goldIds":["patients.ward"]}
+{"id":"generated-hospital-112","appId":"hospital","query":"Show me Patients Admitted on in Hospital Management","goldIds":["patients.admitted_on"]}
+{"id":"generated-hospital-113","appId":"hospital","query":"Show me Patients Status in Hospital Management","goldIds":["patients.status"]}
+{"id":"generated-hospital-114","appId":"hospital","query":"Show me Discard expired stock on the Medicines page","goldIds":["discardExpiredStock"]}
+{"id":"generated-hospital-115","appId":"hospital","query":"Where can I see Dashboard on the Dashboard page?","goldIds":["dashboard"]}
+{"id":"generated-hospital-116","appId":"hospital","query":"Where can I see Medicines tracked on the Dashboard page?","goldIds":["kpiMedicines"]}
+{"id":"generated-hospital-117","appId":"hospital","query":"Where can I see Low-stock medicines on the Dashboard page?","goldIds":["kpiLowStock"]}
+{"id":"generated-hospital-118","appId":"hospital","query":"Where can I see Weekly medicine usage on the Dashboard page?","goldIds":["weeklyUsage"]}
+{"id":"generated-hospital-119","appId":"hospital","query":"Where can I see Patients on the Patients page?","goldIds":["patients"]}
+{"id":"generated-hospital-120","appId":"hospital","query":"Where can I see Patient list on the Patients page?","goldIds":["patientList"]}
+{"id":"generated-hospital-121","appId":"hospital","query":"Where can I see Ward on the Patients page?","goldIds":["ward"]}
+{"id":"generated-hospital-122","appId":"hospital","query":"Where can I see Status on the Patients page?","goldIds":["patientStatus"]}
+{"id":"generated-hospital-123","appId":"hospital","query":"Where can I see Admission date on the Patients page?","goldIds":["admittedOn"]}
+{"id":"generated-hospital-124","appId":"hospital","query":"Where can I see Inventory on the Inventory page?","goldIds":["inventory"]}
+{"id":"generated-hospital-125","appId":"hospital","query":"Where can I see Medicines on the Medicines page?","goldIds":["medicines"]}
+{"id":"generated-hospital-126","appId":"hospital","query":"Where can I see Medicine Stock on the Medicines page?","goldIds":["medicineStock"]}
+{"id":"generated-hospital-127","appId":"hospital","query":"Where can I see Category on the Medicines page?","goldIds":["category"]}
+{"id":"generated-hospital-128","appId":"hospital","query":"Where can I see Stock level on the Medicines page?","goldIds":["stockLevel"]}
+{"id":"generated-hospital-129","appId":"hospital","query":"Where can I see Days remaining on the Medicines page?","goldIds":["daysRemaining"]}
+{"id":"generated-hospital-130","appId":"hospital","query":"Where can I see Expiry date on the Medicines page?","goldIds":["expiryDate"]}
+{"id":"generated-hospital-131","appId":"hospital","query":"Where can I see Purchase orders on the Purchase orders page?","goldIds":["purchases"]}
+{"id":"generated-hospital-132","appId":"hospital","query":"Where can I see Status on the Purchase orders page?","goldIds":["orderStatus"]}
+{"id":"generated-hospital-133","appId":"hospital","query":"Where can I see Order date on the Purchase orders page?","goldIds":["orderDate"]}
+{"id":"generated-hospital-134","appId":"hospital","query":"Where can I see Reports on the Reports page?","goldIds":["reports"]}
+{"id":"generated-hospital-135","appId":"hospital","query":"Where can I see Monthly medicine usage on the Reports page?","goldIds":["monthlyUsage"]}
+{"id":"generated-hospital-136","appId":"hospital","query":"Where can I see Prescriptions by diagnosis on the Reports page?","goldIds":["prescriptionsByDiagnosis"]}
+{"id":"generated-hospital-137","appId":"hospital","query":"Where can I see Period on the Reports page?","goldIds":["reportPeriod"]}
+{"id":"generated-hospital-138","appId":"hospital","query":"Where can I see Medicines in Hospital Management?","goldIds":["medicines"]}
+{"id":"generated-hospital-139","appId":"hospital","query":"Where can I see Medicines Medicine in Hospital Management?","goldIds":["medicines.medicine"]}
+{"id":"generated-hospital-140","appId":"hospital","query":"Where can I see Medicines Category in Hospital Management?","goldIds":["medicines.category"]}
+{"id":"generated-hospital-141","appId":"hospital","query":"Where can I see Medicines Stock in Hospital Management?","goldIds":["medicines.stock"]}
+{"id":"generated-hospital-142","appId":"hospital","query":"Where can I see Medicines Daily usage in Hospital Management?","goldIds":["medicines.daily_usage"]}
+{"id":"generated-hospital-143","appId":"hospital","query":"Where can I see Medicines Expiry date in Hospital Management?","goldIds":["medicines.expiry_date"]}
+{"id":"generated-hospital-144","appId":"hospital","query":"Where can I see Medicines Days remaining in Hospital Management?","goldIds":["medicines.days_remaining"]}
+{"id":"generated-hospital-145","appId":"hospital","query":"Where can I see Medicine usage history in Hospital Management?","goldIds":["medicine_usage"]}
+{"id":"generated-hospital-146","appId":"hospital","query":"Where can I see Medicine usage history Date in Hospital Management?","goldIds":["medicine_usage.usage_date"]}
+{"id":"generated-hospital-147","appId":"hospital","query":"Where can I see Medicine usage history Medicine in Hospital Management?","goldIds":["medicine_usage.medicine"]}
+{"id":"generated-hospital-148","appId":"hospital","query":"Where can I see Medicine usage history Quantity used in Hospital Management?","goldIds":["medicine_usage.quantity"]}
+{"id":"generated-hospital-149","appId":"hospital","query":"Where can I see Purchase orders in Hospital Management?","goldIds":["purchases"]}
+{"id":"generated-hospital-150","appId":"hospital","query":"Where can I see Purchase orders Order date in Hospital Management?","goldIds":["purchases.order_date"]}
+{"id":"generated-hospital-151","appId":"hospital","query":"Where can I see Purchase orders Medicine in Hospital Management?","goldIds":["purchases.medicine"]}
+{"id":"generated-hospital-152","appId":"hospital","query":"Where can I see Purchase orders Quantity ordered in Hospital Management?","goldIds":["purchases.quantity"]}
+{"id":"generated-hospital-153","appId":"hospital","query":"Where can I see Purchase orders Supplier in Hospital Management?","goldIds":["purchases.supplier"]}
+{"id":"generated-hospital-154","appId":"hospital","query":"Where can I see Purchase orders Status in Hospital Management?","goldIds":["purchases.status"]}
+{"id":"generated-hospital-155","appId":"hospital","query":"Where can I see Prescriptions in Hospital Management?","goldIds":["prescriptions"]}
+{"id":"generated-hospital-156","appId":"hospital","query":"Where can I see Prescriptions Prescribed on in Hospital Management?","goldIds":["prescriptions.prescribed_on"]}
+{"id":"generated-hospital-157","appId":"hospital","query":"Where can I see Prescriptions Medicine in Hospital Management?","goldIds":["prescriptions.medicine"]}
+{"id":"generated-hospital-158","appId":"hospital","query":"Where can I see Prescriptions Diagnosis in Hospital Management?","goldIds":["prescriptions.diagnosis"]}
+{"id":"generated-hospital-159","appId":"hospital","query":"Where can I see Prescriptions Quantity in Hospital Management?","goldIds":["prescriptions.quantity"]}
+{"id":"generated-hospital-160","appId":"hospital","query":"Where can I see Stock history in Hospital Management?","goldIds":["stock_history"]}
+{"id":"generated-hospital-161","appId":"hospital","query":"Where can I see Stock history Date in Hospital Management?","goldIds":["stock_history.snapshot_date"]}
+{"id":"generated-hospital-162","appId":"hospital","query":"Where can I see Stock history Medicine in Hospital Management?","goldIds":["stock_history.medicine"]}
+{"id":"generated-hospital-163","appId":"hospital","query":"Where can I see Stock history Stock in Hospital Management?","goldIds":["stock_history.stock"]}
+{"id":"generated-hospital-164","appId":"hospital","query":"Where can I see Patients in Hospital Management?","goldIds":["patients"]}
+{"id":"generated-hospital-165","appId":"hospital","query":"Where can I see Patients Patient ID in Hospital Management?","goldIds":["patients.patient_id"]}
+{"id":"generated-hospital-166","appId":"hospital","query":"Where can I see Patients Name in Hospital Management?","goldIds":["patients.name"]}
+{"id":"generated-hospital-167","appId":"hospital","query":"Where can I see Patients Age in Hospital Management?","goldIds":["patients.age"]}
+{"id":"generated-hospital-168","appId":"hospital","query":"Where can I see Patients Ward in Hospital Management?","goldIds":["patients.ward"]}
+{"id":"generated-hospital-169","appId":"hospital","query":"Where can I see Patients Admitted on in Hospital Management?","goldIds":["patients.admitted_on"]}
+{"id":"generated-hospital-170","appId":"hospital","query":"Where can I see Patients Status in Hospital Management?","goldIds":["patients.status"]}
+{"id":"manual-hotel-001","appId":"hotel","query":"Find rooms cheaper than 3000 tomorrow","goldIds":["rooms","price","stayDate","roomList"]}
+{"id":"manual-hotel-002","appId":"hotel","query":"Show available rooms for tonight","goldIds":["rooms","availability","stayDate","roomList"]}
+{"id":"manual-hotel-003","appId":"hotel","query":"Where can I filter rooms by type?","goldIds":["rooms","roomType","roomList"]}
+{"id":"manual-hotel-004","appId":"hotel","query":"Find the room price or nightly rate","goldIds":["room_availability.price","price","rooms"]}
+{"id":"manual-hotel-005","appId":"hotel","query":"Show occupied rooms for a selected date","goldIds":["availability","stayDate","rooms","roomList"]}
+{"id":"manual-hotel-006","appId":"hotel","query":"Where can I see guest bookings?","goldIds":["bookings","bookingList","bookingStatus"]}
+{"id":"manual-hotel-007","appId":"hotel","query":"Find cancelled reservations","goldIds":["bookingStatus","bookings","bookingList"]}
+{"id":"manual-hotel-008","appId":"hotel","query":"Filter bookings by corporate channel","goldIds":["channel","bookings","bookingList"]}
+{"id":"manual-hotel-009","appId":"hotel","query":"Show check-in dates for reservations","goldIds":["checkIn","bookings","bookingList"]}
+{"id":"manual-hotel-010","appId":"hotel","query":"Where is the hotel revenue dashboard?","goldIds":["dashboard","kpiRevenue","revenueTrend"]}
+{"id":"manual-hotel-011","appId":"hotel","query":"Show the revenue trend over time","goldIds":["revenueTrend","dashboard","revenue"]}
+{"id":"manual-hotel-012","appId":"hotel","query":"Find daily revenue by category","goldIds":["revenueByCategory","revenue","revenueCategory"]}
+{"id":"manual-hotel-013","appId":"hotel","query":"Filter revenue to restaurant sales","goldIds":["revenueCategory","revenue","revenueByCategory"]}
+{"id":"manual-hotel-014","appId":"hotel","query":"Show monthly room booking income","goldIds":["revenueTrend","revenueByCategory","revenue"]}
+{"id":"manual-hotel-015","appId":"hotel","query":"Where can I see occupancy history?","goldIds":["occupancy_history","dashboard","revenueTrend"]}
+{"id":"manual-hotel-016","appId":"hotel","query":"Find the number of occupied rooms per day","goldIds":["occupancy_history.occupied_rooms","occupancy_history","dashboard"]}
+{"id":"manual-hotel-017","appId":"hotel","query":"Show the total rooms available in the hotel","goldIds":["occupancy_history.total_rooms","occupancy_history"]}
+{"id":"manual-hotel-018","appId":"hotel","query":"Filter revenue by date range","goldIds":["revenuePeriod","revenue","revenueByCategory"]}
+{"id":"manual-hotel-019","appId":"hotel","query":"Show room availability status","goldIds":["availability","room_availability.status","rooms"]}
+{"id":"manual-hotel-020","appId":"hotel","query":"Find standard, deluxe, or suite rooms","goldIds":["roomType","rooms","room_availability.room_type"]}
+{"id":"manual-hotel-021","appId":"hotel","query":"Show the booking amount and guest name","goldIds":["bookings.amount","bookings.guest","bookingList"]}
+{"id":"manual-hotel-022","appId":"hotel","query":"Where can I cancel a booking?","goldIds":["cancelBooking","bookings","bookingList"]}
+{"id":"manual-hotel-023","appId":"hotel","query":"Find rooms with a rate below 2500","goldIds":["rooms","price","roomList"]}
+{"id":"manual-hotel-024","appId":"hotel","query":"Show hotel revenue from spa services","goldIds":["revenueCategory","revenue","revenueByCategory"]}
+{"id":"manual-hotel-025","appId":"hotel","query":"Find a reservation's check-out date","goldIds":["bookings.check_out","bookingList","bookings"]}
+{"id":"manual-hotel-026","appId":"hotel","query":"Where can I view room nights and nightly prices?","goldIds":["room_availability","rooms","roomList"]}
+{"id":"manual-hotel-027","appId":"hotel","query":"Show confirmed reservations","goldIds":["bookingStatus","bookings","bookingList"]}
+{"id":"manual-hotel-028","appId":"hotel","query":"Find direct bookings","goldIds":["channel","bookings","bookingList"]}
+{"id":"manual-hotel-029","appId":"hotel","query":"Show the total revenue KPI","goldIds":["kpiRevenue","dashboard","revenue"]}
+{"id":"manual-hotel-030","appId":"hotel","query":"Find today's room availability","goldIds":["rooms","stayDate","availability","roomList"]}
+{"id":"generated-hotel-001","appId":"hotel","query":"Find Dashboard on the Dashboard page","goldIds":["dashboard"]}
+{"id":"generated-hotel-002","appId":"hotel","query":"Find Total revenue on the Dashboard page","goldIds":["kpiRevenue"]}
+{"id":"generated-hotel-003","appId":"hotel","query":"Find Revenue trend on the Dashboard page","goldIds":["revenueTrend"]}
+{"id":"generated-hotel-004","appId":"hotel","query":"Find Rooms on the Rooms page","goldIds":["rooms"]}
+{"id":"generated-hotel-005","appId":"hotel","query":"Find Room list on the Rooms page","goldIds":["roomList"]}
+{"id":"generated-hotel-006","appId":"hotel","query":"Find Room type on the Rooms page","goldIds":["roomType"]}
+{"id":"generated-hotel-007","appId":"hotel","query":"Find Price on the Rooms page","goldIds":["price"]}
+{"id":"generated-hotel-008","appId":"hotel","query":"Find Availability on the Rooms page","goldIds":["availability"]}
+{"id":"generated-hotel-009","appId":"hotel","query":"Find Date on the Rooms page","goldIds":["stayDate"]}
+{"id":"generated-hotel-010","appId":"hotel","query":"Find Bookings on the Bookings page","goldIds":["bookings"]}
+{"id":"generated-hotel-011","appId":"hotel","query":"Find Booking list on the Bookings page","goldIds":["bookingList"]}
+{"id":"generated-hotel-012","appId":"hotel","query":"Find Status on the Bookings page","goldIds":["bookingStatus"]}
+{"id":"generated-hotel-013","appId":"hotel","query":"Find Channel on the Bookings page","goldIds":["channel"]}
+{"id":"generated-hotel-014","appId":"hotel","query":"Find Check-in date on the Bookings page","goldIds":["checkIn"]}
+{"id":"generated-hotel-015","appId":"hotel","query":"Find Revenue on the Revenue page","goldIds":["revenue"]}
+{"id":"generated-hotel-016","appId":"hotel","query":"Find Revenue by category on the Revenue page","goldIds":["revenueByCategory"]}
+{"id":"generated-hotel-017","appId":"hotel","query":"Find Period on the Revenue page","goldIds":["revenuePeriod"]}
+{"id":"generated-hotel-018","appId":"hotel","query":"Find Category on the Revenue page","goldIds":["revenueCategory"]}
+{"id":"generated-hotel-019","appId":"hotel","query":"Find Room availability in Hotel Management","goldIds":["room_availability"]}
+{"id":"generated-hotel-020","appId":"hotel","query":"Find Room availability Room in Hotel Management","goldIds":["room_availability.room"]}
+{"id":"generated-hotel-021","appId":"hotel","query":"Find Room availability Room type in Hotel Management","goldIds":["room_availability.room_type"]}
+{"id":"generated-hotel-022","appId":"hotel","query":"Find Room availability Price in Hotel Management","goldIds":["room_availability.price"]}
+{"id":"generated-hotel-023","appId":"hotel","query":"Find Room availability Status in Hotel Management","goldIds":["room_availability.status"]}
+{"id":"generated-hotel-024","appId":"hotel","query":"Find Room availability Date in Hotel Management","goldIds":["room_availability.stay_date"]}
+{"id":"generated-hotel-025","appId":"hotel","query":"Find Bookings in Hotel Management","goldIds":["bookings"]}
+{"id":"generated-hotel-026","appId":"hotel","query":"Find Bookings Booking in Hotel Management","goldIds":["bookings.booking_id"]}
+{"id":"generated-hotel-027","appId":"hotel","query":"Find Bookings Room in Hotel Management","goldIds":["bookings.room"]}
+{"id":"generated-hotel-028","appId":"hotel","query":"Find Bookings Guest in Hotel Management","goldIds":["bookings.guest"]}
+{"id":"generated-hotel-029","appId":"hotel","query":"Find Bookings Check-in in Hotel Management","goldIds":["bookings.check_in"]}
+{"id":"generated-hotel-030","appId":"hotel","query":"Find Bookings Check-out in Hotel Management","goldIds":["bookings.check_out"]}
+{"id":"generated-hotel-031","appId":"hotel","query":"Find Bookings Amount in Hotel Management","goldIds":["bookings.amount"]}
+{"id":"generated-hotel-032","appId":"hotel","query":"Find Bookings Channel in Hotel Management","goldIds":["bookings.channel"]}
+{"id":"generated-hotel-033","appId":"hotel","query":"Find Bookings Status in Hotel Management","goldIds":["bookings.status"]}
+{"id":"generated-hotel-034","appId":"hotel","query":"Find Revenue in Hotel Management","goldIds":["revenue"]}
+{"id":"generated-hotel-035","appId":"hotel","query":"Find Revenue Date in Hotel Management","goldIds":["revenue.revenue_date"]}
+{"id":"generated-hotel-036","appId":"hotel","query":"Find Revenue Category in Hotel Management","goldIds":["revenue.category"]}
+{"id":"generated-hotel-037","appId":"hotel","query":"Find Revenue Revenue in Hotel Management","goldIds":["revenue.amount"]}
+{"id":"generated-hotel-038","appId":"hotel","query":"Find Occupancy history in Hotel Management","goldIds":["occupancy_history"]}
+{"id":"generated-hotel-039","appId":"hotel","query":"Find Occupancy history Date in Hotel Management","goldIds":["occupancy_history.occupancy_date"]}
+{"id":"generated-hotel-040","appId":"hotel","query":"Find Occupancy history Occupied rooms in Hotel Management","goldIds":["occupancy_history.occupied_rooms"]}
+{"id":"generated-hotel-041","appId":"hotel","query":"Find Occupancy history Total rooms in Hotel Management","goldIds":["occupancy_history.total_rooms"]}
+{"id":"generated-hotel-042","appId":"hotel","query":"Find Cancel booking on the Bookings page","goldIds":["cancelBooking"]}
+{"id":"generated-hotel-043","appId":"hotel","query":"Show me Dashboard on the Dashboard page","goldIds":["dashboard"]}
+{"id":"generated-hotel-044","appId":"hotel","query":"Show me Total revenue on the Dashboard page","goldIds":["kpiRevenue"]}
+{"id":"generated-hotel-045","appId":"hotel","query":"Show me Revenue trend on the Dashboard page","goldIds":["revenueTrend"]}
+{"id":"generated-hotel-046","appId":"hotel","query":"Show me Rooms on the Rooms page","goldIds":["rooms"]}
+{"id":"generated-hotel-047","appId":"hotel","query":"Show me Room list on the Rooms page","goldIds":["roomList"]}
+{"id":"generated-hotel-048","appId":"hotel","query":"Show me Room type on the Rooms page","goldIds":["roomType"]}
+{"id":"generated-hotel-049","appId":"hotel","query":"Show me Price on the Rooms page","goldIds":["price"]}
+{"id":"generated-hotel-050","appId":"hotel","query":"Show me Availability on the Rooms page","goldIds":["availability"]}
+{"id":"generated-hotel-051","appId":"hotel","query":"Show me Date on the Rooms page","goldIds":["stayDate"]}
+{"id":"generated-hotel-052","appId":"hotel","query":"Show me Bookings on the Bookings page","goldIds":["bookings"]}
+{"id":"generated-hotel-053","appId":"hotel","query":"Show me Booking list on the Bookings page","goldIds":["bookingList"]}
+{"id":"generated-hotel-054","appId":"hotel","query":"Show me Status on the Bookings page","goldIds":["bookingStatus"]}
+{"id":"generated-hotel-055","appId":"hotel","query":"Show me Channel on the Bookings page","goldIds":["channel"]}
+{"id":"generated-hotel-056","appId":"hotel","query":"Show me Check-in date on the Bookings page","goldIds":["checkIn"]}
+{"id":"generated-hotel-057","appId":"hotel","query":"Show me Revenue on the Revenue page","goldIds":["revenue"]}
+{"id":"generated-hotel-058","appId":"hotel","query":"Show me Revenue by category on the Revenue page","goldIds":["revenueByCategory"]}
+{"id":"generated-hotel-059","appId":"hotel","query":"Show me Period on the Revenue page","goldIds":["revenuePeriod"]}
+{"id":"generated-hotel-060","appId":"hotel","query":"Show me Category on the Revenue page","goldIds":["revenueCategory"]}
+{"id":"generated-hotel-061","appId":"hotel","query":"Show me Room availability in Hotel Management","goldIds":["room_availability"]}
+{"id":"generated-hotel-062","appId":"hotel","query":"Show me Room availability Room in Hotel Management","goldIds":["room_availability.room"]}
+{"id":"generated-hotel-063","appId":"hotel","query":"Show me Room availability Room type in Hotel Management","goldIds":["room_availability.room_type"]}
+{"id":"generated-hotel-064","appId":"hotel","query":"Show me Room availability Price in Hotel Management","goldIds":["room_availability.price"]}
+{"id":"generated-hotel-065","appId":"hotel","query":"Show me Room availability Status in Hotel Management","goldIds":["room_availability.status"]}
+{"id":"generated-hotel-066","appId":"hotel","query":"Show me Room availability Date in Hotel Management","goldIds":["room_availability.stay_date"]}
+{"id":"generated-hotel-067","appId":"hotel","query":"Show me Bookings in Hotel Management","goldIds":["bookings"]}
+{"id":"generated-hotel-068","appId":"hotel","query":"Show me Bookings Booking in Hotel Management","goldIds":["bookings.booking_id"]}
+{"id":"generated-hotel-069","appId":"hotel","query":"Show me Bookings Room in Hotel Management","goldIds":["bookings.room"]}
+{"id":"generated-hotel-070","appId":"hotel","query":"Show me Bookings Guest in Hotel Management","goldIds":["bookings.guest"]}
+{"id":"generated-hotel-071","appId":"hotel","query":"Show me Bookings Check-in in Hotel Management","goldIds":["bookings.check_in"]}
+{"id":"generated-hotel-072","appId":"hotel","query":"Show me Bookings Check-out in Hotel Management","goldIds":["bookings.check_out"]}
+{"id":"generated-hotel-073","appId":"hotel","query":"Show me Bookings Amount in Hotel Management","goldIds":["bookings.amount"]}
+{"id":"generated-hotel-074","appId":"hotel","query":"Show me Bookings Channel in Hotel Management","goldIds":["bookings.channel"]}
+{"id":"generated-hotel-075","appId":"hotel","query":"Show me Bookings Status in Hotel Management","goldIds":["bookings.status"]}
+{"id":"generated-hotel-076","appId":"hotel","query":"Show me Revenue in Hotel Management","goldIds":["revenue"]}
+{"id":"generated-hotel-077","appId":"hotel","query":"Show me Revenue Date in Hotel Management","goldIds":["revenue.revenue_date"]}
+{"id":"generated-hotel-078","appId":"hotel","query":"Show me Revenue Category in Hotel Management","goldIds":["revenue.category"]}
+{"id":"generated-hotel-079","appId":"hotel","query":"Show me Revenue Revenue in Hotel Management","goldIds":["revenue.amount"]}
+{"id":"generated-hotel-080","appId":"hotel","query":"Show me Occupancy history in Hotel Management","goldIds":["occupancy_history"]}
+{"id":"generated-hotel-081","appId":"hotel","query":"Show me Occupancy history Date in Hotel Management","goldIds":["occupancy_history.occupancy_date"]}
+{"id":"generated-hotel-082","appId":"hotel","query":"Show me Occupancy history Occupied rooms in Hotel Management","goldIds":["occupancy_history.occupied_rooms"]}
+{"id":"generated-hotel-083","appId":"hotel","query":"Show me Occupancy history Total rooms in Hotel Management","goldIds":["occupancy_history.total_rooms"]}
+{"id":"generated-hotel-084","appId":"hotel","query":"Show me Cancel booking on the Bookings page","goldIds":["cancelBooking"]}
+{"id":"generated-hotel-085","appId":"hotel","query":"Where can I see Dashboard on the Dashboard page?","goldIds":["dashboard"]}
+{"id":"generated-hotel-086","appId":"hotel","query":"Where can I see Total revenue on the Dashboard page?","goldIds":["kpiRevenue"]}
+{"id":"generated-hotel-087","appId":"hotel","query":"Where can I see Revenue trend on the Dashboard page?","goldIds":["revenueTrend"]}
+{"id":"generated-hotel-088","appId":"hotel","query":"Where can I see Rooms on the Rooms page?","goldIds":["rooms"]}
+{"id":"generated-hotel-089","appId":"hotel","query":"Where can I see Room list on the Rooms page?","goldIds":["roomList"]}
+{"id":"generated-hotel-090","appId":"hotel","query":"Where can I see Room type on the Rooms page?","goldIds":["roomType"]}
+{"id":"generated-hotel-091","appId":"hotel","query":"Where can I see Price on the Rooms page?","goldIds":["price"]}
+{"id":"generated-hotel-092","appId":"hotel","query":"Where can I see Availability on the Rooms page?","goldIds":["availability"]}
+{"id":"generated-hotel-093","appId":"hotel","query":"Where can I see Date on the Rooms page?","goldIds":["stayDate"]}
+{"id":"generated-hotel-094","appId":"hotel","query":"Where can I see Bookings on the Bookings page?","goldIds":["bookings"]}
+{"id":"generated-hotel-095","appId":"hotel","query":"Where can I see Booking list on the Bookings page?","goldIds":["bookingList"]}
+{"id":"generated-hotel-096","appId":"hotel","query":"Where can I see Status on the Bookings page?","goldIds":["bookingStatus"]}
+{"id":"generated-hotel-097","appId":"hotel","query":"Where can I see Channel on the Bookings page?","goldIds":["channel"]}
+{"id":"generated-hotel-098","appId":"hotel","query":"Where can I see Check-in date on the Bookings page?","goldIds":["checkIn"]}
+{"id":"generated-hotel-099","appId":"hotel","query":"Where can I see Revenue on the Revenue page?","goldIds":["revenue"]}
+{"id":"generated-hotel-100","appId":"hotel","query":"Where can I see Revenue by category on the Revenue page?","goldIds":["revenueByCategory"]}
+{"id":"generated-hotel-101","appId":"hotel","query":"Where can I see Period on the Revenue page?","goldIds":["revenuePeriod"]}
+{"id":"generated-hotel-102","appId":"hotel","query":"Where can I see Category on the Revenue page?","goldIds":["revenueCategory"]}
+{"id":"generated-hotel-103","appId":"hotel","query":"Where can I see Room availability in Hotel Management?","goldIds":["room_availability"]}
+{"id":"generated-hotel-104","appId":"hotel","query":"Where can I see Room availability Room in Hotel Management?","goldIds":["room_availability.room"]}
+{"id":"generated-hotel-105","appId":"hotel","query":"Where can I see Room availability Room type in Hotel Management?","goldIds":["room_availability.room_type"]}
+{"id":"generated-hotel-106","appId":"hotel","query":"Where can I see Room availability Price in Hotel Management?","goldIds":["room_availability.price"]}
+{"id":"generated-hotel-107","appId":"hotel","query":"Where can I see Room availability Status in Hotel Management?","goldIds":["room_availability.status"]}
+{"id":"generated-hotel-108","appId":"hotel","query":"Where can I see Room availability Date in Hotel Management?","goldIds":["room_availability.stay_date"]}
+{"id":"generated-hotel-109","appId":"hotel","query":"Where can I see Bookings in Hotel Management?","goldIds":["bookings"]}
+{"id":"generated-hotel-110","appId":"hotel","query":"Where can I see Bookings Booking in Hotel Management?","goldIds":["bookings.booking_id"]}
+{"id":"generated-hotel-111","appId":"hotel","query":"Where can I see Bookings Room in Hotel Management?","goldIds":["bookings.room"]}
+{"id":"generated-hotel-112","appId":"hotel","query":"Where can I see Bookings Guest in Hotel Management?","goldIds":["bookings.guest"]}
+{"id":"generated-hotel-113","appId":"hotel","query":"Where can I see Bookings Check-in in Hotel Management?","goldIds":["bookings.check_in"]}
+{"id":"generated-hotel-114","appId":"hotel","query":"Where can I see Bookings Check-out in Hotel Management?","goldIds":["bookings.check_out"]}
+{"id":"generated-hotel-115","appId":"hotel","query":"Where can I see Bookings Amount in Hotel Management?","goldIds":["bookings.amount"]}
+{"id":"generated-hotel-116","appId":"hotel","query":"Where can I see Bookings Channel in Hotel Management?","goldIds":["bookings.channel"]}
+{"id":"generated-hotel-117","appId":"hotel","query":"Where can I see Bookings Status in Hotel Management?","goldIds":["bookings.status"]}
+{"id":"generated-hotel-118","appId":"hotel","query":"Where can I see Revenue in Hotel Management?","goldIds":["revenue"]}
+{"id":"generated-hotel-119","appId":"hotel","query":"Where can I see Revenue Date in Hotel Management?","goldIds":["revenue.revenue_date"]}
+{"id":"generated-hotel-120","appId":"hotel","query":"Where can I see Revenue Category in Hotel Management?","goldIds":["revenue.category"]}
+{"id":"generated-hotel-121","appId":"hotel","query":"Where can I see Revenue Revenue in Hotel Management?","goldIds":["revenue.amount"]}
+{"id":"generated-hotel-122","appId":"hotel","query":"Where can I see Occupancy history in Hotel Management?","goldIds":["occupancy_history"]}
+{"id":"generated-hotel-123","appId":"hotel","query":"Where can I see Occupancy history Date in Hotel Management?","goldIds":["occupancy_history.occupancy_date"]}
+{"id":"generated-hotel-124","appId":"hotel","query":"Where can I see Occupancy history Occupied rooms in Hotel Management?","goldIds":["occupancy_history.occupied_rooms"]}
+{"id":"generated-hotel-125","appId":"hotel","query":"Where can I see Occupancy history Total rooms in Hotel Management?","goldIds":["occupancy_history.total_rooms"]}
+{"id":"generated-hotel-126","appId":"hotel","query":"Where can I see Cancel booking on the Bookings page?","goldIds":["cancelBooking"]}
+{"id":"generated-hotel-127","appId":"hotel","query":"Open the Dashboard on the Dashboard page","goldIds":["dashboard"]}
+{"id":"generated-hotel-128","appId":"hotel","query":"Open the Total revenue on the Dashboard page","goldIds":["kpiRevenue"]}
+{"id":"generated-hotel-129","appId":"hotel","query":"Open the Revenue trend on the Dashboard page","goldIds":["revenueTrend"]}
+{"id":"generated-hotel-130","appId":"hotel","query":"Open the Rooms on the Rooms page","goldIds":["rooms"]}
+{"id":"generated-hotel-131","appId":"hotel","query":"Open the Room list on the Rooms page","goldIds":["roomList"]}
+{"id":"generated-hotel-132","appId":"hotel","query":"Open the Room type on the Rooms page","goldIds":["roomType"]}
+{"id":"generated-hotel-133","appId":"hotel","query":"Open the Price on the Rooms page","goldIds":["price"]}
+{"id":"generated-hotel-134","appId":"hotel","query":"Open the Availability on the Rooms page","goldIds":["availability"]}
+{"id":"generated-hotel-135","appId":"hotel","query":"Open the Date on the Rooms page","goldIds":["stayDate"]}
+{"id":"generated-hotel-136","appId":"hotel","query":"Open the Bookings on the Bookings page","goldIds":["bookings"]}
+{"id":"generated-hotel-137","appId":"hotel","query":"Open the Booking list on the Bookings page","goldIds":["bookingList"]}
+{"id":"generated-hotel-138","appId":"hotel","query":"Open the Status on the Bookings page","goldIds":["bookingStatus"]}
+{"id":"generated-hotel-139","appId":"hotel","query":"Open the Channel on the Bookings page","goldIds":["channel"]}
+{"id":"generated-hotel-140","appId":"hotel","query":"Open the Check-in date on the Bookings page","goldIds":["checkIn"]}
+{"id":"generated-hotel-141","appId":"hotel","query":"Open the Revenue on the Revenue page","goldIds":["revenue"]}
+{"id":"generated-hotel-142","appId":"hotel","query":"Open the Revenue by category on the Revenue page","goldIds":["revenueByCategory"]}
+{"id":"generated-hotel-143","appId":"hotel","query":"Open the Period on the Revenue page","goldIds":["revenuePeriod"]}
+{"id":"generated-hotel-144","appId":"hotel","query":"Open the Category on the Revenue page","goldIds":["revenueCategory"]}
+{"id":"generated-hotel-145","appId":"hotel","query":"Open the Room availability in Hotel Management","goldIds":["room_availability"]}
+{"id":"generated-hotel-146","appId":"hotel","query":"Open the Room availability Room in Hotel Management","goldIds":["room_availability.room"]}
+{"id":"generated-hotel-147","appId":"hotel","query":"Open the Room availability Room type in Hotel Management","goldIds":["room_availability.room_type"]}
+{"id":"generated-hotel-148","appId":"hotel","query":"Open the Room availability Price in Hotel Management","goldIds":["room_availability.price"]}
+{"id":"generated-hotel-149","appId":"hotel","query":"Open the Room availability Status in Hotel Management","goldIds":["room_availability.status"]}
+{"id":"generated-hotel-150","appId":"hotel","query":"Open the Room availability Date in Hotel Management","goldIds":["room_availability.stay_date"]}
+{"id":"generated-hotel-151","appId":"hotel","query":"Open the Bookings in Hotel Management","goldIds":["bookings"]}
+{"id":"generated-hotel-152","appId":"hotel","query":"Open the Bookings Booking in Hotel Management","goldIds":["bookings.booking_id"]}
+{"id":"generated-hotel-153","appId":"hotel","query":"Open the Bookings Room in Hotel Management","goldIds":["bookings.room"]}
+{"id":"generated-hotel-154","appId":"hotel","query":"Open the Bookings Guest in Hotel Management","goldIds":["bookings.guest"]}
+{"id":"generated-hotel-155","appId":"hotel","query":"Open the Bookings Check-in in Hotel Management","goldIds":["bookings.check_in"]}
+{"id":"generated-hotel-156","appId":"hotel","query":"Open the Bookings Check-out in Hotel Management","goldIds":["bookings.check_out"]}
+{"id":"generated-hotel-157","appId":"hotel","query":"Open the Bookings Amount in Hotel Management","goldIds":["bookings.amount"]}
+{"id":"generated-hotel-158","appId":"hotel","query":"Open the Bookings Channel in Hotel Management","goldIds":["bookings.channel"]}
+{"id":"generated-hotel-159","appId":"hotel","query":"Open the Bookings Status in Hotel Management","goldIds":["bookings.status"]}
+{"id":"generated-hotel-160","appId":"hotel","query":"Open the Revenue in Hotel Management","goldIds":["revenue"]}
+{"id":"generated-hotel-161","appId":"hotel","query":"Open the Revenue Date in Hotel Management","goldIds":["revenue.revenue_date"]}
+{"id":"generated-hotel-162","appId":"hotel","query":"Open the Revenue Category in Hotel Management","goldIds":["revenue.category"]}
+{"id":"generated-hotel-163","appId":"hotel","query":"Open the Revenue Revenue in Hotel Management","goldIds":["revenue.amount"]}
+{"id":"generated-hotel-164","appId":"hotel","query":"Open the Occupancy history in Hotel Management","goldIds":["occupancy_history"]}
+{"id":"generated-hotel-165","appId":"hotel","query":"Open the Occupancy history Date in Hotel Management","goldIds":["occupancy_history.occupancy_date"]}
+{"id":"generated-hotel-166","appId":"hotel","query":"Open the Occupancy history Occupied rooms in Hotel Management","goldIds":["occupancy_history.occupied_rooms"]}
+{"id":"generated-hotel-167","appId":"hotel","query":"Open the Occupancy history Total rooms in Hotel Management","goldIds":["occupancy_history.total_rooms"]}
+{"id":"generated-hotel-168","appId":"hotel","query":"Open the Cancel booking on the Bookings page","goldIds":["cancelBooking"]}
+{"id":"generated-hotel-169","appId":"hotel","query":"Search for Dashboard on the Dashboard page","goldIds":["dashboard"]}
+{"id":"generated-hotel-170","appId":"hotel","query":"Search for Total revenue on the Dashboard page","goldIds":["kpiRevenue"]}
