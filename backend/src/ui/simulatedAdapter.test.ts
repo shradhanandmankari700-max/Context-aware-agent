@@ -432,6 +432,8 @@ describe("SimulatedUiAdapter", () => {
     expect(state?.version).toBe(10);
     expect(state?.filters.reportPeriod).toBeDefined();
 
+
+
     
   });
 });
