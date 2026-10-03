@@ -8,6 +8,9 @@ describe("SimulatedUiAdapter", () => {
   let adapter: SimulatedUiAdapter;
   const sessionId = "test-session-1";
 
+
+
+
   beforeEach(() => {
     metadata = AppMetadata.parse(hospitalJson);
     adapter = new SimulatedUiAdapter({
@@ -428,5 +431,7 @@ describe("SimulatedUiAdapter", () => {
     expect(state?.pageId).toBe("reports");
     expect(state?.version).toBe(10);
     expect(state?.filters.reportPeriod).toBeDefined();
+
+    
   });
 });
