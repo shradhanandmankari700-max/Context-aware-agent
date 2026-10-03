@@ -4,20 +4,11 @@ import express from "express";
 import cors from "cors";
 import type { Request, Response, NextFunction } from "express";
 
-<<<<<<< HEAD
-import { uiRouter } from "./routes/ui";
-
-const app = express();
-app.use(cors({ origin: process.env.FRONTEND_URL ?? "http://localhost:5173" }));
-app.use(express.json({ limit: "5mb" }));
-app.use(uiRouter);
-=======
 import { createServices } from "./container.js";
 import { attachAuth } from "./middleware/auth.js";
 import { createAuthRouter } from "./routes/auth.js";
 import { createTracesRouter } from "./routes/traces.js";
 import { createEvalRouter } from "./routes/eval.js";
->>>>>>> 52d060d255c95766cc0eebfea73991442855500f
 
 async function main() {
   const app = express();
