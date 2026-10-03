@@ -2,7 +2,7 @@
   "name": "@cab/frontend",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "vite", "build": "vite build", "typecheck": "echo 'P5: add tsc once src exists'" },
+  "scripts": { "dev": "vite", "build": "tsc -b && vite build", "typecheck": "tsc --noEmit -p tsconfig.json" },
   "dependencies": {
     "@cab/contracts": "*",
     "react": "^18.3.1", "react-dom": "^18.3.1", "react-router-dom": "^6.26.0", "recharts": "^2.12.7", "zod": "^3.23.8"
