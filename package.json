@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "typecheck": "npm run typecheck -w contracts && npm run typecheck -w backend",
-    "test": "npm run test -w contracts",
+    "test": "npm run test -w contracts && npm run test -w backend",
     "db:up": "docker compose up -d db",
     "dev:backend": "npm run dev -w backend",
     "dev:frontend": "npm run dev -w frontend",
