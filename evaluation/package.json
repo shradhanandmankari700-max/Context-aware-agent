@@ -4,12 +4,17 @@
   "type": "module",
   "scripts": {
     "eval": "tsx src/run.ts",
+    "typecheck": "tsc -p tsconfig.json",
     "gen:corpus": "tsx src/generateCorpus.ts",
+    "gen:retrieval": "tsx src/buildRetrievalCorpus.ts",
+    "eval:retrieval": "tsx src/evaluateRetrieval.ts",
+    "eval:scale": "tsx src/evaluateScaleRetrieval.ts",
     "gen:scale": "tsx src/generateScaleApps.ts",
     "smoke": "tsx src/smoke.ts"
   },
   "dependencies": {
     "@cab/contracts": "*",
+    "pg": "^8.12.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

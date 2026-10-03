@@ -9,15 +9,22 @@
     "evaluation"
   ],
   "scripts": {
-    "typecheck": "npm run typecheck -w contracts && npm run typecheck -w backend",
+    "typecheck": "npm run typecheck -w contracts && npm run typecheck -w backend && npm run typecheck -w evaluation",
     "test": "npm run test -w contracts && npm run test -w backend",
     "db:up": "docker compose up -d db",
     "dev:backend": "npm run dev -w backend",
     "dev:frontend": "npm run dev -w frontend",
     "check:metadata": "npm run check:metadata -w contracts",
     "eval": "npm run eval -w evaluation",
+    "gen:retrieval": "npm run gen:retrieval -w evaluation",
+    "eval:retrieval": "npm run eval:retrieval -w evaluation",
+    "gen:scale": "npm run gen:scale -w evaluation",
+    "import:scale": "npm run gen:scale -w evaluation && npm run import:app -- metadata/scale100.json --tenant tenant-a && npm run import:app -- metadata/scale300.json --tenant tenant-a && npm run import:app -- metadata/scale1000.json --tenant tenant-a",
+    "eval:scale": "npm run eval:scale -w evaluation",
     "smoke": "npm run smoke -w evaluation",
     "seed": "npm run seed -w backend",
-    "import:app": "npm run import:app -w backend --"
+    "import:app": "npm run import:app -w backend --",
+    "import:fixtures": "npm run import:app -- metadata/hospital.json --tenant tenant-a && npm run import:app -- metadata/hotel.json --tenant tenant-b",
+    "import:retail": "npm run import:app -- metadata/retail.json --tenant tenant-a"
   }
 }

@@ -6,6 +6,7 @@ my-ai-notes.md
 .DS_Store
 .vite/
 backend/.llm-cache/
+backend/.model-cache/
 evaluation/results/*.json
 !evaluation/results/.gitkeep
 playwright-report/

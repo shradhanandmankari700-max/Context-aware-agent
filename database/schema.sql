@@ -108,3 +108,21 @@ CREATE INDEX IF NOT EXISTS agent_traces_app ON agent_traces(app_id, created_at D
 CREATE TABLE IF NOT EXISTS eval_runs (
   run_id text PRIMARY KEY, created_at timestamptz DEFAULT now(), report jsonb NOT NULL
 );
+
+-- Dev-only demo tenants and seeded user accounts. These are intentionally safe, local-only defaults for the hackathon demo.
+INSERT INTO tenants (id, name) VALUES
+  ('tenant-a', 'Hospital Demo'),
+  ('tenant-b', 'Hotel Demo')
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+
+INSERT INTO users (tenant_id, email, password_hash, role) VALUES
+  ('tenant-a', 'admin@hospital.demo', '$2a$10$Qfj50DEVqxGEdfpgZXr9MuVeDHS5Kl8Yp8pkcEDjoJTybOBHhQU1W', 'admin'),
+  ('tenant-a', 'staff@hospital.demo', '$2a$10$y.i4SWH6ExibMt4hfgUh/ugzyJmXJl8t5XvnXHJYG1QfVvB0KUQQ.', 'staff'),
+  ('tenant-a', 'viewer@hospital.demo', '$2a$10$OGN7NXRxjBI2Wq2ZuAnqjOqC3k3.IPSLcNPT/qsfEYuSl2RgxYqUa', 'viewer'),
+  ('tenant-b', 'admin@hotel.demo', '$2a$10$LUOtDg0hQOJjofxGrICBSu.ddicoL7sz6glN/LsRXeVL1Y3z.fiaO', 'admin'),
+  ('tenant-b', 'staff@hotel.demo', '$2a$10$nh7NIv0Z9nR/oRqj/k9wOeF8NXYJwZlHArebeSFB70Nk.ta8fHFVG', 'staff'),
+  ('tenant-b', 'viewer@hotel.demo', '$2a$10$/uDMYLrL945yhb66Tli9Ku5ZB56kQEiU3uNlpZKzYsYCmdA8ipP3K', 'viewer')
+ON CONFLICT (email) DO UPDATE SET
+  tenant_id = EXCLUDED.tenant_id,
+  password_hash = EXCLUDED.password_hash,
+  role = EXCLUDED.role;

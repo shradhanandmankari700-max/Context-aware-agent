@@ -13,9 +13,8 @@ Hackathon demo: **Wed 7 Oct 2026**. Build window: **Wed 30 Sep → Tue 6 Oct** (
 3. You only edit **your own folders** (section 9). The `contracts/` folder is shared law — never edit it alone.
 4. Ship a `fake.ts` for your module by **end of Day 2**, so nobody is blocked waiting for you.
 
-**What is verified in this kit (I ran these):** `npm install` from a clean checkout, `tsc` typecheck, 9 contract tests (metadata fixtures, deep-link round-trip, date tokens, UI-state diff, tool-call validation), the metadata CLI on both fixtures, and the backend booting and importing `@cab/contracts`.
-**Scripts that exist as wiring but whose target file is yours to create:** `npm run seed` (P1 → `data/seed/index.ts`), `npm run import:app` (P2 → `backend/src/metadata/cli.ts`), `npm run eval` / `npm run smoke` (P6 → `evaluation/src/run.ts`, `smoke.ts`).
-**What is NOT verified:** `database/schema.sql` and `docker-compose.yml` have not been executed (no Docker/Postgres in my sandbox). The first person to run `npm run db:up` should fix any typo and push. Everything else (agent, UI, retrieval, queries) is yours to build — this kit gives you the skeleton and the rules that stop it breaking.
+**What is verified locally:** `npm run typecheck`, all contract/backend tests, `docker compose up -d db` with `database/schema.sql`, seeded tenants/users, and metadata CLI imports for both hospital and hotel. The database reported healthy and both app schemas, normalized metadata, graph edges, routes, and embeddings were verified.
+**Scripts that still need their target implementation:** `npm run seed` (P1 → `data/seed/index.ts`), `npm run eval` / `npm run smoke` (P6 → `evaluation/src/run.ts`, `smoke.ts`). The P2 metadata CLI is implemented as `npm run import:app`; use `npm run import:fixtures` to import both demo apps with one command.
 
 ---
 
@@ -245,7 +244,7 @@ Each owner exports **one factory** from their folder's `index.ts`; **P6** calls 
 
 | File | Export | Returns |
 |---|---|---|
-| `backend/src/metadata/index.ts` | `createMetadataStore({ pool, llm })` | `MetadataStore` |
+| `backend/src/metadata/index.ts` | `createMetadataStore({ pool, llm })`, `createMetadataRouter(...)` | `MetadataStore` and `/api/apps` router |
 | `backend/src/data/index.ts` | `createDataService({ pool, metadata })` | `DataService` |
 | `backend/src/analytics/index.ts` | `createAnalyticsService({ data, metadata })` | `AnalyticsService` |
 | `backend/src/ui/index.ts` | `createUiAdapter(kind: "api"\|"simulated"\|"playwright")` + `ui/routes.ts` router | `UiAdapter` |
@@ -254,6 +253,24 @@ Each owner exports **one factory** from their folder's `index.ts`; **P6** calls 
 | `backend/src/agent/index.ts` | `createAgent({ metadata, tools, llm, ui, traces })` + router | `AgentService` |
 
 Each module also ships `fake.ts` exporting `createFake…()` with the same interface (in-memory, hard-coded tiny hospital data is fine **inside a fake only**). `USE_FAKE_<MODULE>=1` in `.env` swaps a real module for its fake — so P3 can develop with fake P2/P4/P1 on Day 2, and integration is flipping flags to 0 one by one.
+
+P2 CLI imports accept either an `AppMetadata` JSON file or an `ImportBundle`. The target tenant is explicit and is never inferred from an app ID:
+
+```sh
+npm run import:app -- metadata/hospital.json --tenant tenant-a
+npm run import:app -- metadata/hotel.json --tenant tenant-b
+npm run import:fixtures
+npm run import:retail
+```
+
+The root and backend `import:app` scripts are already wired to `backend/src/metadata/cli.ts`. P6 mounts the router with `app.use("/api/apps", createMetadataRouter(...))` and supplies tenant/context resolvers backed by the authenticated request; imports are admin-only.
+`metadata/retail.json` is the third-app, unseen-app demo bundle: it contains both Retail Operations metadata and sample products/orders. Import it with `npm run import:retail` (tenant-a); the importer creates its schema, loads the rows, and embeds its metadata without app-specific code. The fixture includes 10 products and 12 sales orders, including stock below reorder level and varied fulfillment statuses.
+
+Retrieval uses `Xenova/all-MiniLM-L6-v2` through Transformers.js. Its model files are downloaded lazily on the first import or search and cached under `backend/.model-cache/`; the cache is intentionally ignored by Git. Searches fuse vector similarity with token-wise Postgres full-text matches using RRF, then expand related graph nodes and boost matching pages/date/numeric filters. Re-import after changing metadata document vocabulary so the stored vectors stay in sync.
+
+P2 retrieval evaluation corpus is in `evaluation/corpus/retrieval.jsonl`: it contains 200 cases per demo app, including 30 manually reviewed cases per app plus metadata-derived query variants. Rebuild with `npm run gen:retrieval`; run the live PostgreSQL/vector evaluation with `npm run eval:retrieval` after importing both fixtures. The report includes P@1, R@5, MRR overall, per app, and separately for the manually reviewed subset at `evaluation/results/retrieval-latest.json`. The deterministic corpus generator uses no external LLM; query generation is metadata-template-based.
+
+Scale retrieval apps are generated deterministically by `npm run gen:scale` as `metadata/scale100.json`, `metadata/scale300.json`, and `metadata/scale1000.json`, with a 600-case page-destination corpus at `evaluation/corpus/scale-retrieval.jsonl`. `npm run import:scale` regenerates and imports all three into `tenant-a`; `npm run eval:scale` measures MRR/R@5 by page count and writes `evaluation/results/scale-retrieval-latest.json`. Gold labels measure retrieving the intended page; the report records that scope explicitly.
 
 ---
 
