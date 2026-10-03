@@ -1,0 +1,6996 @@
+{
+  "schemaVersion": 1,
+  "appId": "scale100",
+  "name": "Synthetic Scale 100",
+  "description": "Synthetic multi-domain operations app containing 100 nested pages for retrieval evaluation.",
+  "referenceDate": "2026-10-07",
+  "roles": [
+    "admin",
+    "staff",
+    "viewer"
+  ],
+  "datasets": [
+    {
+      "name": "records",
+      "label": "Operations records",
+      "description": "Shared records across varied business domains and operational workflows.",
+      "table": "records",
+      "timeField": "updated_on",
+      "fields": [
+        {
+          "name": "record_id",
+          "label": "Record ID",
+          "type": "string",
+          "description": "",
+          "synonyms": [
+            "record number",
+            "reference"
+          ],
+          "roles": [
+            "key",
+            "label"
+          ]
+        },
+        {
+          "name": "service",
+          "label": "Service",
+          "type": "string",
+          "description": "",
+          "synonyms": [
+            "domain",
+            "department"
+          ],
+          "roles": [
+            "dimension"
+          ]
+        },
+        {
+          "name": "status",
+          "label": "Status",
+          "type": "string",
+          "description": "",
+          "synonyms": [],
+          "enumValues": [
+            "Open",
+            "Closed",
+            "Pending"
+          ],
+          "roles": [
+            "dimension"
+          ]
+        },
+        {
+          "name": "amount",
+          "label": "Amount",
+          "type": "number",
+          "description": "",
+          "synonyms": [
+            "value",
+            "cost",
+            "total"
+          ],
+          "roles": [
+            "metric"
+          ]
+        },
+        {
+          "name": "updated_on",
+          "label": "Updated on",
+          "type": "date",
+          "description": "",
+          "synonyms": [
+            "date",
+            "last updated"
+          ],
+          "roles": [
+            "time"
+          ]
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_0001",
+      "name": "Healthcare Patient Care 0001",
+      "route": "/operations/page_0001",
+      "parent": null,
+      "description": "Healthcare patient care records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0001",
+          "name": "Healthcare Patient Care 0001 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Patient Care 0001.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0001",
+          "label": "Healthcare Patient Care 0001 status",
+          "description": "Filter Healthcare Patient Care 0001 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0002",
+      "name": "Retail Patient Care 0002",
+      "route": "/operations/page_0002",
+      "parent": "page_0001",
+      "description": "Retail patient care records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0002",
+          "name": "Retail Patient Care 0002 records",
+          "type": "table",
+          "description": "Records and status for Retail Patient Care 0002.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0002",
+          "label": "Retail Patient Care 0002 status",
+          "description": "Filter Retail Patient Care 0002 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0003",
+      "name": "Hospitality Patient Care 0003",
+      "route": "/operations/page_0003",
+      "parent": "page_0001",
+      "description": "Hospitality patient care records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0003",
+          "name": "Hospitality Patient Care 0003 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Patient Care 0003.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0003",
+          "label": "Hospitality Patient Care 0003 status",
+          "description": "Filter Hospitality Patient Care 0003 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0004",
+      "name": "Education Patient Care 0004",
+      "route": "/operations/page_0004",
+      "parent": "page_0001",
+      "description": "Education patient care records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0004",
+          "name": "Education Patient Care 0004 records",
+          "type": "table",
+          "description": "Records and status for Education Patient Care 0004.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0004",
+          "label": "Education Patient Care 0004 status",
+          "description": "Filter Education Patient Care 0004 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0005",
+      "name": "Finance Patient Care 0005",
+      "route": "/operations/page_0005",
+      "parent": "page_0001",
+      "description": "Finance patient care records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0005",
+          "name": "Finance Patient Care 0005 records",
+          "type": "table",
+          "description": "Records and status for Finance Patient Care 0005.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0005",
+          "label": "Finance Patient Care 0005 status",
+          "description": "Filter Finance Patient Care 0005 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0006",
+      "name": "Logistics Patient Care 0006",
+      "route": "/operations/page_0006",
+      "parent": "page_0001",
+      "description": "Logistics patient care records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0006",
+          "name": "Logistics Patient Care 0006 records",
+          "type": "table",
+          "description": "Records and status for Logistics Patient Care 0006.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0006",
+          "label": "Logistics Patient Care 0006 status",
+          "description": "Filter Logistics Patient Care 0006 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0007",
+      "name": "Energy Patient Care 0007",
+      "route": "/operations/page_0007",
+      "parent": "page_0001",
+      "description": "Energy patient care records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0007",
+          "name": "Energy Patient Care 0007 records",
+          "type": "table",
+          "description": "Records and status for Energy Patient Care 0007.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0007",
+          "label": "Energy Patient Care 0007 status",
+          "description": "Filter Energy Patient Care 0007 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0008",
+      "name": "Agriculture Patient Care 0008",
+      "route": "/operations/page_0008",
+      "parent": "page_0001",
+      "description": "Agriculture patient care records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0008",
+          "name": "Agriculture Patient Care 0008 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Patient Care 0008.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0008",
+          "label": "Agriculture Patient Care 0008 status",
+          "description": "Filter Agriculture Patient Care 0008 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0009",
+      "name": "Manufacturing Patient Care 0009",
+      "route": "/operations/page_0009",
+      "parent": "page_0001",
+      "description": "Manufacturing patient care records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0009",
+          "name": "Manufacturing Patient Care 0009 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Patient Care 0009.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0009",
+          "label": "Manufacturing Patient Care 0009 status",
+          "description": "Filter Manufacturing Patient Care 0009 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0010",
+      "name": "Insurance Patient Care 0010",
+      "route": "/operations/page_0010",
+      "parent": "page_0001",
+      "description": "Insurance patient care records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0010",
+          "name": "Insurance Patient Care 0010 records",
+          "type": "table",
+          "description": "Records and status for Insurance Patient Care 0010.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0010",
+          "label": "Insurance Patient Care 0010 status",
+          "description": "Filter Insurance Patient Care 0010 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0011",
+      "name": "Healthcare Stock Control 0011",
+      "route": "/operations/page_0011",
+      "parent": null,
+      "description": "Healthcare stock control records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0011",
+          "name": "Healthcare Stock Control 0011 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Stock Control 0011.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0011",
+          "label": "Healthcare Stock Control 0011 status",
+          "description": "Filter Healthcare Stock Control 0011 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0012",
+      "name": "Retail Stock Control 0012",
+      "route": "/operations/page_0012",
+      "parent": "page_0011",
+      "description": "Retail stock control records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0012",
+          "name": "Retail Stock Control 0012 records",
+          "type": "table",
+          "description": "Records and status for Retail Stock Control 0012.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0012",
+          "label": "Retail Stock Control 0012 status",
+          "description": "Filter Retail Stock Control 0012 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0013",
+      "name": "Hospitality Stock Control 0013",
+      "route": "/operations/page_0013",
+      "parent": "page_0011",
+      "description": "Hospitality stock control records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0013",
+          "name": "Hospitality Stock Control 0013 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Stock Control 0013.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0013",
+          "label": "Hospitality Stock Control 0013 status",
+          "description": "Filter Hospitality Stock Control 0013 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0014",
+      "name": "Education Stock Control 0014",
+      "route": "/operations/page_0014",
+      "parent": "page_0011",
+      "description": "Education stock control records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0014",
+          "name": "Education Stock Control 0014 records",
+          "type": "table",
+          "description": "Records and status for Education Stock Control 0014.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0014",
+          "label": "Education Stock Control 0014 status",
+          "description": "Filter Education Stock Control 0014 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0015",
+      "name": "Finance Stock Control 0015",
+      "route": "/operations/page_0015",
+      "parent": "page_0011",
+      "description": "Finance stock control records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0015",
+          "name": "Finance Stock Control 0015 records",
+          "type": "table",
+          "description": "Records and status for Finance Stock Control 0015.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0015",
+          "label": "Finance Stock Control 0015 status",
+          "description": "Filter Finance Stock Control 0015 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0016",
+      "name": "Logistics Stock Control 0016",
+      "route": "/operations/page_0016",
+      "parent": "page_0011",
+      "description": "Logistics stock control records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0016",
+          "name": "Logistics Stock Control 0016 records",
+          "type": "table",
+          "description": "Records and status for Logistics Stock Control 0016.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0016",
+          "label": "Logistics Stock Control 0016 status",
+          "description": "Filter Logistics Stock Control 0016 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0017",
+      "name": "Energy Stock Control 0017",
+      "route": "/operations/page_0017",
+      "parent": "page_0011",
+      "description": "Energy stock control records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0017",
+          "name": "Energy Stock Control 0017 records",
+          "type": "table",
+          "description": "Records and status for Energy Stock Control 0017.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0017",
+          "label": "Energy Stock Control 0017 status",
+          "description": "Filter Energy Stock Control 0017 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0018",
+      "name": "Agriculture Stock Control 0018",
+      "route": "/operations/page_0018",
+      "parent": "page_0011",
+      "description": "Agriculture stock control records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0018",
+          "name": "Agriculture Stock Control 0018 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Stock Control 0018.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0018",
+          "label": "Agriculture Stock Control 0018 status",
+          "description": "Filter Agriculture Stock Control 0018 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0019",
+      "name": "Manufacturing Stock Control 0019",
+      "route": "/operations/page_0019",
+      "parent": "page_0011",
+      "description": "Manufacturing stock control records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0019",
+          "name": "Manufacturing Stock Control 0019 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Stock Control 0019.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0019",
+          "label": "Manufacturing Stock Control 0019 status",
+          "description": "Filter Manufacturing Stock Control 0019 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0020",
+      "name": "Insurance Stock Control 0020",
+      "route": "/operations/page_0020",
+      "parent": "page_0011",
+      "description": "Insurance stock control records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0020",
+          "name": "Insurance Stock Control 0020 records",
+          "type": "table",
+          "description": "Records and status for Insurance Stock Control 0020.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0020",
+          "label": "Insurance Stock Control 0020 status",
+          "description": "Filter Insurance Stock Control 0020 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0021",
+      "name": "Healthcare Order Tracking 0021",
+      "route": "/operations/page_0021",
+      "parent": null,
+      "description": "Healthcare order tracking records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0021",
+          "name": "Healthcare Order Tracking 0021 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Order Tracking 0021.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0021",
+          "label": "Healthcare Order Tracking 0021 status",
+          "description": "Filter Healthcare Order Tracking 0021 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0022",
+      "name": "Retail Order Tracking 0022",
+      "route": "/operations/page_0022",
+      "parent": "page_0021",
+      "description": "Retail order tracking records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0022",
+          "name": "Retail Order Tracking 0022 records",
+          "type": "table",
+          "description": "Records and status for Retail Order Tracking 0022.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0022",
+          "label": "Retail Order Tracking 0022 status",
+          "description": "Filter Retail Order Tracking 0022 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0023",
+      "name": "Hospitality Order Tracking 0023",
+      "route": "/operations/page_0023",
+      "parent": "page_0021",
+      "description": "Hospitality order tracking records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0023",
+          "name": "Hospitality Order Tracking 0023 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Order Tracking 0023.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0023",
+          "label": "Hospitality Order Tracking 0023 status",
+          "description": "Filter Hospitality Order Tracking 0023 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0024",
+      "name": "Education Order Tracking 0024",
+      "route": "/operations/page_0024",
+      "parent": "page_0021",
+      "description": "Education order tracking records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0024",
+          "name": "Education Order Tracking 0024 records",
+          "type": "table",
+          "description": "Records and status for Education Order Tracking 0024.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0024",
+          "label": "Education Order Tracking 0024 status",
+          "description": "Filter Education Order Tracking 0024 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0025",
+      "name": "Finance Order Tracking 0025",
+      "route": "/operations/page_0025",
+      "parent": "page_0021",
+      "description": "Finance order tracking records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0025",
+          "name": "Finance Order Tracking 0025 records",
+          "type": "table",
+          "description": "Records and status for Finance Order Tracking 0025.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0025",
+          "label": "Finance Order Tracking 0025 status",
+          "description": "Filter Finance Order Tracking 0025 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0026",
+      "name": "Logistics Order Tracking 0026",
+      "route": "/operations/page_0026",
+      "parent": "page_0021",
+      "description": "Logistics order tracking records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0026",
+          "name": "Logistics Order Tracking 0026 records",
+          "type": "table",
+          "description": "Records and status for Logistics Order Tracking 0026.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0026",
+          "label": "Logistics Order Tracking 0026 status",
+          "description": "Filter Logistics Order Tracking 0026 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0027",
+      "name": "Energy Order Tracking 0027",
+      "route": "/operations/page_0027",
+      "parent": "page_0021",
+      "description": "Energy order tracking records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0027",
+          "name": "Energy Order Tracking 0027 records",
+          "type": "table",
+          "description": "Records and status for Energy Order Tracking 0027.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0027",
+          "label": "Energy Order Tracking 0027 status",
+          "description": "Filter Energy Order Tracking 0027 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0028",
+      "name": "Agriculture Order Tracking 0028",
+      "route": "/operations/page_0028",
+      "parent": "page_0021",
+      "description": "Agriculture order tracking records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0028",
+          "name": "Agriculture Order Tracking 0028 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Order Tracking 0028.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0028",
+          "label": "Agriculture Order Tracking 0028 status",
+          "description": "Filter Agriculture Order Tracking 0028 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0029",
+      "name": "Manufacturing Order Tracking 0029",
+      "route": "/operations/page_0029",
+      "parent": "page_0021",
+      "description": "Manufacturing order tracking records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0029",
+          "name": "Manufacturing Order Tracking 0029 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Order Tracking 0029.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0029",
+          "label": "Manufacturing Order Tracking 0029 status",
+          "description": "Filter Manufacturing Order Tracking 0029 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0030",
+      "name": "Insurance Order Tracking 0030",
+      "route": "/operations/page_0030",
+      "parent": "page_0021",
+      "description": "Insurance order tracking records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0030",
+          "name": "Insurance Order Tracking 0030 records",
+          "type": "table",
+          "description": "Records and status for Insurance Order Tracking 0030.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0030",
+          "label": "Insurance Order Tracking 0030 status",
+          "description": "Filter Insurance Order Tracking 0030 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0031",
+      "name": "Healthcare Revenue Analysis 0031",
+      "route": "/operations/page_0031",
+      "parent": null,
+      "description": "Healthcare revenue analysis records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0031",
+          "name": "Healthcare Revenue Analysis 0031 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Revenue Analysis 0031.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0031",
+          "label": "Healthcare Revenue Analysis 0031 status",
+          "description": "Filter Healthcare Revenue Analysis 0031 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0032",
+      "name": "Retail Revenue Analysis 0032",
+      "route": "/operations/page_0032",
+      "parent": "page_0031",
+      "description": "Retail revenue analysis records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0032",
+          "name": "Retail Revenue Analysis 0032 records",
+          "type": "table",
+          "description": "Records and status for Retail Revenue Analysis 0032.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0032",
+          "label": "Retail Revenue Analysis 0032 status",
+          "description": "Filter Retail Revenue Analysis 0032 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0033",
+      "name": "Hospitality Revenue Analysis 0033",
+      "route": "/operations/page_0033",
+      "parent": "page_0031",
+      "description": "Hospitality revenue analysis records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0033",
+          "name": "Hospitality Revenue Analysis 0033 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Revenue Analysis 0033.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0033",
+          "label": "Hospitality Revenue Analysis 0033 status",
+          "description": "Filter Hospitality Revenue Analysis 0033 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0034",
+      "name": "Education Revenue Analysis 0034",
+      "route": "/operations/page_0034",
+      "parent": "page_0031",
+      "description": "Education revenue analysis records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0034",
+          "name": "Education Revenue Analysis 0034 records",
+          "type": "table",
+          "description": "Records and status for Education Revenue Analysis 0034.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0034",
+          "label": "Education Revenue Analysis 0034 status",
+          "description": "Filter Education Revenue Analysis 0034 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0035",
+      "name": "Finance Revenue Analysis 0035",
+      "route": "/operations/page_0035",
+      "parent": "page_0031",
+      "description": "Finance revenue analysis records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0035",
+          "name": "Finance Revenue Analysis 0035 records",
+          "type": "table",
+          "description": "Records and status for Finance Revenue Analysis 0035.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0035",
+          "label": "Finance Revenue Analysis 0035 status",
+          "description": "Filter Finance Revenue Analysis 0035 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0036",
+      "name": "Logistics Revenue Analysis 0036",
+      "route": "/operations/page_0036",
+      "parent": "page_0031",
+      "description": "Logistics revenue analysis records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0036",
+          "name": "Logistics Revenue Analysis 0036 records",
+          "type": "table",
+          "description": "Records and status for Logistics Revenue Analysis 0036.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0036",
+          "label": "Logistics Revenue Analysis 0036 status",
+          "description": "Filter Logistics Revenue Analysis 0036 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0037",
+      "name": "Energy Revenue Analysis 0037",
+      "route": "/operations/page_0037",
+      "parent": "page_0031",
+      "description": "Energy revenue analysis records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0037",
+          "name": "Energy Revenue Analysis 0037 records",
+          "type": "table",
+          "description": "Records and status for Energy Revenue Analysis 0037.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0037",
+          "label": "Energy Revenue Analysis 0037 status",
+          "description": "Filter Energy Revenue Analysis 0037 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0038",
+      "name": "Agriculture Revenue Analysis 0038",
+      "route": "/operations/page_0038",
+      "parent": "page_0031",
+      "description": "Agriculture revenue analysis records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0038",
+          "name": "Agriculture Revenue Analysis 0038 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Revenue Analysis 0038.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0038",
+          "label": "Agriculture Revenue Analysis 0038 status",
+          "description": "Filter Agriculture Revenue Analysis 0038 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0039",
+      "name": "Manufacturing Revenue Analysis 0039",
+      "route": "/operations/page_0039",
+      "parent": "page_0031",
+      "description": "Manufacturing revenue analysis records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0039",
+          "name": "Manufacturing Revenue Analysis 0039 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Revenue Analysis 0039.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0039",
+          "label": "Manufacturing Revenue Analysis 0039 status",
+          "description": "Filter Manufacturing Revenue Analysis 0039 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0040",
+      "name": "Insurance Revenue Analysis 0040",
+      "route": "/operations/page_0040",
+      "parent": "page_0031",
+      "description": "Insurance revenue analysis records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0040",
+          "name": "Insurance Revenue Analysis 0040 records",
+          "type": "table",
+          "description": "Records and status for Insurance Revenue Analysis 0040.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0040",
+          "label": "Insurance Revenue Analysis 0040 status",
+          "description": "Filter Insurance Revenue Analysis 0040 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0041",
+      "name": "Healthcare Service Quality 0041",
+      "route": "/operations/page_0041",
+      "parent": null,
+      "description": "Healthcare service quality records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0041",
+          "name": "Healthcare Service Quality 0041 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Service Quality 0041.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0041",
+          "label": "Healthcare Service Quality 0041 status",
+          "description": "Filter Healthcare Service Quality 0041 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0042",
+      "name": "Retail Service Quality 0042",
+      "route": "/operations/page_0042",
+      "parent": "page_0041",
+      "description": "Retail service quality records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0042",
+          "name": "Retail Service Quality 0042 records",
+          "type": "table",
+          "description": "Records and status for Retail Service Quality 0042.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0042",
+          "label": "Retail Service Quality 0042 status",
+          "description": "Filter Retail Service Quality 0042 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0043",
+      "name": "Hospitality Service Quality 0043",
+      "route": "/operations/page_0043",
+      "parent": "page_0041",
+      "description": "Hospitality service quality records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0043",
+          "name": "Hospitality Service Quality 0043 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Service Quality 0043.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0043",
+          "label": "Hospitality Service Quality 0043 status",
+          "description": "Filter Hospitality Service Quality 0043 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0044",
+      "name": "Education Service Quality 0044",
+      "route": "/operations/page_0044",
+      "parent": "page_0041",
+      "description": "Education service quality records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0044",
+          "name": "Education Service Quality 0044 records",
+          "type": "table",
+          "description": "Records and status for Education Service Quality 0044.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0044",
+          "label": "Education Service Quality 0044 status",
+          "description": "Filter Education Service Quality 0044 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0045",
+      "name": "Finance Service Quality 0045",
+      "route": "/operations/page_0045",
+      "parent": "page_0041",
+      "description": "Finance service quality records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0045",
+          "name": "Finance Service Quality 0045 records",
+          "type": "table",
+          "description": "Records and status for Finance Service Quality 0045.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0045",
+          "label": "Finance Service Quality 0045 status",
+          "description": "Filter Finance Service Quality 0045 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0046",
+      "name": "Logistics Service Quality 0046",
+      "route": "/operations/page_0046",
+      "parent": "page_0041",
+      "description": "Logistics service quality records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0046",
+          "name": "Logistics Service Quality 0046 records",
+          "type": "table",
+          "description": "Records and status for Logistics Service Quality 0046.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0046",
+          "label": "Logistics Service Quality 0046 status",
+          "description": "Filter Logistics Service Quality 0046 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0047",
+      "name": "Energy Service Quality 0047",
+      "route": "/operations/page_0047",
+      "parent": "page_0041",
+      "description": "Energy service quality records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0047",
+          "name": "Energy Service Quality 0047 records",
+          "type": "table",
+          "description": "Records and status for Energy Service Quality 0047.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0047",
+          "label": "Energy Service Quality 0047 status",
+          "description": "Filter Energy Service Quality 0047 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0048",
+      "name": "Agriculture Service Quality 0048",
+      "route": "/operations/page_0048",
+      "parent": "page_0041",
+      "description": "Agriculture service quality records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0048",
+          "name": "Agriculture Service Quality 0048 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Service Quality 0048.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0048",
+          "label": "Agriculture Service Quality 0048 status",
+          "description": "Filter Agriculture Service Quality 0048 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0049",
+      "name": "Manufacturing Service Quality 0049",
+      "route": "/operations/page_0049",
+      "parent": "page_0041",
+      "description": "Manufacturing service quality records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0049",
+          "name": "Manufacturing Service Quality 0049 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Service Quality 0049.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0049",
+          "label": "Manufacturing Service Quality 0049 status",
+          "description": "Filter Manufacturing Service Quality 0049 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0050",
+      "name": "Insurance Service Quality 0050",
+      "route": "/operations/page_0050",
+      "parent": "page_0041",
+      "description": "Insurance service quality records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0050",
+          "name": "Insurance Service Quality 0050 records",
+          "type": "table",
+          "description": "Records and status for Insurance Service Quality 0050.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0050",
+          "label": "Insurance Service Quality 0050 status",
+          "description": "Filter Insurance Service Quality 0050 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0051",
+      "name": "Healthcare Supply Planning 0051",
+      "route": "/operations/page_0051",
+      "parent": null,
+      "description": "Healthcare supply planning records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0051",
+          "name": "Healthcare Supply Planning 0051 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Supply Planning 0051.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0051",
+          "label": "Healthcare Supply Planning 0051 status",
+          "description": "Filter Healthcare Supply Planning 0051 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0052",
+      "name": "Retail Supply Planning 0052",
+      "route": "/operations/page_0052",
+      "parent": "page_0051",
+      "description": "Retail supply planning records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0052",
+          "name": "Retail Supply Planning 0052 records",
+          "type": "table",
+          "description": "Records and status for Retail Supply Planning 0052.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0052",
+          "label": "Retail Supply Planning 0052 status",
+          "description": "Filter Retail Supply Planning 0052 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0053",
+      "name": "Hospitality Supply Planning 0053",
+      "route": "/operations/page_0053",
+      "parent": "page_0051",
+      "description": "Hospitality supply planning records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0053",
+          "name": "Hospitality Supply Planning 0053 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Supply Planning 0053.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0053",
+          "label": "Hospitality Supply Planning 0053 status",
+          "description": "Filter Hospitality Supply Planning 0053 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0054",
+      "name": "Education Supply Planning 0054",
+      "route": "/operations/page_0054",
+      "parent": "page_0051",
+      "description": "Education supply planning records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0054",
+          "name": "Education Supply Planning 0054 records",
+          "type": "table",
+          "description": "Records and status for Education Supply Planning 0054.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0054",
+          "label": "Education Supply Planning 0054 status",
+          "description": "Filter Education Supply Planning 0054 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0055",
+      "name": "Finance Supply Planning 0055",
+      "route": "/operations/page_0055",
+      "parent": "page_0051",
+      "description": "Finance supply planning records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0055",
+          "name": "Finance Supply Planning 0055 records",
+          "type": "table",
+          "description": "Records and status for Finance Supply Planning 0055.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0055",
+          "label": "Finance Supply Planning 0055 status",
+          "description": "Filter Finance Supply Planning 0055 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0056",
+      "name": "Logistics Supply Planning 0056",
+      "route": "/operations/page_0056",
+      "parent": "page_0051",
+      "description": "Logistics supply planning records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0056",
+          "name": "Logistics Supply Planning 0056 records",
+          "type": "table",
+          "description": "Records and status for Logistics Supply Planning 0056.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0056",
+          "label": "Logistics Supply Planning 0056 status",
+          "description": "Filter Logistics Supply Planning 0056 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0057",
+      "name": "Energy Supply Planning 0057",
+      "route": "/operations/page_0057",
+      "parent": "page_0051",
+      "description": "Energy supply planning records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0057",
+          "name": "Energy Supply Planning 0057 records",
+          "type": "table",
+          "description": "Records and status for Energy Supply Planning 0057.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0057",
+          "label": "Energy Supply Planning 0057 status",
+          "description": "Filter Energy Supply Planning 0057 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0058",
+      "name": "Agriculture Supply Planning 0058",
+      "route": "/operations/page_0058",
+      "parent": "page_0051",
+      "description": "Agriculture supply planning records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0058",
+          "name": "Agriculture Supply Planning 0058 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Supply Planning 0058.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0058",
+          "label": "Agriculture Supply Planning 0058 status",
+          "description": "Filter Agriculture Supply Planning 0058 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0059",
+      "name": "Manufacturing Supply Planning 0059",
+      "route": "/operations/page_0059",
+      "parent": "page_0051",
+      "description": "Manufacturing supply planning records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0059",
+          "name": "Manufacturing Supply Planning 0059 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Supply Planning 0059.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0059",
+          "label": "Manufacturing Supply Planning 0059 status",
+          "description": "Filter Manufacturing Supply Planning 0059 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0060",
+      "name": "Insurance Supply Planning 0060",
+      "route": "/operations/page_0060",
+      "parent": "page_0051",
+      "description": "Insurance supply planning records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0060",
+          "name": "Insurance Supply Planning 0060 records",
+          "type": "table",
+          "description": "Records and status for Insurance Supply Planning 0060.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0060",
+          "label": "Insurance Supply Planning 0060 status",
+          "description": "Filter Insurance Supply Planning 0060 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0061",
+      "name": "Healthcare Usage Reporting 0061",
+      "route": "/operations/page_0061",
+      "parent": null,
+      "description": "Healthcare usage reporting records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0061",
+          "name": "Healthcare Usage Reporting 0061 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Usage Reporting 0061.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0061",
+          "label": "Healthcare Usage Reporting 0061 status",
+          "description": "Filter Healthcare Usage Reporting 0061 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0062",
+      "name": "Retail Usage Reporting 0062",
+      "route": "/operations/page_0062",
+      "parent": "page_0061",
+      "description": "Retail usage reporting records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0062",
+          "name": "Retail Usage Reporting 0062 records",
+          "type": "table",
+          "description": "Records and status for Retail Usage Reporting 0062.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0062",
+          "label": "Retail Usage Reporting 0062 status",
+          "description": "Filter Retail Usage Reporting 0062 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0063",
+      "name": "Hospitality Usage Reporting 0063",
+      "route": "/operations/page_0063",
+      "parent": "page_0061",
+      "description": "Hospitality usage reporting records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0063",
+          "name": "Hospitality Usage Reporting 0063 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Usage Reporting 0063.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0063",
+          "label": "Hospitality Usage Reporting 0063 status",
+          "description": "Filter Hospitality Usage Reporting 0063 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0064",
+      "name": "Education Usage Reporting 0064",
+      "route": "/operations/page_0064",
+      "parent": "page_0061",
+      "description": "Education usage reporting records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0064",
+          "name": "Education Usage Reporting 0064 records",
+          "type": "table",
+          "description": "Records and status for Education Usage Reporting 0064.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0064",
+          "label": "Education Usage Reporting 0064 status",
+          "description": "Filter Education Usage Reporting 0064 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0065",
+      "name": "Finance Usage Reporting 0065",
+      "route": "/operations/page_0065",
+      "parent": "page_0061",
+      "description": "Finance usage reporting records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0065",
+          "name": "Finance Usage Reporting 0065 records",
+          "type": "table",
+          "description": "Records and status for Finance Usage Reporting 0065.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0065",
+          "label": "Finance Usage Reporting 0065 status",
+          "description": "Filter Finance Usage Reporting 0065 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0066",
+      "name": "Logistics Usage Reporting 0066",
+      "route": "/operations/page_0066",
+      "parent": "page_0061",
+      "description": "Logistics usage reporting records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0066",
+          "name": "Logistics Usage Reporting 0066 records",
+          "type": "table",
+          "description": "Records and status for Logistics Usage Reporting 0066.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0066",
+          "label": "Logistics Usage Reporting 0066 status",
+          "description": "Filter Logistics Usage Reporting 0066 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0067",
+      "name": "Energy Usage Reporting 0067",
+      "route": "/operations/page_0067",
+      "parent": "page_0061",
+      "description": "Energy usage reporting records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0067",
+          "name": "Energy Usage Reporting 0067 records",
+          "type": "table",
+          "description": "Records and status for Energy Usage Reporting 0067.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0067",
+          "label": "Energy Usage Reporting 0067 status",
+          "description": "Filter Energy Usage Reporting 0067 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0068",
+      "name": "Agriculture Usage Reporting 0068",
+      "route": "/operations/page_0068",
+      "parent": "page_0061",
+      "description": "Agriculture usage reporting records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0068",
+          "name": "Agriculture Usage Reporting 0068 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Usage Reporting 0068.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0068",
+          "label": "Agriculture Usage Reporting 0068 status",
+          "description": "Filter Agriculture Usage Reporting 0068 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0069",
+      "name": "Manufacturing Usage Reporting 0069",
+      "route": "/operations/page_0069",
+      "parent": "page_0061",
+      "description": "Manufacturing usage reporting records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0069",
+          "name": "Manufacturing Usage Reporting 0069 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Usage Reporting 0069.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0069",
+          "label": "Manufacturing Usage Reporting 0069 status",
+          "description": "Filter Manufacturing Usage Reporting 0069 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0070",
+      "name": "Insurance Usage Reporting 0070",
+      "route": "/operations/page_0070",
+      "parent": "page_0061",
+      "description": "Insurance usage reporting records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0070",
+          "name": "Insurance Usage Reporting 0070 records",
+          "type": "table",
+          "description": "Records and status for Insurance Usage Reporting 0070.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0070",
+          "label": "Insurance Usage Reporting 0070 status",
+          "description": "Filter Insurance Usage Reporting 0070 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0071",
+      "name": "Healthcare Account Review 0071",
+      "route": "/operations/page_0071",
+      "parent": null,
+      "description": "Healthcare account review records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0071",
+          "name": "Healthcare Account Review 0071 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Account Review 0071.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0071",
+          "label": "Healthcare Account Review 0071 status",
+          "description": "Filter Healthcare Account Review 0071 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0072",
+      "name": "Retail Account Review 0072",
+      "route": "/operations/page_0072",
+      "parent": "page_0071",
+      "description": "Retail account review records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0072",
+          "name": "Retail Account Review 0072 records",
+          "type": "table",
+          "description": "Records and status for Retail Account Review 0072.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0072",
+          "label": "Retail Account Review 0072 status",
+          "description": "Filter Retail Account Review 0072 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0073",
+      "name": "Hospitality Account Review 0073",
+      "route": "/operations/page_0073",
+      "parent": "page_0071",
+      "description": "Hospitality account review records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0073",
+          "name": "Hospitality Account Review 0073 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Account Review 0073.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0073",
+          "label": "Hospitality Account Review 0073 status",
+          "description": "Filter Hospitality Account Review 0073 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0074",
+      "name": "Education Account Review 0074",
+      "route": "/operations/page_0074",
+      "parent": "page_0071",
+      "description": "Education account review records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0074",
+          "name": "Education Account Review 0074 records",
+          "type": "table",
+          "description": "Records and status for Education Account Review 0074.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0074",
+          "label": "Education Account Review 0074 status",
+          "description": "Filter Education Account Review 0074 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0075",
+      "name": "Finance Account Review 0075",
+      "route": "/operations/page_0075",
+      "parent": "page_0071",
+      "description": "Finance account review records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0075",
+          "name": "Finance Account Review 0075 records",
+          "type": "table",
+          "description": "Records and status for Finance Account Review 0075.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0075",
+          "label": "Finance Account Review 0075 status",
+          "description": "Filter Finance Account Review 0075 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0076",
+      "name": "Logistics Account Review 0076",
+      "route": "/operations/page_0076",
+      "parent": "page_0071",
+      "description": "Logistics account review records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0076",
+          "name": "Logistics Account Review 0076 records",
+          "type": "table",
+          "description": "Records and status for Logistics Account Review 0076.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0076",
+          "label": "Logistics Account Review 0076 status",
+          "description": "Filter Logistics Account Review 0076 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0077",
+      "name": "Energy Account Review 0077",
+      "route": "/operations/page_0077",
+      "parent": "page_0071",
+      "description": "Energy account review records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0077",
+          "name": "Energy Account Review 0077 records",
+          "type": "table",
+          "description": "Records and status for Energy Account Review 0077.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0077",
+          "label": "Energy Account Review 0077 status",
+          "description": "Filter Energy Account Review 0077 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0078",
+      "name": "Agriculture Account Review 0078",
+      "route": "/operations/page_0078",
+      "parent": "page_0071",
+      "description": "Agriculture account review records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0078",
+          "name": "Agriculture Account Review 0078 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Account Review 0078.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0078",
+          "label": "Agriculture Account Review 0078 status",
+          "description": "Filter Agriculture Account Review 0078 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0079",
+      "name": "Manufacturing Account Review 0079",
+      "route": "/operations/page_0079",
+      "parent": "page_0071",
+      "description": "Manufacturing account review records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0079",
+          "name": "Manufacturing Account Review 0079 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Account Review 0079.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0079",
+          "label": "Manufacturing Account Review 0079 status",
+          "description": "Filter Manufacturing Account Review 0079 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0080",
+      "name": "Insurance Account Review 0080",
+      "route": "/operations/page_0080",
+      "parent": "page_0071",
+      "description": "Insurance account review records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0080",
+          "name": "Insurance Account Review 0080 records",
+          "type": "table",
+          "description": "Records and status for Insurance Account Review 0080.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0080",
+          "label": "Insurance Account Review 0080 status",
+          "description": "Filter Insurance Account Review 0080 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0081",
+      "name": "Healthcare Delivery Status 0081",
+      "route": "/operations/page_0081",
+      "parent": null,
+      "description": "Healthcare delivery status records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0081",
+          "name": "Healthcare Delivery Status 0081 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Delivery Status 0081.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0081",
+          "label": "Healthcare Delivery Status 0081 status",
+          "description": "Filter Healthcare Delivery Status 0081 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0082",
+      "name": "Retail Delivery Status 0082",
+      "route": "/operations/page_0082",
+      "parent": "page_0081",
+      "description": "Retail delivery status records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0082",
+          "name": "Retail Delivery Status 0082 records",
+          "type": "table",
+          "description": "Records and status for Retail Delivery Status 0082.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0082",
+          "label": "Retail Delivery Status 0082 status",
+          "description": "Filter Retail Delivery Status 0082 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0083",
+      "name": "Hospitality Delivery Status 0083",
+      "route": "/operations/page_0083",
+      "parent": "page_0081",
+      "description": "Hospitality delivery status records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0083",
+          "name": "Hospitality Delivery Status 0083 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Delivery Status 0083.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0083",
+          "label": "Hospitality Delivery Status 0083 status",
+          "description": "Filter Hospitality Delivery Status 0083 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0084",
+      "name": "Education Delivery Status 0084",
+      "route": "/operations/page_0084",
+      "parent": "page_0081",
+      "description": "Education delivery status records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0084",
+          "name": "Education Delivery Status 0084 records",
+          "type": "table",
+          "description": "Records and status for Education Delivery Status 0084.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0084",
+          "label": "Education Delivery Status 0084 status",
+          "description": "Filter Education Delivery Status 0084 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0085",
+      "name": "Finance Delivery Status 0085",
+      "route": "/operations/page_0085",
+      "parent": "page_0081",
+      "description": "Finance delivery status records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0085",
+          "name": "Finance Delivery Status 0085 records",
+          "type": "table",
+          "description": "Records and status for Finance Delivery Status 0085.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0085",
+          "label": "Finance Delivery Status 0085 status",
+          "description": "Filter Finance Delivery Status 0085 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0086",
+      "name": "Logistics Delivery Status 0086",
+      "route": "/operations/page_0086",
+      "parent": "page_0081",
+      "description": "Logistics delivery status records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0086",
+          "name": "Logistics Delivery Status 0086 records",
+          "type": "table",
+          "description": "Records and status for Logistics Delivery Status 0086.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0086",
+          "label": "Logistics Delivery Status 0086 status",
+          "description": "Filter Logistics Delivery Status 0086 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0087",
+      "name": "Energy Delivery Status 0087",
+      "route": "/operations/page_0087",
+      "parent": "page_0081",
+      "description": "Energy delivery status records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0087",
+          "name": "Energy Delivery Status 0087 records",
+          "type": "table",
+          "description": "Records and status for Energy Delivery Status 0087.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0087",
+          "label": "Energy Delivery Status 0087 status",
+          "description": "Filter Energy Delivery Status 0087 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0088",
+      "name": "Agriculture Delivery Status 0088",
+      "route": "/operations/page_0088",
+      "parent": "page_0081",
+      "description": "Agriculture delivery status records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0088",
+          "name": "Agriculture Delivery Status 0088 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Delivery Status 0088.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0088",
+          "label": "Agriculture Delivery Status 0088 status",
+          "description": "Filter Agriculture Delivery Status 0088 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0089",
+      "name": "Manufacturing Delivery Status 0089",
+      "route": "/operations/page_0089",
+      "parent": "page_0081",
+      "description": "Manufacturing delivery status records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0089",
+          "name": "Manufacturing Delivery Status 0089 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Delivery Status 0089.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0089",
+          "label": "Manufacturing Delivery Status 0089 status",
+          "description": "Filter Manufacturing Delivery Status 0089 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0090",
+      "name": "Insurance Delivery Status 0090",
+      "route": "/operations/page_0090",
+      "parent": "page_0081",
+      "description": "Insurance delivery status records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0090",
+          "name": "Insurance Delivery Status 0090 records",
+          "type": "table",
+          "description": "Records and status for Insurance Delivery Status 0090.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0090",
+          "label": "Insurance Delivery Status 0090 status",
+          "description": "Filter Insurance Delivery Status 0090 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0091",
+      "name": "Healthcare Capacity Planning 0091",
+      "route": "/operations/page_0091",
+      "parent": null,
+      "description": "Healthcare capacity planning records, status, amount and recent updates. Search this healthcare operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0091",
+          "name": "Healthcare Capacity Planning 0091 records",
+          "type": "table",
+          "description": "Records and status for Healthcare Capacity Planning 0091.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0091",
+          "label": "Healthcare Capacity Planning 0091 status",
+          "description": "Filter Healthcare Capacity Planning 0091 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0092",
+      "name": "Retail Capacity Planning 0092",
+      "route": "/operations/page_0092",
+      "parent": "page_0091",
+      "description": "Retail capacity planning records, status, amount and recent updates. Search this retail operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0092",
+          "name": "Retail Capacity Planning 0092 records",
+          "type": "table",
+          "description": "Records and status for Retail Capacity Planning 0092.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0092",
+          "label": "Retail Capacity Planning 0092 status",
+          "description": "Filter Retail Capacity Planning 0092 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0093",
+      "name": "Hospitality Capacity Planning 0093",
+      "route": "/operations/page_0093",
+      "parent": "page_0091",
+      "description": "Hospitality capacity planning records, status, amount and recent updates. Search this hospitality operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0093",
+          "name": "Hospitality Capacity Planning 0093 records",
+          "type": "table",
+          "description": "Records and status for Hospitality Capacity Planning 0093.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0093",
+          "label": "Hospitality Capacity Planning 0093 status",
+          "description": "Filter Hospitality Capacity Planning 0093 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0094",
+      "name": "Education Capacity Planning 0094",
+      "route": "/operations/page_0094",
+      "parent": "page_0091",
+      "description": "Education capacity planning records, status, amount and recent updates. Search this education operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0094",
+          "name": "Education Capacity Planning 0094 records",
+          "type": "table",
+          "description": "Records and status for Education Capacity Planning 0094.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0094",
+          "label": "Education Capacity Planning 0094 status",
+          "description": "Filter Education Capacity Planning 0094 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0095",
+      "name": "Finance Capacity Planning 0095",
+      "route": "/operations/page_0095",
+      "parent": "page_0091",
+      "description": "Finance capacity planning records, status, amount and recent updates. Search this finance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0095",
+          "name": "Finance Capacity Planning 0095 records",
+          "type": "table",
+          "description": "Records and status for Finance Capacity Planning 0095.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0095",
+          "label": "Finance Capacity Planning 0095 status",
+          "description": "Filter Finance Capacity Planning 0095 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0096",
+      "name": "Logistics Capacity Planning 0096",
+      "route": "/operations/page_0096",
+      "parent": "page_0091",
+      "description": "Logistics capacity planning records, status, amount and recent updates. Search this logistics operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0096",
+          "name": "Logistics Capacity Planning 0096 records",
+          "type": "table",
+          "description": "Records and status for Logistics Capacity Planning 0096.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0096",
+          "label": "Logistics Capacity Planning 0096 status",
+          "description": "Filter Logistics Capacity Planning 0096 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0097",
+      "name": "Energy Capacity Planning 0097",
+      "route": "/operations/page_0097",
+      "parent": "page_0091",
+      "description": "Energy capacity planning records, status, amount and recent updates. Search this energy operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0097",
+          "name": "Energy Capacity Planning 0097 records",
+          "type": "table",
+          "description": "Records and status for Energy Capacity Planning 0097.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0097",
+          "label": "Energy Capacity Planning 0097 status",
+          "description": "Filter Energy Capacity Planning 0097 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0098",
+      "name": "Agriculture Capacity Planning 0098",
+      "route": "/operations/page_0098",
+      "parent": "page_0091",
+      "description": "Agriculture capacity planning records, status, amount and recent updates. Search this agriculture operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0098",
+          "name": "Agriculture Capacity Planning 0098 records",
+          "type": "table",
+          "description": "Records and status for Agriculture Capacity Planning 0098.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0098",
+          "label": "Agriculture Capacity Planning 0098 status",
+          "description": "Filter Agriculture Capacity Planning 0098 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0099",
+      "name": "Manufacturing Capacity Planning 0099",
+      "route": "/operations/page_0099",
+      "parent": "page_0091",
+      "description": "Manufacturing capacity planning records, status, amount and recent updates. Search this manufacturing operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0099",
+          "name": "Manufacturing Capacity Planning 0099 records",
+          "type": "table",
+          "description": "Records and status for Manufacturing Capacity Planning 0099.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0099",
+          "label": "Manufacturing Capacity Planning 0099 status",
+          "description": "Filter Manufacturing Capacity Planning 0099 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page_0100",
+      "name": "Insurance Capacity Planning 0100",
+      "route": "/operations/page_0100",
+      "parent": "page_0091",
+      "description": "Insurance capacity planning records, status, amount and recent updates. Search this insurance operations page by its distinctive name.",
+      "widgets": [
+        {
+          "id": "widget_0100",
+          "name": "Insurance Capacity Planning 0100 records",
+          "type": "table",
+          "description": "Records and status for Insurance Capacity Planning 0100.",
+          "dataset": "records",
+          "columns": [
+            {
+              "field": "record_id"
+            },
+            {
+              "field": "service"
+            },
+            {
+              "field": "status"
+            },
+            {
+              "field": "amount"
+            },
+            {
+              "field": "updated_on"
+            }
+          ],
+          "sortable": [
+            "record_id",
+            "amount",
+            "updated_on"
+          ],
+          "defaultSort": {
+            "field": "record_id",
+            "direction": "asc"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "id": "status_0100",
+          "label": "Insurance Capacity Planning 0100 status",
+          "description": "Filter Insurance Capacity Planning 0100 records by status.",
+          "synonyms": [],
+          "type": "enum",
+          "field": "status",
+          "options": [
+            {
+              "value": "Open",
+              "label": "Open",
+              "synonyms": []
+            },
+            {
+              "value": "Closed",
+              "label": "Closed",
+              "synonyms": []
+            },
+            {
+              "value": "Pending",
+              "label": "Pending",
+              "synonyms": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": []
+}

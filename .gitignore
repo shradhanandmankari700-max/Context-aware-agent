@@ -1,10 +1,12 @@
 node_modules/
 dist/
 .env
+my-ai-notes.md
 *.log
 .DS_Store
 .vite/
 backend/.llm-cache/
+backend/.model-cache/
 evaluation/results/*.json
 !evaluation/results/.gitkeep
 playwright-report/

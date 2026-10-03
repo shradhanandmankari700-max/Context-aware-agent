@@ -1,18 +1,18 @@
 # Replace @p1..@p6 with real GitHub usernames
-/contracts/            @p6 @p3
-/metadata/             @p2
-/database/             @p2 @p6
-/data/                 @p1
-/backend/src/data/     @p1
-/backend/src/analytics/ @p1
-/backend/src/metadata/ @p2
-/backend/src/retrieval/ @p2
-/backend/src/agent/    @p3
-/backend/src/llm/      @p3
-/backend/src/ui/       @p4
-/backend/src/tools/    @p4
-/backend/src/server.ts @p6
-/backend/src/middleware/ @p6
-/frontend/             @p5
-/evaluation/           @p6
-/docs/                 @p6
+/contracts/            shradhanandmankari700-max SunilSK296
+/metadata/             SunilSK296
+/database/             SunilSK296 shradhanandmankari700-max
+/data/                 Sushant-Bilage
+/backend/src/data/     Sushant-Bilage
+/backend/src/analytics/ Sushant-Bilage
+/backend/src/metadata/ SunilSK296
+/backend/src/retrieval/ SunilSK296
+/backend/src/agent/    SunilSK296
+/backend/src/llm/      SunilSK296
+/backend/src/ui/       01fe24bcs266
+/backend/src/tools/    01fe24bcs266
+/backend/src/server.ts shradhanandmankari700-max
+/backend/src/middleware/ shradhanandmankari700-max
+/frontend/             Chidrup-18
+/evaluation/           shradhanandmankari700-max
+/docs/                 shradhanandmankari700-max
