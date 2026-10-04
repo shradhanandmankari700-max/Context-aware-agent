@@ -216,6 +216,56 @@ describe("LlmClient", () => {
         return {
           ok: false,
           status: 429,
+          headers: new Headers({ "retry-after": "1" }),
+          text: async () => "Rate limit exceeded",
+        };
+      }
+      return {
+        ok: true,
+        json: async () => ({
+          candidates: [
+            {
+              content: {
+                parts: [{ text: JSON.stringify({ status: "success", items: ["from-key2"] }) }],
+              },
+            },
+          ],
+        }),
+      };
+    });
+
+    const sleepFn = vi.fn(async () => {});
+    const client = createLlmClient(
+      {
+        LLM_PROVIDER: "gemini",
+        LLM_API_KEY: "key1",
+        LLM_API_KEYS_EXTRA: "key2,key3",
+        LLM_CACHE: "off",
+      },
+      { fetchFn: mockFetch as any, sleepFn },
+    );
+
+    const result = await client.json(
+      {
+        system: "sys",
+        user: "usr",
+        schemaName: "SampleSchema",
+      },
+      (raw) => SampleSchema.parse(raw),
+    );
+
+    expect(result.data.items).toEqual(["from-key2"]);
+    expect(callIndex).toBe(2);
+    expect(sleepFn).toHaveBeenCalledWith(1000);
+  });
+
+  it("marks a long-delay 429 key as exhausted and rotates to the next key without retrying it", async () => {
+    const mockFetch = vi.fn().mockImplementation(async (url: string) => {
+      if (url.includes("key1")) {
+        return {
+          ok: false,
+          status: 429,
+          headers: new Headers({ "retry-after": "60" }),
           text: async () => "Rate limit exceeded",
         };
       }
@@ -237,7 +287,7 @@ describe("LlmClient", () => {
       {
         LLM_PROVIDER: "gemini",
         LLM_API_KEY: "key1",
-        LLM_API_KEYS_EXTRA: "key2,key3",
+        LLM_API_KEYS_EXTRA: "key2",
         LLM_CACHE: "off",
       },
       { fetchFn: mockFetch as any, sleepFn: async () => {} },
@@ -253,7 +303,9 @@ describe("LlmClient", () => {
     );
 
     expect(result.data.items).toEqual(["from-key2"]);
-    expect(callIndex).toBe(2);
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(mockFetch.mock.calls[0][0]).toContain("key1");
+    expect(mockFetch.mock.calls[1][0]).toContain("key2");
   });
 
   it("falls back to fallback provider when primary provider is exhausted", async () => {

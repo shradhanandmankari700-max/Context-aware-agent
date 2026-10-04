@@ -82,6 +82,80 @@ function isRoleAllowed(userRole: string, allowedRoles?: string[]): boolean {
 const DB_NAME_REGEX = /^[a-z][a-z0-9_]*$/;
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
+export function normalizeAgentTurnForSchema(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object") return raw;
+
+  const turn = { ...(raw as Record<string, unknown>) };
+  const steps = Array.isArray(turn.steps) ? turn.steps : [];
+
+  turn.intent = typeof turn.intent === "string" ? turn.intent : "";
+  turn.reasoning = typeof turn.reasoning === "string" ? turn.reasoning : turn.intent; 
+  turn.done = typeof turn.done === "boolean" ? turn.done : steps.length === 0;
+
+  turn.steps = steps
+    .map((step: unknown) => {
+      if (!step || typeof step !== "object") return null;
+      const item = { ...(step as Record<string, unknown>) };
+      const tool = typeof item.tool === "string" ? item.tool : null;
+      const args = item.args && typeof item.args === "object" ? { ...(item.args as Record<string, unknown>) } : {};
+
+      if (tool === "navigate" && !args.target && typeof args.pageId === "string") {
+        args.target = args.pageId;
+      }
+
+      if ((tool === "query_business_data" || tool === "run_analysis") && !args.spec && typeof args.dataset === "string") {
+        const spec = { ...args } as Record<string, unknown>;
+        delete spec.dataset;
+        delete spec.select;
+        delete spec.where;
+        delete spec.groupBy;
+        delete spec.metrics;
+        delete spec.orderBy;
+        delete spec.limit;
+        delete spec.by;
+        delete spec.breakdownBy;
+        delete spec.metric;
+        delete spec.dateField;
+        delete spec.periods;
+
+        const normalizedSpec = tool === "query_business_data"
+          ? {
+              dataset: args.dataset,
+              select: Array.isArray(args.select) ? args.select : [],
+              where: Array.isArray(args.where) ? args.where : [],
+              groupBy: Array.isArray(args.groupBy) ? args.groupBy : [],
+              metrics: Array.isArray(args.metrics) ? args.metrics : [],
+              orderBy: Array.isArray(args.orderBy) ? args.orderBy : [],
+              limit: typeof args.limit === "number" ? args.limit : undefined,
+            }
+          : {
+              dataset: args.dataset,
+              ...spec,
+              ...(typeof args.metric === "object" && args.metric ? { metric: args.metric } : {}),
+              ...(typeof args.by === "string" ? { by: args.by } : {}),
+              ...(typeof args.dateField === "string" ? { dateField: args.dateField } : {}),
+              ...(Array.isArray(args.breakdownBy) ? { breakdownBy: args.breakdownBy } : {}),
+            };
+
+        item.args = { spec: normalizedSpec };
+      }
+
+      if (tool === "invoke_app_action") {
+        if (!args.actionId && typeof args.id === "string") args.actionId = args.id;
+        if (!args.params && typeof args.arguments === "object" && args.arguments) args.params = args.arguments;
+      }
+
+      if (tool === "set_filter" && !("value" in args) && "filterValue" in args) {
+        args.value = args.filterValue;
+      }
+
+      return item;
+    })
+    .filter((step): step is Record<string, unknown> => !!step);
+
+  return turn;
+}
+
 export function validatePlan(
   app: AppMetadata,
   ui: UiState | null,
@@ -91,8 +165,10 @@ export function validatePlan(
   const errors: PlanValidationError[] = [];
   const destructiveActions: Array<{ stepIndex: number; actionId: string; description: string }> = [];
 
+  const safeTurn = normalizeAgentTurnForSchema(turn) as AgentTurn;
+
   // Deep clone steps for normalization
-  const normalizedSteps: ToolCall[] = JSON.parse(JSON.stringify(turn.steps));
+  const normalizedSteps: ToolCall[] = JSON.parse(JSON.stringify(safeTurn.steps));
 
   // Track active page through turn steps
   let activePageId: string | undefined = ui?.pageId;

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import type { AgentTurn, AppMetadata } from "@cab/contracts";
+import { AgentTurn as AgentTurnSchema, type AgentTurn, type AppMetadata } from "@cab/contracts";
 import hospitalData from "../../../metadata/hospital.json";
-import { validatePlan } from "./validate";
+import { normalizeAgentTurnForSchema, validatePlan } from "./validate";
 
 const hospitalMetadata = hospitalData as unknown as AppMetadata;
 
@@ -180,6 +180,39 @@ describe("validatePlan", () => {
     const result = validatePlan(hospitalMetadata, baseUiState, "staff", turn);
     expect(result.ok).toBe(false);
     expect(result.errors[0]!.code).toBe("FIELD_NOT_ALLOWED");
+  });
+
+  it("repairs malformed query_business_data shapes from the planner before schema validation", () => {
+    const rawTurn = {
+      intent: "Show medicines that are running low",
+      reasoning: "Use the medicines dataset and filter low stock",
+      steps: [
+        {
+          tool: "query_business_data",
+          args: {
+            dataset: "medicines",
+            select: ["name", "stock_level"],
+            where: [{ field: "stock_level", op: "eq", value: "low" }],
+            limit: 10,
+          },
+        },
+      ],
+      done: true,
+    };
+
+    const normalized = normalizeAgentTurnForSchema(rawTurn) as any;
+    expect(() => AgentTurnSchema.parse(normalized)).not.toThrow();
+    expect(normalized.steps[0]).toMatchObject({
+      tool: "query_business_data",
+      args: {
+        spec: {
+          dataset: "medicines",
+          select: ["name", "stock_level"],
+          where: [{ field: "stock_level", op: "eq", value: "low" }],
+          limit: 10,
+        },
+      },
+    });
   });
 
   it("rejects adversarial SQL injection in query_business_data", () => {

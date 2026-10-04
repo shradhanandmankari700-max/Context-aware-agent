@@ -35,15 +35,16 @@ function Login({ onLogin }: { onLogin: (token: string, user: string) => void }) 
 function Shell({ metadata, metadataError, apps, appId, onAppChange, onLogout }: { metadata: AppMetadata; metadataError: string; apps: AppsList; appId: string; onAppChange: (id: string) => void; onLogout: () => void }) {
   const location = useLocation(); const [chatOpen, setChatOpen] = useState(true); const [debugOpen, setDebugOpen] = useState(false); const [mobileNav, setMobileNav] = useState(false); const [disabledFilters, setDisabledFilters] = useState<string[]>([]); const [agentLive, setAgentLive] = useState("Ready"); const [messages, setMessages] = useState<AgentMessage[]>([]); const [highlight, setHighlight] = useState("");
   const { state, sessionId, change, applyAction, undo } = useUiState(metadata, disabledFilters);
+  const currentToken = localStorage.getItem(tokenKey) || "";
   const page = metadata.pages.find((item) => item.id === state.pageId) || metadata.pages[0];
   const tree = metadata.pages.filter((item) => item.parent === null);
   const children = (parent: string) => metadata.pages.filter((item) => item.parent === parent);
-  useEffect(() => { if (!sessionId) return; const eventSource = new EventSource(`${API_BASE}/api/events?sessionId=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(localStorage.getItem(tokenKey) || "")}`);
+  useEffect(() => { if (!sessionId) return; const eventSource = new EventSource(`${API_BASE}/api/events?sessionId=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(currentToken)}`);
     const dispatch = (event: MessageEvent) => { try { const payload = JSON.parse(event.data) as { actionId: string; action: UiAction }; applyAction(payload.action, payload.actionId); } catch { /* Ignore malformed events. */ } };
     eventSource.addEventListener("ui_action", dispatch as EventListener);
     for (const type of ["agent_status", "agent_step"]) eventSource.addEventListener(type, (event) => { try { const data = JSON.parse((event as MessageEvent).data) as { stage?: string; step?: { tool?: string; summary?: string; status?: string } }; setAgentLive(data.stage || `${data.step?.tool || "Step"}: ${data.step?.summary || data.step?.status || "updated"}`); } catch { setAgentLive(type); } });
     eventSource.onerror = () => setAgentLive("Reconnecting to agent…"); return () => eventSource.close();
-  }, [sessionId, applyAction]);
+  }, [sessionId, currentToken, applyAction]);
   useEffect(() => { setMobileNav(false); }, [location.pathname]);
   const applyLocalAction = (action: UiAction) => applyAction(action);
   const navigatePage = (target: Page) => { applyLocalAction({ type: "navigate", pageId: target.id, route: target.route }); };

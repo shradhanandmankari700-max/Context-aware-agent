@@ -68,11 +68,14 @@ async function callGemini(req: ProviderCallRequest, fetchFn: typeof fetch): Prom
 
   if (!res.ok) {
     const errorText = await res.text().catch(() => "");
+    const retryAfterHeader = res.headers.get("retry-after");
+    const retryDelayMs = retryAfterHeader ? Number(retryAfterHeader) * 1000 : undefined;
     throw new LlmError(`Gemini API error (status ${res.status}): ${errorText}`, {
       code: res.status === 429 ? "RATE_LIMIT" : "PROVIDER_ERROR",
       status: res.status,
       provider: "gemini",
       details: errorText,
+      retryDelayMs: retryDelayMs && Number.isFinite(retryDelayMs) ? retryDelayMs : undefined,
     });
   }
 
@@ -141,11 +144,14 @@ async function callOpenAiCompatible(req: ProviderCallRequest, fetchFn: typeof fe
 
   if (!res.ok) {
     const errorText = await res.text().catch(() => "");
+    const retryAfterHeader = res.headers.get("retry-after");
+    const retryDelayMs = retryAfterHeader ? Number(retryAfterHeader) * 1000 : undefined;
     throw new LlmError(`${req.provider} API error (status ${res.status}): ${errorText}`, {
       code: res.status === 429 ? "RATE_LIMIT" : "PROVIDER_ERROR",
       status: res.status,
       provider: req.provider,
       details: errorText,
+      retryDelayMs: retryDelayMs && Number.isFinite(retryDelayMs) ? retryDelayMs : undefined,
     });
   }
 

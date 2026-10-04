@@ -3,10 +3,11 @@ export class LlmError extends Error {
   public readonly status?: number;
   public readonly provider?: string;
   public readonly details?: unknown;
+  public readonly retryDelayMs?: number;
 
   constructor(
     message: string,
-    opts?: { code?: string; status?: number; provider?: string; details?: unknown },
+    opts?: { code?: string; status?: number; provider?: string; details?: unknown; retryDelayMs?: number },
   ) {
     super(message);
     this.name = "LlmError";
@@ -14,6 +15,7 @@ export class LlmError extends Error {
     this.status = opts?.status;
     this.provider = opts?.provider;
     this.details = opts?.details;
+    this.retryDelayMs = opts?.retryDelayMs;
   }
 }
 

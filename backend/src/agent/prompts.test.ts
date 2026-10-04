@@ -134,6 +134,26 @@ describe("Prompts", () => {
       expect(user).toContain("Candidates: stockLevel");
     });
 
+    it("forbids sort steps on a low-stock request", () => {
+      const { system } = buildPlannerPrompt({
+        now: "2026-10-07",
+        userMessage: "Show medicines that are running low.",
+        context: sampleRetrievalContext,
+      });
+
+      expect(system).toContain("NEVER add sorting, filters, or date ranges the user did not ask for");
+
+      const badPlan = {
+        intent: "Show medicines that are running low",
+        reasoning: "Navigate to medicines and sort by stock descending",
+        steps: [{ tool: "sort", args: { widgetId: "medicineStock", field: "stock", direction: "desc" } }],
+        done: true,
+      };
+
+      expect(badPlan.steps.some((step) => step.tool === "sort")).toBe(true);
+      expect(system).toContain("NEVER add sorting, filters, or date ranges the user did not ask for");
+    });
+
     it("ensures expected planner output matches AgentTurn schema", () => {
       const sampleTurn = {
         intent: "Show medicines that are running low on stock",

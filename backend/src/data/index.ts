@@ -5,6 +5,16 @@ import { normalizeDateValue } from "@cab/contracts";
 import { fieldMap, parseSpec } from "./engine";
 
 const ident=(s:string)=>{if(!/^[a-z][a-z0-9_]*$/.test(s))throw new Error(`Invalid database identifier: ${s}`);return `"${s}"`;};
+function normalizeDateOutput(value: unknown): unknown {
+  if (value == null) return value;
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  if (typeof value === "string") {
+    if (/^\d{4}-\d{2}-\d{2}T/.test(value)) return value.slice(0, 10);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+    return value;
+  }
+  return value;
+}
 function expression(field:string,ds:Dataset):string {
  const f=fieldMap(ds).get(field);if(!f)throw new Error(`Unknown field: ${field}`);if(!f.derived)return ident(field);
  const emit=(x:unknown):string=>{if(typeof x==="number")return String(x);if(typeof x==="string"){if(!fieldMap(ds).has(x))throw new Error(`Invalid derived reference: ${x}`);return emitField(x);}const e=x as {op:string;args:unknown[]};const a=e.args.map(emit);switch(e.op){case"add":return `(${a.join(" + ")})`;case"sub":return `(${a.join(" - ")})`;case"mul":return `(${a.join(" * ")})`;case"div":return `(${a[0]}::numeric / NULLIF(${a[1]}, 0))`;case"min":return `LEAST(${a.join(", ")})`;case"max":return `GREATEST(${a.join(", ")})`;case"round":return `ROUND(${a[0]}::numeric, ${a[1]})`;default:throw new Error("Unsupported derived expression");}};
@@ -21,7 +31,7 @@ function buildSql(ctx:RequestContext,app:AppMetadata,spec:QuerySpec){if(ctx.appI
 }
 export function createDataService({pool,metadata}:{pool:Pool;metadata:{getApp(ctx:RequestContext):Promise<AppMetadata>}}):DataService{
  return {
-  async query(ctx,raw){const app=await metadata.getApp(ctx);const spec=QuerySchema.parse(raw);const built=buildSql(ctx,app,spec);const client=await pool.connect();try{await client.query("BEGIN READ ONLY");await client.query("SET LOCAL statement_timeout = 5000");const result=await client.query(built.sql,built.params);await client.query("COMMIT");const truncated=result.rows.length>spec.limit, rows=result.rows.slice(0,spec.limit);const names=Object.keys(rows[0]??{});return {queryId:randomUUID(),dataset:spec.dataset,columns:names.map(name=>({name,label:built.ds.fields.find(f=>f.name===name)?.label??name,type:(built.ds.fields.find(f=>f.name===name)?.type??"number") as "string"|"number"|"date"|"boolean"})),rows,rowCount:rows.length,truncated,appliedWhere:built.where,sqlPreview:built.preview};}catch(e){await client.query("ROLLBACK");throw e;}finally{client.release();}},
+  async query(ctx,raw){const app=await metadata.getApp(ctx);const spec=QuerySchema.parse(raw);const built=buildSql(ctx,app,spec);const client=await pool.connect();try{await client.query("BEGIN READ ONLY");await client.query("SET LOCAL statement_timeout = 5000");const result=await client.query(built.sql,built.params);await client.query("COMMIT");const truncated=result.rows.length>spec.limit, rows=result.rows.slice(0,spec.limit).map((row)=>Object.fromEntries(Object.entries(row).map(([key,val])=>[key, normalizeDateOutput(val)])));const names=Object.keys(rows[0]??{});return {queryId:randomUUID(),dataset:spec.dataset,columns:names.map(name=>({name,label:built.ds.fields.find(f=>f.name===name)?.label??name,type:(built.ds.fields.find(f=>f.name===name)?.type??"number") as "string"|"number"|"date"|"boolean"})),rows,rowCount:rows.length,truncated,appliedWhere:built.where,sqlPreview:built.preview};}catch(e){await client.query("ROLLBACK");throw e;}finally{client.release();}},
   async widgetData(ctx,pageId,widgetId,ui,opts){if(ui.appId!==ctx.appId)throw new Error("UI app mismatch");const app=await metadata.getApp(ctx);const page=app.pages.find(p=>p.id===pageId),widget=page?.widgets.find(w=>w.id===widgetId);if(!page||!widget)throw new Error("Unknown page or widget");const ds=app.datasets.find(d=>d.name===widget.dataset)!;const where:QuerySpec["where"]=[];const applicable=widget.filters?page.filters.filter(f=>widget.filters!.includes(f.id)):page.filters;for(const[id,v]of Object.entries(ui.filters)){const f=applicable.find(x=>x.id===id);if(!f||!ds.fields.some(x=>x.name===f.field))continue;const allowed:readonly string[]=f.operators??defaultOps(f.type);if(!allowed.includes(v.op))throw new Error(`Unsupported operator ${v.op} for filter ${id}`);const option=f.options?.find(o=>o.value===String(v.value));if(option?.where)where.push(...option.where);else where.push({field:f.field,op:v.op,value:v.value});}for(const f of applicable)if(!ui.filters[f.id]&&f.defaultValue&&ds.fields.some(x=>x.name===f.field))where.push({field:f.field,op:f.defaultValue.op,value:f.defaultValue.value});const spec=parseSpec({dataset:widget.dataset,select:widget.columns.length?widget.columns.map(c=>c.field):undefined,where,orderBy:ui.sort?.widgetId===widgetId?[{field:ui.sort.field,direction:ui.sort.direction}]:widget.defaultSort?[widget.defaultSort]:[],limit:opts?.limit??500});return this.query(ctx,spec);}
  };
 }

@@ -27,7 +27,7 @@ import {
   toDeepLink,
 } from "@cab/contracts";
 import { buildNarratorPrompt, buildPlannerPrompt } from "./prompts";
-import { validatePlan } from "./validate";
+import { normalizeAgentTurnForSchema, validatePlan } from "./validate";
 import { assembleAnswerBlocks, type ObservationRecord } from "./assembler";
 import { checkFaithfulness } from "./faithfulness";
 import { defaultMemoryStore, type MemoryStore } from "./memory";
@@ -171,7 +171,7 @@ export function createAgent(deps: AgentDependencies): AgentService {
                 user: plannerPrompt.user,
                 schemaName: "AgentTurn",
               },
-              (raw) => AgentTurnSchema.parse(raw),
+              (raw) => AgentTurnSchema.parse(normalizeAgentTurnForSchema(raw)),
             );
 
             llmCalls++;

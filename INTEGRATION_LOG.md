@@ -36,3 +36,25 @@ Files changed: none
 Phase: 5.5 | Result: FAIL | Counts: applications=2 (hospital,hotel); medicines=22; medicine_usage=2640; room_availability=1800 | Steps: login ok; /api/agent/chat failed before step execution, status 500 -> model unavailable 404 | Verification: failed | Answer rows: 0 | Trace saved: no | Problem + owner: P3 agent/llm (404 model name/key error from Gemini provider: model models/gemini-2.5-flash no longer available) | Next: update provider key/model to a supported Gemini model or switch to a working fallback and restart the backend.
 [2026-10-04 02:00:42]
 Phase: 6 | Result: PASS | Counts: applications=2; medicines=22; medicine_usage=2640; room_availability=1800 | Steps: login ok; navigate ok; set_filter stockLevel=low ok; get_widget_data ok; trace retrieved | Verification: ok=True; mismatches=0 | Answer rows: 4 (Amoxicillin, Insulin, Metformin, Salbutamol) | Trace saved: yes | Problem + owner: none | Next: keep backend live and confirm model/fallback path remains stable.
+
+[2026-10-04 06:00:00]
+Phase: 0 | Result: PASS | Evidence: branch integration1; git merge-base ancestor check passed; typecheck passed; tests passed (17 files / 165 tests); docker healthy; applications rows = hospital, hotel; medicines count = 22 | Problem + owner: none | Next: start backend/frontend and run protocol checks
+
+[2026-10-04 06:00:00]
+Phase: 1 | Result: PASS | Evidence: /api/health returned real modules; SSE hello=true; ui_action=true; ack=true | Problem + owner: P4 protocol layer okay | Next: skip Phase 2 API live request because UI_ADAPTER=api
+
+[2026-10-04 06:00:00]
+Phase: 2 | Result: SKIP | Evidence: UI_ADAPTER=api, per rule the API live request is skipped and the browser live request is used as the 2nd/last live AI call | Problem + owner: none | Next: real browser M2 test
+
+[2026-10-04 06:00:36]
+Phase: 3 | Result: FAIL | Evidence: browser request reached /inventory/medicines and showed Stock level filter controls, but no final answer or table rows appeared because the agent returned a provider quota failure; Gemini gemini-3.8-flash hit 429 with retry delay about 18h10m, and Groq qwen/qwen3.8-27b hit 429 with a ~10s retry window | Problem + owner: P3 LLM/provider quota | Next: stop live testing and wait for user
+
+[2026-10-04 06:00:36]
+Phase: 4 | Result: FAIL | Evidence: M2 route/filter step reached, but a–e were not all YES because the model failed before verification and answer assembly; no live AI budget remains | Problem + owner: P3 agent/llm | Next: user must restore quota or switch provider/model before rerunning M2
+
+Phase: 0 | Result: PASS | Evidence: git branch integration1; merge-base ancestor present; frontend exists at frontend/index.html, frontend/src/main.tsx, frontend/src/App.tsx; source files count = 7 files under frontend/src plus index.html | Problem + owner: none | Next: continue to install and checks
+Phase: 1 | Result: PASS | Evidence: npm install completed; typecheck passed; npm test passed with 17 files and 165 tests | Problem + owner: none | Next: start backend and frontend
+Phase: 2 | Result: PASS | Evidence: docker compose ps healthy; applications rows = hospital, hotel; app_hospital.medicines count = 22; UI_ADAPTER=api; backend health returned real modules: metadata, data, analytics, ui, tools, llm, traces, agent | Problem + owner: none | Next: protocol check
+Phase: 3 | Result: PASS | Evidence: SSE hello event true; ui_action event true; acknowledgement true for session m2-proto | Problem + owner: P4 | Next: browser M2 validation
+Phase: 4 | Result: FAIL | Evidence: browser had already reached /inventory/medicines and filter UI before the LLM request hit 429; Gemini gemini-3.8-flash returned 429 with retry delay about 18h10m; Groq qwen/qwen3.8-27b returned 429 with retry delay about 10s | Problem + owner: P3 agent/llm | Next: stop live testing and wait for the user
+Phase: 5 | Result: FAIL | Evidence: required M2 items a–e were not all YES because the agent never reached final answer/verification; only route and filter UI were visible, and the live request aborted with provider quota | Problem + owner: P3 agent/llm + P5 frontend polish | Next: restore quota or switch provider/model before any new live M2 request; no further live AI calls allowed

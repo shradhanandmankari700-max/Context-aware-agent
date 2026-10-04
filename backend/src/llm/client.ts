@@ -101,9 +101,13 @@ export function createLlmClient(
   const fetchFn = options.fetchFn ?? fetch;
   const sleepFn = options.sleepFn ?? ((ms: number) => new Promise((resolve) => setTimeout(resolve, ms)));
 
-  // Key pool for primary provider: primary key + extras
   const primaryKeys = [config.apiKey, ...config.apiKeysExtra].filter(Boolean);
   let currentKeyIdx = 0;
+  const exhaustedKeys = new Set<string>();
+
+  console.info(
+    `[llm] provider=${config.provider} model=${config.model} fallbackProvider=${config.fallbackProvider ?? "none"} fallbackModel=${config.fallbackModel ?? "none"} cache=${config.cacheEnabled ? "on" : "off"} keys=${primaryKeys.length}`,
+  );
 
   async function executeWithRetryAndFallback(params: {
     system: string;
@@ -117,6 +121,11 @@ export function createLlmClient(
     // 1. Try primary provider with key rotation and backoff
     for (let attempt = 0; attempt < maxPrimaryAttempts; attempt++) {
       const activeKey = primaryKeys[currentKeyIdx] ?? config.apiKey;
+      const keyMarker = `${config.provider}:${config.model}:${activeKey}`;
+      if (exhaustedKeys.has(keyMarker)) {
+        currentKeyIdx = (currentKeyIdx + 1) % primaryKeys.length;
+        continue;
+      }
       try {
         const response = await callProviderRest({
           provider: config.provider,
@@ -135,20 +144,28 @@ export function createLlmClient(
         const isRateLimit = err instanceof LlmError && err.status === 429;
         const isServerError = err instanceof LlmError && err.status && err.status >= 500;
 
-        if (isRateLimit && primaryKeys.length > 1) {
-          // Rotate to next key
-          currentKeyIdx = (currentKeyIdx + 1) % primaryKeys.length;
-          continue;
+        if (isRateLimit) {
+          const retryDelayMs = err.retryDelayMs ?? 1000;
+          exhaustedKeys.add(keyMarker);
+
+          if (retryDelayMs < 20000 && primaryKeys.length > 1) {
+            await sleepFn(Math.min(retryDelayMs, 20000));
+            currentKeyIdx = (currentKeyIdx + 1) % primaryKeys.length;
+            continue;
+          }
+
+          if (primaryKeys.length > 1) {
+            currentKeyIdx = (currentKeyIdx + 1) % primaryKeys.length;
+            continue;
+          }
         }
 
         if (isRateLimit || isServerError) {
-          // Exponential backoff before retry if we have more attempts
           if (attempt < maxPrimaryAttempts - 1) {
             await sleepFn(100 * Math.pow(2, attempt));
             continue;
           }
         } else {
-          // Other non-retriable error
           break;
         }
       }
