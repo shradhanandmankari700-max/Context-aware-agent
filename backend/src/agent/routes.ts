@@ -18,13 +18,13 @@ export function createAgentRouter(agent: AgentService): Router {
     }
 
     const body = parseRes.data;
-    const user = (req as any).user;
+    const auth = req.auth;
 
     const ctx: RequestContext = {
-      tenantId: user?.tenantId ?? "tenant_demo",
+      tenantId: auth?.tenantId ?? "tenant_demo",
       appId: body.appId,
-      userId: user?.id ?? "user_demo",
-      role: user?.role ?? "staff",
+      userId: auth?.userId ?? "user_demo",
+      role: auth?.role ?? "staff",
       sessionId: body.sessionId,
       traceId: (req.headers["x-trace-id"] as string) || `trace-${crypto.randomUUID().slice(0, 8)}`,
       now: process.env.DEMO_NOW || "2026-10-07",
@@ -35,11 +35,15 @@ export function createAgentRouter(agent: AgentService): Router {
       res.json(response);
     } catch (err: any) {
       console.error("[AgentRouter] Error in /chat:", err);
-      res.status(500).json({
-        error: {
-          code: "INTERNAL",
-          message: err.message || "Internal agent error",
-        },
+      const message = err instanceof Error ? err.message : "The AI request failed.";
+      res.json({
+        traceId: ctx.traceId,
+        sessionId: body.sessionId,
+        status: "failed",
+        answer: [{ type: "text", markdown: message, provenance: [] }],
+        steps: [],
+        uiState: null,
+        verification: { ok: false, attempts: 0, expected: null, actual: null, mismatches: [] },
       });
     }
   });
@@ -57,13 +61,13 @@ export function createAgentRouter(agent: AgentService): Router {
     }
 
     const body = parseRes.data;
-    const user = (req as any).user;
+    const auth = req.auth;
 
     const ctx: RequestContext = {
-      tenantId: user?.tenantId ?? "tenant_demo",
+      tenantId: auth?.tenantId ?? "tenant_demo",
       appId: (req.body.appId as string) || "hospital",
-      userId: user?.id ?? "user_demo",
-      role: user?.role ?? "staff",
+      userId: auth?.userId ?? "user_demo",
+      role: auth?.role ?? "staff",
       sessionId: body.sessionId,
       traceId: (req.headers["x-trace-id"] as string) || `trace-${crypto.randomUUID().slice(0, 8)}`,
       now: process.env.DEMO_NOW || "2026-10-07",

@@ -24,7 +24,7 @@
     "smoke": "npm run smoke -w evaluation",
     "seed": "npm run seed -w backend",
     "import:app": "npm run import:app -w backend --",
-    "import:fixtures": "npm run import:app -- metadata/hospital.json --tenant tenant-a && npm run import:app -- metadata/hotel.json --tenant tenant-b",
+    "import:fixtures": "npm run import:app -- metadata/hospital.json --tenant tenant-a --data data/generated/hospital.data.json && npm run import:app -- metadata/hotel.json --tenant tenant-b --data data/generated/hotel.data.json",
     "import:retail": "npm run import:app -- metadata/retail.json --tenant tenant-a"
   }
 }

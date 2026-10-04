@@ -25,9 +25,18 @@ async function run(): Promise<void> {
   const filePath = path.resolve(process.env.INIT_CWD ?? process.cwd(), metadataFile);
   const parsedJson: unknown = JSON.parse(await readFile(filePath, "utf8"));
   const bundleParse = ImportBundle.safeParse(parsedJson);
-  const bundle = bundleParse.success
+  let bundle = bundleParse.success
     ? bundleParse.data
     : { metadata: AppMetadata.parse(parsedJson) };
+
+  const dataFile = argumentValue(args, "--data");
+  if (dataFile) {
+    const dataPath = path.resolve(process.env.INIT_CWD ?? process.cwd(), dataFile);
+    const dataJson: unknown = JSON.parse(await readFile(dataPath, "utf8"));
+    if (dataJson && typeof dataJson === "object" && !Array.isArray(dataJson)) {
+      bundle = { ...bundle, data: dataJson as Record<string, Record<string, unknown>[]> };
+    }
+  }
 
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
   try {

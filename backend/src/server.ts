@@ -5,7 +5,8 @@ import cors from "cors";
 import type { Request, Response, NextFunction } from "express";
 
 import { createServices } from "./container.js";
-import { attachAuth } from "./middleware/auth.js";
+import { attachAuth, buildRequestCtx } from "./middleware/auth.js";
+import { MetadataAuthenticationError } from "./metadata/routes.js";
 import { createAuthRouter } from "./routes/auth.js";
 import { createTracesRouter } from "./routes/traces.js";
 import { createEvalRouter } from "./routes/eval.js";
@@ -44,10 +45,21 @@ async function main() {
   app.use("/api/auth", createAuthRouter(pool));
 
   // ── Metadata / Apps (P2) ─────────────────────────────────────────────────
-  // P2 mounts their router at /api/apps via their routes file
-  const metaMod = await tryImport<{ createAppsRouter: (metadata: any, pool: any) => any }>("./metadata/routes.js");
-  if (metaMod?.createAppsRouter) {
-    app.use("/api/apps", metaMod.createAppsRouter(services.metadata, pool));
+  const metaMod = await tryImport<{ createMetadataRouter: (opts: any) => any }>('./metadata/routes.js');
+  if (metaMod?.createMetadataRouter) {
+    app.use("/api/apps", metaMod.createMetadataRouter({
+      metadata: services.metadata,
+      resolveTenantId: (req: Request) => {
+        if (!req.auth) throw new MetadataAuthenticationError();
+        return req.auth.tenantId;
+      },
+      resolveContext: (req: Request, appId: string) => {
+        if (!req.auth) throw new MetadataAuthenticationError();
+        const ctx = buildRequestCtx(req);
+        if (appId) ctx.appId = appId;
+        return ctx;
+      },
+    }));
   } else {
     console.warn("[server] metadata routes not ready — /api/apps not mounted");
   }
@@ -68,17 +80,17 @@ async function main() {
   }
 
   // ── UI / SSE (P4) ─────────────────────────────────────────────────────────
-  const uiMod = await tryImport<{ createUiRouter: (services: any) => any }>("./ui/routes.js");
-  if (uiMod?.createUiRouter) {
-    app.use("/api", uiMod.createUiRouter(services));
+  const uiMod = await tryImport<{ uiRouter: any }>("./ui/index.js");
+  if (uiMod?.uiRouter) {
+    app.use("/api", uiMod.uiRouter);
   } else {
     console.warn("[server] ui routes not ready — /api/events, /api/ui-state not mounted");
   }
 
   // ── Agent (P3) ────────────────────────────────────────────────────
-  const agentMod = await tryImport<{ createAgentRouter: (services: any) => any }>("./agent/routes.js");
+  const agentMod = await tryImport<{ createAgentRouter: (agent: any) => any }>("./agent/routes.js");
   if (agentMod?.createAgentRouter) {
-    app.use("/api/agent", agentMod.createAgentRouter(services));
+    app.use("/api/agent", agentMod.createAgentRouter(services.agent));
   } else {
     console.warn("[server] agent routes not ready — /api/agent not mounted");
   }

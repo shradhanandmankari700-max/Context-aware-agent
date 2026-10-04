@@ -13,11 +13,11 @@ import crypto from "node:crypto";
 function defaultModelForProvider(provider: SupportedLlmProvider): string {
   switch (provider) {
     case "gemini":
-      return "gemini-1.5-flash";
+      return "gemini-3.8-flash";
     case "groq":
-      return "llama-3.3-70b-versatile";
+      return "qwen/qwen3.8-27b";
     case "openrouter":
-      return "google/gemini-flash-1.5";
+      return "google/gemini-2.5-flash";
     case "ollama":
       return "llama3.1";
   }

@@ -295,6 +295,72 @@ describe("Agent Loop", () => {
     expect(tracesSaved[0]!.invalidActionsExecuted).toBe(0);
   });
 
+  it("returns a failed response instead of throwing when the LLM fails", async () => {
+    const failingLlm = {
+      json: async () => {
+        throw new Error("Gemini API error (status 404): model unavailable");
+      },
+      text: async () => ({ data: "" }),
+      embed: async () => [[]],
+    } as any;
+
+    const agent = createAgent({
+      metadata: createMockMetadataStore(),
+      ui: createMockUiAdapter(),
+      tools: createMockToolRegistry(),
+      traces: createMockTraceStore(),
+      llm: failingLlm,
+      memoryStore,
+    });
+
+    const response = await agent.chat(mockContext, {
+      sessionId: "session-12345678",
+      appId: "hospital",
+      message: "Show low-stock medicines",
+    });
+
+    const firstAnswer = response.answer[0];
+
+    expect(response.status).toBe("failed");
+    expect(firstAnswer?.type).toBe("text");
+    if (firstAnswer?.type !== "text") {
+      throw new Error("Expected failed response answer to be a text block");
+    }
+    expect(firstAnswer.markdown).toContain("model unavailable");
+    expect(response.verification?.ok).toBe(false);
+  });
+
+  it("saves a failed trace even when the LLM throws", async () => {
+    const failingLlm = {
+      json: async () => {
+        throw new Error("Gemini API error (status 404): model unavailable");
+      },
+      text: async () => ({ data: "" }),
+      embed: async () => [[]],
+    } as any;
+
+    const traces = createMockTraceStore();
+    const agent = createAgent({
+      metadata: createMockMetadataStore(),
+      ui: createMockUiAdapter(),
+      tools: createMockToolRegistry(),
+      traces,
+      llm: failingLlm,
+      memoryStore,
+    });
+
+    const response = await agent.chat(mockContext, {
+      sessionId: "session-12345678",
+      appId: "hospital",
+      message: "Show low-stock medicines",
+    });
+
+    expect(response.status).toBe("failed");
+    expect(tracesSaved).toHaveLength(1);
+    expect((await traces.get(response.traceId))?.traceId).toBe(response.traceId);
+    expect((await traces.get(response.traceId))?.status).toBe("failed");
+  });
+
   it("handles ambiguity by returning clarification", async () => {
     const fakeLlm = createFakeLlmClient();
 
