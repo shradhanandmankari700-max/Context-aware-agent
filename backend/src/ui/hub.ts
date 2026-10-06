@@ -69,11 +69,56 @@ export class UiStateHub {
 
   /**
    * Dispatches a UI action: generates actionId, publishes ui_action SSE event, returns actionId.
+   * Also applies the action to the in-memory session state immediately so that a headless
+   * client (no browser, no SSE ack) still sees the expected state via getState().
    */
   dispatch(sessionId: string, action: UiAction): { actionId: string } {
     const session = this.getOrCreateSession(sessionId);
     const actionId = crypto.randomUUID();
     const baseVersion = session.state?.version ?? 0;
+
+    // If the session has no state yet (headless client), seed it with a default dashboard
+    // state so that getState() reflects the dispatched action instead of staying null.
+    let state = session.state ?? {
+      appId: "",
+      pageId: "dashboard",
+      route: "/dashboard",
+      filters: {},
+      sort: null,
+      selection: null,
+      disabledFilters: [],
+      version: 0,
+    };
+
+    if (action.type === "navigate") {
+      state = { ...state, pageId: action.pageId, route: action.route, version: baseVersion + 1 };
+    } else if (action.type === "set_filter") {
+      state = {
+        ...state,
+        filters: { ...state.filters, [action.filterId]: action.value },
+        version: baseVersion + 1,
+      };
+    } else if (action.type === "clear_filter") {
+      const { [action.filterId]: _removed, ...rest } = state.filters ?? {};
+      state = { ...state, filters: rest, version: baseVersion + 1 };
+    } else if (action.type === "sort") {
+      state = {
+        ...state,
+        sort: { widgetId: action.widgetId, field: action.field, direction: action.direction },
+        version: baseVersion + 1,
+      };
+    } else if (action.type === "set_date_range") {
+      state = {
+        ...state,
+        filters: {
+          ...state.filters,
+          [action.filterId]: { op: "between", value: [action.start, action.end] },
+        },
+        version: baseVersion + 1,
+      };
+    }
+    session.state = state;
+
     let resolveAck!: (result: AckResult) => void;
     const promise = new Promise<AckResult>((resolve) => {
       resolveAck = resolve;

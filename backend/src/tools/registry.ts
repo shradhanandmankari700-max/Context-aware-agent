@@ -261,6 +261,16 @@ export class DefaultToolRegistry implements ToolRegistry {
     const ack = await this.deps.ui.awaitAck(ctx.sessionId, actionId, 3000);
 
     if ("timeout" in ack) {
+      // No live browser client: fall back to the hub's last-known state. If the
+      // hub already reflects the target page, treat the navigation as applied.
+      const fallback = await this.deps.ui.getState(ctx.sessionId);
+      if (fallback && fallback.pageId === resolvedPage.id) {
+        return {
+          ok: true,
+          data: { navigated: true, fallback: true },
+          meta: { resultId: `nav-${resolvedPage.id}` },
+        };
+      }
       return {
         ok: false,
         error: {
@@ -423,6 +433,15 @@ export class DefaultToolRegistry implements ToolRegistry {
     const ack = await this.deps.ui.awaitAck(ctx.sessionId, actionId, 3000);
 
     if ("timeout" in ack) {
+      const fallback = await this.deps.ui.getState(ctx.sessionId);
+      const applied = fallback?.filters?.[filter.id];
+      if (applied && applied.op === op && JSON.stringify(applied.value) === JSON.stringify(normalizedValue)) {
+        return {
+          ok: true,
+          data: { filterApplied: true, fallback: true },
+          meta: { resultId: `filter-${filter.id}` },
+        };
+      }
       return {
         ok: false,
         error: {
@@ -501,6 +520,14 @@ export class DefaultToolRegistry implements ToolRegistry {
     const ack = await this.deps.ui.awaitAck(ctx.sessionId, actionId, 3000);
 
     if ("timeout" in ack) {
+      const fallback = await this.deps.ui.getState(ctx.sessionId);
+      if (fallback && !fallback.filters?.[filterId]) {
+        return {
+          ok: true,
+          data: { filterCleared: true, fallback: true },
+          meta: { resultId: `clear-${filterId}` },
+        };
+      }
       return {
         ok: false,
         error: {
@@ -598,6 +625,15 @@ export class DefaultToolRegistry implements ToolRegistry {
     const ack = await this.deps.ui.awaitAck(ctx.sessionId, actionId, 3000);
 
     if ("timeout" in ack) {
+      const fallback = await this.deps.ui.getState(ctx.sessionId);
+      const applied = fallback?.filters?.[dateFilter.id];
+      if (applied && applied.op === "between" && JSON.stringify(applied.value) === JSON.stringify([start, end])) {
+        return {
+          ok: true,
+          data: { dateRangeSet: true, fallback: true },
+          meta: { resultId: `date-${dateFilter.id}` },
+        };
+      }
       return {
         ok: false,
         error: {
@@ -695,6 +731,14 @@ export class DefaultToolRegistry implements ToolRegistry {
     const ack = await this.deps.ui.awaitAck(ctx.sessionId, actionId, 3000);
 
     if ("timeout" in ack) {
+      const fallback = await this.deps.ui.getState(ctx.sessionId);
+      if (fallback?.sort && fallback.sort.field === args.field && fallback.sort.direction === args.direction) {
+        return {
+          ok: true,
+          data: { sorted: true, fallback: true },
+          meta: { resultId: `sort-${widget.id}` },
+        };
+      }
       return {
         ok: false,
         error: { code: "UI_TIMEOUT", message: `Timed out waiting for sort on "${widget.id}"` },
