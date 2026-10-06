@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import type { AppMetadata, RequestContext } from "@cab/contracts";
+import { AgentTurn, type AppMetadata, type RequestContext, type ToolCall } from "@cab/contracts";
 import hospitalData from "../../../metadata/hospital.json";
 import hotelData from "../../../metadata/hotel.json";
 import { createAgent } from "./agent";
@@ -53,12 +53,13 @@ describe("Scenario Tests (5 Judge Tests + Resilience Cases)", () => {
     const tools = createMockToolRegistry(hospitalMetadata, ui);
     const traces = createMockTraceStore();
 
-    // Turn 1: navigate & set filter
+    // Ignore a model-added daysRemaining threshold; only the requested low-stock classification applies.
     fakeLlm.enqueueJson({
       intent: "Show medicines running low on stock",
       reasoning: "Navigate to medicines page and apply stockLevel=low filter",
       steps: [
         { tool: "navigate", args: { target: "medicines" } },
+        { tool: "set_filter", args: { filterId: "daysRemaining", op: "lte", value: 5 } },
         { tool: "set_filter", args: { filterId: "stockLevel", op: "eq", value: "low" } },
       ],
       done: false,
@@ -99,6 +100,20 @@ describe("Scenario Tests (5 Judge Tests + Resilience Cases)", () => {
     expect(res.status).toBe("ok");
     expect(res.uiState?.pageId).toBe("medicines");
     expect(res.uiState?.filters["stockLevel"]).toEqual({ op: "eq", value: "low" });
+    expect(res.uiState?.filters["daysRemaining"]).toBeUndefined();
+    expect(tools.executedCalls.some((call) =>
+      call.tool === "set_filter" && call.args.filterId === "daysRemaining",
+    )).toBe(false);
+    expect(
+      tools.executedCalls.map((call) =>
+        call.tool === "set_filter" ? `set_filter:${call.args.filterId}` : call.tool,
+      ),
+    ).toEqual(["navigate", "set_filter:stockLevel", "get_widget_data"]);
+    const trace = await traces.get(res.traceId);
+    const firstTurn = trace?.turns[0] as { steps?: ToolCall[] } | undefined;
+    expect(firstTurn?.steps?.some(
+      (step) => step.tool === "set_filter" && step.args.filterId === "daysRemaining",
+    )).toBe(false);
     expect(res.verification?.ok).toBe(true);
     expect(res.deepLink).toContain("/inventory/medicines");
     expect(res.deepLink).toContain("f.stockLevel=eq%3Alow");
@@ -117,7 +132,7 @@ describe("Scenario Tests (5 Judge Tests + Resilience Cases)", () => {
   // --------------------------------------------------------------------------
   // JUDGE TEST 2: Hospital - Why are these medicines running low?
   // --------------------------------------------------------------------------
-  it("Judge Test 2: 'Why are these medicines running low?' runs analysis and cites evidence", async () => {
+  it("plans medicine low-stock analysis with schema-valid specs and assembles numeric results from tools", async () => {
     const fakeLlm = createFakeLlmClient();
     const ui = createMockUiAdapter({
       appId: "hospital",
@@ -133,10 +148,10 @@ describe("Scenario Tests (5 Judge Tests + Resilience Cases)", () => {
     const tools = createMockToolRegistry(hospitalMetadata, ui);
     const traces = createMockTraceStore();
 
-    // Planner calls analysis
-    fakeLlm.enqueueJson({
+    // NVIDIA-style structured JSON is parsed against the same AgentTurn schema used by the live planner.
+    const plannerTurn = AgentTurn.parse({
       intent: "Analyze why Amoxicillin and Insulin are low on stock",
-      reasoning: "Compare medicine usage over the last 14 days against prior period",
+      reasoning: "Compare usage, inspect the daily insulin trend, and compare diagnosis counts.",
       steps: [
         {
           tool: "run_analysis",
@@ -145,21 +160,56 @@ describe("Scenario Tests (5 Judge Tests + Resilience Cases)", () => {
               kind: "period_compare",
               dataset: "medicine_usage",
               metric: { field: "quantity", agg: "sum" },
-              periodA: { token: "last_7_days" },
-              periodB: { token: "last_week" },
+              dateField: "usage_date",
+              periodA: { start: "2026-09-23", end: "2026-10-06" },
+              periodB: { start: "2026-09-09", end: "2026-09-22" },
+              breakdownBy: ["medicine"],
+              where: [],
+            },
+          },
+        },
+        {
+          tool: "run_analysis",
+          args: {
+            spec: {
+              kind: "trend",
+              dataset: "medicine_usage",
+              metric: { field: "quantity", agg: "sum" },
+              dateField: "usage_date",
+              grain: "day",
+              period: { token: "last_30_days" },
+              breakdownBy: [],
+              where: [{ field: "medicine", op: "eq", value: "Insulin" }],
+            },
+          },
+        },
+        {
+          tool: "run_analysis",
+          args: {
+            spec: {
+              kind: "period_compare",
+              dataset: "prescriptions",
+              metric: { field: "quantity", agg: "sum" },
+              dateField: "prescribed_on",
+              periodA: { start: "2026-09-23", end: "2026-10-06" },
+              periodB: { start: "2026-09-09", end: "2026-09-22" },
+              breakdownBy: ["diagnosis"],
+              where: [{ field: "medicine", op: "eq", value: "Amoxicillin" }],
             },
           },
         },
       ],
       done: true,
     });
+    expect(plannerTurn.steps.every((step) => step.tool === "run_analysis")).toBe(true);
+    fakeLlm.enqueueJson(plannerTurn);
 
-    // Narrator
+    // The narrator supplies no numeric claims; the assembler fills comparison values from tool output.
     fakeLlm.enqueueJson({
       blocks: [
         {
           type: "text",
-          markdown: "Amoxicillin usage increased by 11% month-to-date due to respiratory diagnoses, while orders were delayed.",
+          markdown: "The analysis compares recorded medicine usage across the selected periods; it does not by itself establish a cause.",
           cites: ["res-analysis-1"],
         },
         {
@@ -179,8 +229,177 @@ describe("Scenario Tests (5 Judge Tests + Resilience Cases)", () => {
     });
 
     expect(res.status).toBe("ok");
-    expect(tools.executedCalls.some((c) => c.tool === "run_analysis")).toBe(true);
-    expect(res.answer.some((b) => b.type === "comparison")).toBe(true);
+    expect(tools.executedCalls.filter((call) => call.tool === "run_analysis")).toHaveLength(3);
+    expect(res.answer).toContainEqual(expect.objectContaining({
+      type: "comparison",
+      a: { label: "2026-10-01 to 2026-10-07", value: 500 },
+      b: { label: "2026-09-01 to 2026-09-07", value: 450 },
+      pctChange: 0.11,
+    }));
+    const comparison = res.answer.find((block) => block.type === "comparison");
+    expect(comparison?.type === "comparison" ? comparison.provenance[0]?.resultId : undefined).toBe("res-analysis-1");
+  });
+
+  it("blocks an unrequested destructive action in a read-only analysis plan", async () => {
+    const fakeLlm = createFakeLlmClient();
+    const ui = createMockUiAdapter({
+      appId: "hospital",
+      pageId: "medicines",
+      route: "/inventory/medicines",
+      filters: { stockLevel: { op: "eq", value: "low" } },
+      sort: null,
+      selection: null,
+      disabledFilters: [],
+      version: 1,
+    });
+    const metadata = createMockMetadataStore(hospitalMetadata);
+    const tools = createMockToolRegistry(hospitalMetadata, ui);
+    const traces = createMockTraceStore();
+
+    fakeLlm.enqueueJson({
+      intent: "Explain why medicines are running low",
+      reasoning: "Read usage evidence and do not mutate application data.",
+      steps: [
+        {
+          tool: "run_analysis",
+          args: {
+            spec: {
+              kind: "period_compare",
+              dataset: "medicine_usage",
+              metric: { field: "quantity", agg: "sum" },
+              dateField: "usage_date",
+              periodA: { start: "2026-09-23", end: "2026-10-06" },
+              periodB: { start: "2026-09-09", end: "2026-09-22" },
+              breakdownBy: ["medicine"],
+              where: [],
+            },
+          },
+        },
+        {
+          tool: "invoke_app_action",
+          args: { actionId: "discardExpiredStock", params: { medicine: "Aspirin" } },
+        },
+      ],
+      done: true,
+    });
+    fakeLlm.enqueueJson({
+      blocks: [{
+        type: "text",
+        markdown: "The requested analysis was completed from tool evidence.",
+        cites: ["res-analysis-1"],
+      }],
+    });
+
+    const agent = createAgent({ metadata, ui, tools, traces, llm: fakeLlm, memoryStore });
+    const response = await agent.chat(hospitalCtx, {
+      sessionId: hospitalCtx.sessionId,
+      appId: "hospital",
+      message: "Why are these medicines running low?",
+    });
+
+    expect(response.status).toBe("ok");
+    expect(response.pendingConfirmation).toBeUndefined();
+    expect(tools.executedCalls.map((call) => call.tool)).toEqual(["run_analysis"]);
+    expect(tools.executedCalls.some((call) => call.tool === "invoke_app_action")).toBe(false);
+    const trace = await traces.get(response.traceId);
+    expect(trace?.recoveries).toContainEqual(expect.objectContaining({
+      strategy: "remove_unrequested_mutation",
+      error: 'Blocked unrequested application action "discardExpiredStock"',
+    }));
+  });
+
+  // --------------------------------------------------------------------------
+  // M3-1 regression: get_widget_data is page-scoped at execution time, so a plan
+  // that reads a widget without opening its page must be rejected BEFORE any tool
+  // runs, and the planner must recover by navigating first.
+  // --------------------------------------------------------------------------
+  it("M3-1: rejects an off-page get_widget_data plan and recovers by navigating first", async () => {
+    const fakeLlm = createFakeLlmClient();
+    // Mirrors the live failure: a fresh browser session starts on the dashboard,
+    // not on the Medicines page.
+    const ui = createMockUiAdapter({
+      appId: "hospital",
+      pageId: "dashboard",
+      route: "/dashboard",
+      filters: {},
+      sort: null,
+      selection: null,
+      disabledFilters: [],
+      version: 0,
+    });
+    const metadata = createMockMetadataStore(hospitalMetadata);
+    const tools = createMockToolRegistry(hospitalMetadata, ui);
+    const traces = createMockTraceStore();
+
+    const usageSpec = {
+      kind: "period_compare",
+      dataset: "medicine_usage",
+      metric: { field: "quantity", agg: "sum" },
+      dateField: "usage_date",
+      periodA: { start: "2026-09-23", end: "2026-10-06" },
+      periodB: { start: "2026-09-09", end: "2026-09-22" },
+      breakdownBy: ["medicine"],
+      where: [],
+    } as const;
+
+    // Turn 1 — the shape the live planner emitted: analysis + widget read, no navigate.
+    fakeLlm.enqueueJson({
+      intent: "Explain why medicines are running low",
+      reasoning: "Compare usage and read the current stock table.",
+      steps: [
+        { tool: "run_analysis", args: { spec: usageSpec } },
+        { tool: "get_widget_data", args: { widgetId: "medicineStock" } },
+      ],
+      done: true,
+    });
+
+    // Turn 2 — after seeing WIDGET_NOT_FOUND with the owning page as candidate.
+    fakeLlm.enqueueJson({
+      intent: "Explain why medicines are running low",
+      reasoning: "Open the Medicines page before reading its widget.",
+      steps: [
+        { tool: "navigate", args: { target: "medicines" } },
+        { tool: "run_analysis", args: { spec: usageSpec } },
+        { tool: "get_widget_data", args: { widgetId: "medicineStock" } },
+      ],
+      done: true,
+    });
+
+    fakeLlm.enqueueJson({
+      blocks: [
+        {
+          type: "text",
+          markdown: "Usage rose in the recent period and the stock table confirms low days remaining.",
+          cites: ["res-analysis-1", "res-widget-medicines"],
+        },
+        { type: "comparison", title: "Usage Comparison", resultId: "res-analysis-1" },
+      ],
+    });
+
+    const agent = createAgent({ metadata, ui, tools, traces, llm: fakeLlm, memoryStore });
+    const res = await agent.chat(hospitalCtx, {
+      sessionId: hospitalCtx.sessionId,
+      appId: "hospital",
+      message: "Why are these medicines running low?",
+    });
+
+    // The invalid plan never reached execution, so no step failed at runtime.
+    expect(res.status).toBe("ok");
+    expect(res.steps.every((step) => step.status === "ok")).toBe(true);
+    expect(tools.executedCalls.map((call) => call.tool)).toEqual([
+      "navigate",
+      "run_analysis",
+      "get_widget_data",
+    ]);
+    expect(res.uiState?.pageId).toBe("medicines");
+
+    // The planner was told exactly what was wrong before it re-planned.
+    const replanRequest = fakeLlm.getRecordedCalls()[1]?.request as { user: string };
+    expect(replanRequest.user).toContain("PREVIOUS VALIDATOR ERRORS");
+    expect(replanRequest.user).toContain("WIDGET_NOT_FOUND");
+
+    const trace = await traces.get(res.traceId);
+    expect(JSON.stringify(trace?.recoveries ?? [])).not.toContain("Unknown page or widget");
   });
 
   // --------------------------------------------------------------------------
@@ -235,6 +454,10 @@ describe("Scenario Tests (5 Judge Tests + Resilience Cases)", () => {
 
     expect(res.status).toBe("ok");
     expect(res.uiState?.filters["daysRemaining"]).toEqual({ op: "lte", value: 2 });
+    expect(tools.executedCalls).toContainEqual({
+      tool: "set_filter",
+      args: { filterId: "daysRemaining", op: "lte", value: 2 },
+    });
     expect(res.verification?.ok).toBe(true);
   });
 

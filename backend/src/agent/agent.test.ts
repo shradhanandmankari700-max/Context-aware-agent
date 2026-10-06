@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import type {
   AppMetadata,
+  LlmClient,
+  LlmJsonRequest,
+  LlmResult,
   MetadataStore,
   RequestContext,
   ToolCall,
@@ -11,11 +14,13 @@ import type {
   UiAdapter,
   UiState,
 } from "@cab/contracts";
+import { getWidget } from "@cab/contracts";
 import hospitalData from "../../../metadata/hospital.json";
 import { createAgent } from "./agent";
 import { createFakeLlmClient } from "../llm/fake";
 import { MemoryStore } from "./memory";
 import { checkFaithfulness } from "./faithfulness";
+import { LlmError } from "../llm/types";
 
 const hospitalMetadata = hospitalData as unknown as AppMetadata;
 
@@ -395,6 +400,144 @@ describe("Agent Loop", () => {
     expect(executedTools).toHaveLength(0);
   });
 
+  it.each([
+    "Show medicines that are running low.",
+    "Show me medicines that are running low.",
+    "Which medicines are running low?",
+  ])("retries a clarification branch for directly actionable low-stock request: %s", async (message) => {
+    const fakeLlm = createFakeLlmClient();
+    fakeLlm.enqueueJson({
+      intent: "Low-stock medicines",
+      reasoning: "Ask for clarification.",
+      clarification: { question: "Which medicines do you mean?" },
+      steps: [],
+      done: true,
+    });
+    fakeLlm.enqueueJson({
+      intent: "Show low-stock medicines",
+      reasoning: "Navigate and apply the low-stock classification.",
+      steps: [
+        { tool: "navigate", args: { target: "medicines" } },
+        { tool: "set_filter", args: { filterId: "stockLevel", op: "eq", value: "low" } },
+      ],
+      done: false,
+    });
+    fakeLlm.enqueueJson({
+      intent: "Show low-stock medicines",
+      reasoning: "Retrieve the filtered medicine data.",
+      steps: [{ tool: "get_widget_data", args: { widgetId: "medicineStock" } }],
+      done: true,
+    });
+    fakeLlm.enqueueJson({ blocks: [{ type: "text", markdown: "Low-stock medicines are shown.", cites: [] }] });
+
+    const agent = createAgent({
+      metadata: createMockMetadataStore(),
+      ui: createMockUiAdapter(),
+      tools: createMockToolRegistry(),
+      traces: createMockTraceStore(),
+      llm: fakeLlm,
+      memoryStore,
+    });
+
+    const response = await agent.chat(mockContext, {
+      sessionId: mockContext.sessionId,
+      appId: "hospital",
+      message,
+    });
+
+    expect(response.status).toBe("ok");
+    expect(response.clarification).toBeUndefined();
+    expect(executedTools.map((step) => step.tool)).toEqual(["navigate", "set_filter", "get_widget_data"]);
+    expect(executedTools.some((step) =>
+      step.tool === "set_filter" && step.args.filterId === "daysRemaining",
+    )).toBe(false);
+    expect(fakeLlm.getRecordedCalls()[1]?.request).toMatchObject({
+      schemaName: "AgentTurn",
+    });
+    expect((fakeLlm.getRecordedCalls()[1]?.request as { user: string }).user)
+      .toContain("directly actionable");
+  });
+
+  it("retries after malformed AgentTurn JSON repair for a directly actionable low-stock request", async () => {
+    const fakeLlm = createFakeLlmClient();
+    fakeLlm.enqueueJson({
+      intent: "Show low-stock medicines",
+      reasoning: "Navigate to medicines and filter by low stock.",
+      steps: [
+        { tool: "navigate", args: { target: "medicines" } },
+        { tool: "set_filter", args: { filterId: "stockLevel", op: "eq", value: "low" } },
+      ],
+      done: false,
+    });
+    fakeLlm.enqueueJson({
+      intent: "Show low-stock medicines",
+      reasoning: "Retrieve matching medicines.",
+      steps: [{ tool: "get_widget_data", args: { widgetId: "medicineStock" } }],
+      done: true,
+    });
+    fakeLlm.enqueueJson({ blocks: [{ type: "text", markdown: "Low-stock medicines are shown.", cites: [] }] });
+
+    const queuedJson = fakeLlm.json.bind(fakeLlm);
+    let firstCall = true;
+    const llm: LlmClient = {
+      ...fakeLlm,
+      async json<T>(request: LlmJsonRequest, parse: (raw: unknown) => T): Promise<LlmResult<T>> {
+        if (firstCall) {
+          firstCall = false;
+          throw new LlmError("Malformed clarification rejected after repair", { code: "JSON_PARSE_ERROR" });
+        }
+        return queuedJson<T>(request, parse);
+      },
+    };
+    const agent = createAgent({
+      metadata: createMockMetadataStore(),
+      ui: createMockUiAdapter(),
+      tools: createMockToolRegistry(),
+      traces: createMockTraceStore(),
+      llm,
+      memoryStore,
+    });
+
+    const response = await agent.chat(mockContext, {
+      sessionId: mockContext.sessionId,
+      appId: "hospital",
+      message: "Show medicines that are running low.",
+    });
+
+    expect(response.status).toBe("ok");
+    expect(response.clarification).toBeUndefined();
+    expect(executedTools.map((step) => step.tool)).toEqual(["navigate", "set_filter", "get_widget_data"]);
+  });
+
+  it("preserves genuine clarification for a revenue request without a period", async () => {
+    const fakeLlm = createFakeLlmClient();
+    fakeLlm.enqueueJson({
+      intent: "Show revenue",
+      reasoning: "A period is required to retrieve revenue.",
+      clarification: { question: "Which period should I use?" },
+      steps: [],
+      done: true,
+    });
+    const agent = createAgent({
+      metadata: createMockMetadataStore(),
+      ui: createMockUiAdapter(),
+      tools: createMockToolRegistry(),
+      traces: createMockTraceStore(),
+      llm: fakeLlm,
+      memoryStore,
+    });
+
+    const response = await agent.chat(mockContext, {
+      sessionId: mockContext.sessionId,
+      appId: "hospital",
+      message: "Show revenue.",
+    });
+
+    expect(response.status).toBe("needs_clarification");
+    expect(response.clarification?.question).toBe("Which period should I use?");
+    expect(executedTools).toHaveLength(0);
+  });
+
   it("stops at policy gate for destructive action and resumes on confirm", async () => {
     const fakeLlm = createFakeLlmClient();
 
@@ -405,7 +548,7 @@ describe("Agent Loop", () => {
       steps: [
         {
           tool: "invoke_app_action",
-          args: { actionId: "discardExpiredStock", params: { medicine: "Aspirin" } },
+          args: { actionId: "discardExpiredStock", params: {} },
         },
       ],
       done: true,
@@ -424,7 +567,7 @@ describe("Agent Loop", () => {
     const response = await agent.chat(mockContext, {
       sessionId: "session-12345678",
       appId: "hospital",
-      message: "Discard expired stock for Aspirin",
+      message: "Discard expired stock.",
     });
 
     expect(response.status).toBe("needs_confirmation");

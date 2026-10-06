@@ -65,9 +65,12 @@ async function main() {
   }
 
   // ── Data + Analytics (P1) ─────────────────────────────────────────────────
-  const dataMod = await tryImport<{ createDataRouter: (services: any) => any }>("./data/routes.js");
+  const dataMod = await tryImport<{ createDataRouter: (data: any, context: (req: Request) => any) => any }>("./data/routes.js");
   if (dataMod?.createDataRouter) {
-    app.use("/api/data", dataMod.createDataRouter(services));
+    app.use("/api/data", dataMod.createDataRouter(services.data, (req: Request) => {
+      if (!req.auth) throw new Error("Authentication is required to access data");
+      return buildRequestCtx(req);
+    }));
   } else {
     console.warn("[server] data routes not ready — /api/data not mounted");
   }

@@ -26,11 +26,13 @@ import {
   diffUiState,
   toDeepLink,
 } from "@cab/contracts";
-import { buildNarratorPrompt, buildPlannerPrompt } from "./prompts";
-import { normalizeAgentTurnForSchema, validatePlan } from "./validate";
+import { buildNarratorPrompt, buildPlannerPrompt, isDirectLowStockRequest } from "./prompts";
+import { normalizeAgentTurnForSchema, removeUnrequestedAppActions, validatePlan } from "./validate";
 import { assembleAnswerBlocks, type ObservationRecord } from "./assembler";
 import { checkFaithfulness } from "./faithfulness";
 import { defaultMemoryStore, type MemoryStore } from "./memory";
+import { LlmError } from "../llm/types";
+import { getConfiguredLlmIdentity } from "../llm/client";
 
 export interface AgentDependencies {
   metadata: MetadataStore;
@@ -77,6 +79,15 @@ function deriveExpectedUiState(
   }
 }
 
+function toolCallSignature(call: ToolCall): string {
+  // Stable canonical JSON: tool name + args, sorted keys, no whitespace.
+  try {
+    return `${call.tool}:${JSON.stringify(call.args, Object.keys(call.args ?? {}).sort())}`;
+  } catch {
+    return `${call.tool}:${JSON.stringify(call.args)}`;
+  }
+}
+
 export function createAgent(deps: AgentDependencies): AgentService {
   const memoryStore = deps.memoryStore ?? defaultMemoryStore;
 
@@ -106,6 +117,7 @@ export function createAgent(deps: AgentDependencies): AgentService {
     async chat(ctx: RequestContext, req: ChatRequest): Promise<AgentResponse> {
       const startTime = Date.now();
       const traceId = ctx.traceId || `trace-${crypto.randomUUID().slice(0, 8)}`;
+      const llmIdentity = getConfiguredLlmIdentity();
 
       try {
         let invalidActionsBlocked = 0;
@@ -115,6 +127,14 @@ export function createAgent(deps: AgentDependencies): AgentService {
         const stepRecords: StepRecord[] = [];
         const observations: ObservationRecord[] = [];
         const recoveriesLog: Array<{ step: number; error: string; strategy: string }> = [];
+
+        // Repeat guard: remember every tool call that FAILED at execution time
+        // (signature = tool name + stable JSON of args). If the planner proposes
+        // the identical call again we refuse to execute it, feed the feedback back
+        // to the planner, and stop completely if it insists a second time.
+        const failedCalls = new Map<string, { code: string; message: string; repeats: number }>();
+        let pendingRepeatErrors: Array<{ stepIndex: number; code: string; message: string }> = [];
+        let repeatExhausted: { message: string } | null = null;
 
         let llmCalls = 0;
         let cachedLlmCalls = 0;
@@ -140,6 +160,7 @@ export function createAgent(deps: AgentDependencies): AgentService {
 
         // 3. Planner & Execution Loop (max 4 iterations)
         let finalIntent = req.message;
+        const directLowStockRequest = isDirectLowStockRequest(req.message);
         let isDone = false;
         let pendingConfirmation: AgentResponse["pendingConfirmation"] = undefined;
         let clarification: AgentResponse["clarification"] = undefined;
@@ -153,6 +174,12 @@ export function createAgent(deps: AgentDependencies): AgentService {
           let currentTurn: AgentTurn | null = null;
           let validatorErrors: Array<{ stepIndex: number; code: any; message: string; candidates?: string[] }> = [];
 
+          // Feed any repeat-guard feedback back into the planner prompt for this turn.
+          if (pendingRepeatErrors.length > 0) {
+            validatorErrors = [...validatorErrors, ...pendingRepeatErrors];
+            pendingRepeatErrors = [];
+          }
+
           // Validation & repair loop (max 2 repairs)
           for (let repair = 0; repair < 3; repair++) {
             const plannerPrompt = buildPlannerPrompt({
@@ -165,19 +192,71 @@ export function createAgent(deps: AgentDependencies): AgentService {
               validatorErrors,
             });
 
-            const llmRes = await deps.llm.json<AgentTurn>(
-              {
-                system: plannerPrompt.system,
-                user: plannerPrompt.user,
-                schemaName: "AgentTurn",
-              },
-              (raw) => AgentTurnSchema.parse(normalizeAgentTurnForSchema(raw)),
-            );
+            let generatedTurn: AgentTurn;
+            let cached = false;
+            try {
+              const llmRes = await deps.llm.json<AgentTurn>(
+                {
+                  system: plannerPrompt.system,
+                  user: plannerPrompt.user,
+                  schemaName: "AgentTurn",
+                },
+                (raw) => AgentTurnSchema.parse(normalizeAgentTurnForSchema(raw)),
+              );
+              generatedTurn = llmRes.data;
+              cached = llmRes.cached;
+            } catch (err) {
+              if (!directLowStockRequest || !(err instanceof LlmError) || err.code !== "JSON_PARSE_ERROR") {
+                throw err;
+              }
+              if (repair === 2) throw err;
+
+              validatorErrors = [{
+                stepIndex: -1,
+                code: "AMBIGUOUS",
+                message:
+                  'This request is directly actionable. Omit clarification and return a valid executable AgentTurn: navigate to Medicines, set stockLevel to "low", and get the medicine widget data. Do not add daysRemaining unless the user explicitly requested a time threshold.',
+              }];
+              continue;
+            }
 
             llmCalls++;
-            if (llmRes.cached) cachedLlmCalls++;
-            currentTurn = llmRes.data;
+            if (cached) cachedLlmCalls++;
+            currentTurn = generatedTurn;
             finalIntent = currentTurn.intent || finalIntent;
+
+            if (directLowStockRequest && currentTurn.clarification) {
+              if (repair === 2) {
+                throw new LlmError(
+                  "Planner returned clarification for a directly actionable low-stock request after retries",
+                  { code: "JSON_PARSE_ERROR" },
+                );
+              }
+              validatorErrors = [{
+                stepIndex: -1,
+                code: "AMBIGUOUS",
+                message:
+                  'This request is directly actionable. Omit clarification and return a valid executable AgentTurn: navigate to Medicines, set stockLevel to "low", and get the medicine widget data. Do not add daysRemaining unless the user explicitly requested a time threshold.',
+              }];
+              continue;
+            }
+
+            if (directLowStockRequest) {
+              currentTurn.steps = currentTurn.steps.filter(
+                (step) => !(step.tool === "set_filter" && step.args.filterId === "daysRemaining"),
+              );
+            }
+
+            const scopedTurn = removeUnrequestedAppActions(currentTurn, req.message, appMetadata);
+            currentTurn = scopedTurn.turn;
+            for (const actionId of scopedTurn.removedActionIds) {
+              invalidActionsBlocked++;
+              recoveriesLog.push({
+                step: -1,
+                error: `Blocked unrequested application action "${actionId}"`,
+                strategy: "remove_unrequested_mutation",
+              });
+            }
 
             const valRes = validatePlan(appMetadata, currentUiState, ctx.role, currentTurn);
             if (valRes.ok) {
@@ -193,6 +272,12 @@ export function createAgent(deps: AgentDependencies): AgentService {
               const badIndices = new Set(valRes.errors.map((e) => e.stepIndex));
               currentTurn.steps = currentTurn.steps.filter((_, idx) => !badIndices.has(idx));
             }
+          }
+
+          // Feed any repeat-guard feedback back into the planner prompt for the next turn.
+          if (pendingRepeatErrors.length > 0) {
+            validatorErrors = [...validatorErrors, ...pendingRepeatErrors];
+            pendingRepeatErrors = [];
           }
 
           turnsLog.push(currentTurn!);
@@ -248,6 +333,35 @@ export function createAgent(deps: AgentDependencies): AgentService {
           for (let sIdx = 0; sIdx < currentTurn!.steps.length; sIdx++) {
             const step = currentTurn!.steps[sIdx]!;
             const stepStartTime = Date.now();
+
+            // REPEAT GUARD: if this exact call already failed, refuse to run it again.
+            const sig = toolCallSignature(step);
+            const previousFailure = failedCalls.get(sig);
+            if (previousFailure) {
+              if (previousFailure.repeats >= 1) {
+                repeatExhausted = {
+                  message: `The planner repeated the same failing call "${step.tool}" twice after being told it failed with ${previousFailure.code}: ${previousFailure.message}. Choose a different tool or arguments.`,
+                };
+                stepErrorEncountered = true;
+                break;
+              }
+              previousFailure.repeats += 1;
+              const repeatMessage = `this exact call already failed with ${previousFailure.code}: ${previousFailure.message}; choose a different tool or arguments`;
+              pendingRepeatErrors.push({ stepIndex: sIdx, code: previousFailure.code, message: repeatMessage });
+              observations.push({
+                step: sIdx,
+                tool: step.tool,
+                data: null,
+                meta: { code: previousFailure.code, message: repeatMessage, repeated: true },
+              });
+              recoveriesLog.push({
+                step: sIdx,
+                error: repeatMessage,
+                strategy: "repeat_guard",
+              });
+              stepErrorEncountered = true;
+              break;
+            }
 
             const callRes = await deps.tools.execute(ctx, step);
             const durationMs = Date.now() - stepStartTime;
@@ -312,6 +426,9 @@ export function createAgent(deps: AgentDependencies): AgentService {
                 }
               }
             } else {
+              // Remember the failed call so an identical repeat is blocked.
+              failedCalls.set(sig, { code: callRes.error.code, message: callRes.error.message, repeats: 0 });
+
               // Step error: feed into observations to allow recovery
               observations.push({
                 step: sIdx,
@@ -327,6 +444,12 @@ export function createAgent(deps: AgentDependencies): AgentService {
               stepErrorEncountered = true;
               break;
             }
+          }
+
+          // If the planner repeated a previously failed call, stop the loop.
+          if (repeatExhausted) {
+            isDone = true;
+            break;
           }
 
           if (currentTurn!.done && !stepErrorEncountered) {
@@ -350,6 +473,14 @@ export function createAgent(deps: AgentDependencies): AgentService {
             {
               type: "text" as const,
               markdown: `Action required: ${pendingConfirmation.description}. Please confirm to proceed.`,
+              provenance: [],
+            },
+          ];
+        } else if (repeatExhausted) {
+          answerBlocks = [
+            {
+              type: "text" as const,
+              markdown: `I could not complete this: ${repeatExhausted.message} No further attempts were made.`,
               provenance: [],
             },
           ];
@@ -453,8 +584,7 @@ export function createAgent(deps: AgentDependencies): AgentService {
           llm: {
             calls: llmCalls,
             cachedCalls: cachedLlmCalls,
-            provider: "llm",
-            model: "model",
+            ...llmIdentity,
           },
           latencyMs: {
             total: totalDuration,
@@ -515,8 +645,7 @@ export function createAgent(deps: AgentDependencies): AgentService {
           llm: {
             calls: 0,
             cachedCalls: 0,
-            provider: "llm",
-            model: "unknown",
+            ...llmIdentity,
           },
           latencyMs: {
             total: Date.now() - startTime,

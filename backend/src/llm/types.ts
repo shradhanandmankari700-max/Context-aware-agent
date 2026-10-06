@@ -19,13 +19,14 @@ export class LlmError extends Error {
   }
 }
 
-export type SupportedLlmProvider = "gemini" | "groq" | "openrouter" | "ollama";
+export type SupportedLlmProvider = "gemini" | "groq" | "openrouter" | "ollama" | "nvidia";
 
 export interface LlmConfig {
   provider: SupportedLlmProvider;
   apiKey: string;
   apiKeysExtra: string[];
   model: string;
+  models: string[];
   fallbackProvider?: SupportedLlmProvider;
   fallbackApiKey?: string;
   fallbackModel?: string;
@@ -34,6 +35,7 @@ export interface LlmConfig {
   embeddingProvider: "local" | "gemini";
   embeddingDim: number;
   ollamaBaseUrl?: string;
+  nvidiaBaseUrl?: string;
 }
 
 export interface LlmClientOptions {

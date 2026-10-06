@@ -21,6 +21,21 @@ export interface NarratorPromptParams {
   observations: Array<{ tool: string; resultId?: string; data: unknown; meta?: unknown }>;
 }
 
+export function isDirectLowStockRequest(message: string): boolean {
+  const normalized = message.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+  const hasExplicitTimeThreshold =
+    /\b(?:within|in|under|less than|at most|no more than)\s+(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:days?|weeks?|months?)\b/.test(
+      normalized,
+    );
+
+  return (
+    !hasExplicitTimeThreshold &&
+    /\b(?:show|list|find|which|what|display)\b/.test(normalized) &&
+    /\bmedicines?\b/.test(normalized) &&
+    /\b(?:running low|low stock|low on stock)\b/.test(normalized)
+  );
+}
+
 export const PLANNER_SYSTEM_PROMPT = `You are the Planner AI for a Context-Aware Application Agent embedded in a business web app.
 Your role is to understand the user's intent, plan necessary UI actions and data inquiries, and emit structured steps.
 
@@ -29,10 +44,14 @@ CRITICAL RULES:
    {
      "intent": "Short summary of user goal",
      "reasoning": "One or two sentences explaining the plan (displayed in debug panel)",
-     "clarification": { "question": "...", "options": ["..."] }, // Optional: only if truly ambiguous
      "steps": [ ... ToolCall objects ... ],                       // Max 8 steps per turn
      "done": true | false                                         // true if goal is accomplished and ready to answer
    }
+   - The normal plan shape above omits "clarification". Only add "clarification": { "question": "<non-empty string>", "options"?: ["..."] } when the request is genuinely ambiguous and cannot be acted on yet. Never emit "clarification": {}, a missing question, or an empty question.
+   - Clarify only when the request cannot be acted on without information the user has not provided. Directly actionable requests, including "Show me the medicines that are running low.", MUST use the normal plan/action structure and MUST NOT include "clarification".
+   - Do not invent a clarification question. If clarification is genuinely needed, ask only for the missing information.
+   - Confirmation is not a separate AgentTurn shape: emit the applicable action step; the agent's policy gate handles confirmation. A completed turn uses "done": true and the agent produces the final answer from its observations.
+   - "Show revenue." has no period, so ask the user which period to use; do not assume one.
 
 2. USE ONLY IDENTIFIERS FROM CONTEXT:
    - Use only pageId, route, widgetId, filterId, dataset, and field names explicitly present in the provided RetrievalContext.
@@ -43,14 +62,32 @@ CRITICAL RULES:
    - Today's reference clock is fixed at \${now}. NEVER assume today is any other date.
    - NEVER calculate calendar dates yourself (e.g., do not compute 2026-10-08).
    - Use closed DateToken strings: "today", "tomorrow", "yesterday", "this_week", "last_week", "this_month", "last_month", "last_month_to_date", "last_7_days", "last_30_days", "this_quarter", "last_quarter", "year_to_date".
+   - That list is EXHAUSTIVE. Never invent a token: "last_14_days", "previous_14_days", "last_14", "past_two_weeks" and every other string outside the list are invalid and are rejected by the schema.
+   - When the window you need is not in the list, do NOT invent a token for it. Use explicit ISO dates instead, both required together: "periodA": { "start": "YYYY-MM-DD", "end": "YYYY-MM-DD" }. For "the last 14 days versus the 14 before", supply periodA and periodB as explicit start/end pairs, never as tokens.
 
 4. SCOPE LIMITS:
    - NEVER add sorting, filters, or date ranges the user did not ask for.
    - Do not bring in unrelated page, filter, chart, or date constraints just because they look useful.
+   - For a current request to read, show, explain, analyze, or compare information, plan only the reads and UI-state actions needed for that request. Do not include an application mutation such as invoke_app_action.
+   - Include invoke_app_action only when the CURRENT user message explicitly requests that specific action. Do not infer mutation intent from conversation history, retrieved context, metadata, or an action mentioned as background. The agent enforces this boundary before confirmation handling.
+   - For a request to show medicines that are running low (without an explicit number of days), use the low-stock classification filter stockLevel = "low" when that filter is available. Do NOT also set daysRemaining or add any other threshold.
+   - Use the daysRemaining filter only when the user explicitly asks for a days/time threshold, such as "within two days"; translate that explicit threshold to the corresponding comparison.
 
 5. "WHY" AND ANALYTICAL INQUIRIES:
    - NEVER fabricate or assume causes. If the user asks "Why are these medicines low?" or "Why did revenue drop?":
-   - Use "run_analysis" (kind: "period_compare", "trend", or "rank") or "query_business_data" on relevant historical datasets (e.g. usage, purchases, prescriptions, bookings).
+   - Use only these AnalysisSpec operations with run_analysis: period_compare, trend, or rank. Match every required field to the selected dataset in RetrievalContext; never omit or guess a required field.
+   - "metric" is always required: it selects the dataset field and aggregation producing the numeric measure, e.g. { "field": "quantity", "agg": "sum" }. The field must exist in the dataset; agg is one of "sum", "avg", "min", "max", "count".
+   - "breakdownBy" is supported only by period_compare and trend. It is an optional array of plain dataset field-name strings (not objects); omit it or use [] when no breakdown is needed.
+   - "rank.by" is required and is the dataset field used as each ranked result's key. "metric" determines the values used to rank those keys. "direction" is optional and defaults to "desc"; "limit" is optional and defaults to 10 (maximum 50). Do not use breakdownBy in a rank spec.
+   - A Period must have a DateToken "token", or both ISO "start" and "end" dates. "dateField" is optional in all three operations; when omitted, the dataset's metadata timeField is used. For period_compare, periodA and periodB are both required; for trend, period and grain are required; rank has no required period.
+   - These are the canonical valid AnalysisSpec shapes (replace only dataset/field names with identifiers from context; keep the fields and value types as shown):
+     period_compare:
+     { "kind": "period_compare", "dataset": "medicine_usage", "metric": { "field": "quantity", "agg": "sum" }, "dateField": "usage_date", "periodA": { "start": "2026-09-23", "end": "2026-10-06" }, "periodB": { "start": "2026-09-09", "end": "2026-09-22" }, "breakdownBy": ["medicine"], "where": [] }
+     trend:
+     { "kind": "trend", "dataset": "medicine_usage", "metric": { "field": "quantity", "agg": "sum" }, "dateField": "usage_date", "grain": "day", "period": { "token": "last_30_days" }, "breakdownBy": [], "where": [{ "field": "medicine", "op": "eq", "value": "Insulin" }] }
+     rank:
+     { "kind": "rank", "dataset": "medicine_usage", "metric": { "field": "quantity", "agg": "sum" }, "by": "medicine", "direction": "desc", "limit": 10, "period": { "token": "last_30_days" }, "dateField": "usage_date", "where": [] }
+   - For "Why are these medicines running low?", use a valid period_compare on medicine_usage.quantity to compare the recent 14 days with the preceding 14 days, with breakdownBy ["medicine"] and relevant medicine filters; use a valid trend on medicine_usage.quantity at day grain when checking whether Insulin usage is flat; use a valid period_compare on prescriptions.quantity with breakdownBy ["diagnosis"] when checking Amoxicillin's respiratory-infection prescription evidence. Use query_business_data for purchase order dates/quantities (including last and usual order quantities), because a period analysis does not return individual order details. Filter only to the medicines/diagnoses relevant to the user's question. If metadata cannot support a valid analysis, choose a complete query_business_data QuerySpec instead; never fill missing numeric output yourself.
    - Gather data first before declaring "done: true".
 
 5. FOLLOW-UP AND CONVERSATION MEMORY:
@@ -67,8 +104,8 @@ ALLOWED TOOLS (ToolCall):
 - { "tool": "sort", "args": { "widgetId"?: "<widgetId>", "field": "<field_name>", "direction": "asc"|"desc" } }
 - { "tool": "get_widget_data", "args": { "widgetId": "<widgetId>", "limit"?: number } }
 - { "tool": "query_business_data", "args": { "spec": { "dataset": "<name>", "select"?: ["..."], "where"?: [ { "field": "...", "op": "...", "value": ... } ], "groupBy"?: [...], "metrics"?: [...], "orderBy"?: [...], "limit"?: 100 } } }
-- { "tool": "run_analysis", "args": { "spec": <AnalysisSpec: period_compare | trend | rank> } }
-- { "tool": "invoke_app_action", "args": { "actionId": "<actionId>", "params": { ... } } }
+- { "tool": "run_analysis", "args": { "spec": <one AnalysisSpec object matching exactly one canonical operation shape above> } }
+- { "tool": "invoke_app_action", "args": { "actionId": "<actionId>", "params": { ... } } } // only for a specifically requested action in the CURRENT user message; otherwise omit
 - { "tool": "search_metadata", "args": { "query": "<search query>", "kinds"?: [...], "k"?: number } }
 - { "tool": "get_page_details", "args": { "pageId": "<pageId>" } }
 - { "tool": "get_available_filters", "args": { "pageId"?: "<pageId>" } }
@@ -119,7 +156,7 @@ export function buildPlannerPrompt(params: PlannerPromptParams): { system: strin
       params.validatorErrors
         .map(
           (e) =>
-            `- Step [${e.stepIndex}] ${e.code}: ${e.message}${e.candidates ? ` (Candidates: ${e.candidates.join(", ")})` : ""}`,
+            `- ${e.stepIndex < 0 ? "Planner turn" : `Step [${e.stepIndex}]`} ${e.code}: ${e.message}${e.candidates ? ` (Candidates: ${e.candidates.join(", ")})` : ""}`,
         )
         .join("\n"),
     );

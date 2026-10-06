@@ -1,0 +1,51 @@
+{
+  "traceId": "trace-4ebfc5a6",
+  "sessionId": "m31-live-2-c50ea952",
+  "status": "failed",
+  "intent": "Why are these medicines running low?",
+  "answer": [
+    {
+      "type": "text",
+      "markdown": "Failed to parse and validate JSON for AgentTurn after repair attempt: [\n  {\n    \"received\": \"last_14_days\",\n    \"code\": \"invalid_enum_value\",\n    \"options\": [\n      \"today\",\n      \"tomorrow\",\n      \"yesterday\",\n      \"this_week\",\n      \"last_week\",\n      \"this_month\",\n      \"last_month\",\n      \"last_month_to_date\",\n      \"last_7_days\",\n      \"last_30_days\",\n      \"this_quarter\",\n      \"last_quarter\",\n      \"year_to_date\"\n    ],\n    \"path\": [\n      \"steps\",\n      0,\n      \"args\",\n      \"spec\",\n      \"periodA\",\n      \"token\"\n    ],\n    \"message\": \"Invalid enum value. Expected 'today' | 'tomorrow' | 'yesterday' | 'this_week' | 'last_week' | 'this_month' | 'last_month' | 'last_month_to_date' | 'last_7_days' | 'last_30_days' | 'this_quarter' | 'last_quarter' | 'year_to_date', received 'last_14_days'\"\n  }\n]",
+      "provenance": []
+    }
+  ],
+  "steps": [],
+  "uiState": {
+    "appId": "hospital",
+    "pageId": "medicines",
+    "route": "/inventory/medicines",
+    "filters": {
+      "stockLevel": {
+        "op": "eq",
+        "value": "low"
+      }
+    },
+    "sort": null,
+    "selection": null,
+    "disabledFilters": [],
+    "version": 1
+  },
+  "verification": {
+    "ok": false,
+    "attempts": 0,
+    "expected": null,
+    "actual": {
+      "appId": "hospital",
+      "pageId": "medicines",
+      "route": "/inventory/medicines",
+      "filters": {
+        "stockLevel": {
+          "op": "eq",
+          "value": "low"
+        }
+      },
+      "sort": null,
+      "selection": null,
+      "disabledFilters": [],
+      "version": 1
+    },
+    "mismatches": []
+  },
+  "latencyMs": 14651
+}

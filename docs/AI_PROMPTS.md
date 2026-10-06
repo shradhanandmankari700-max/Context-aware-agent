@@ -183,7 +183,7 @@ BUILD, IN THIS ORDER:
 
 1. LLM CLIENT (backend/src/llm/): implement `LlmClient` from contracts.
    - Provider-agnostic: Gemini via plain fetch to the REST API (no SDK), plus Groq/OpenRouter (OpenAI-compatible) and Ollama.
-     Config from env: LLM_PROVIDER, LLM_API_KEY, LLM_API_KEYS_EXTRA (rotate on 429), LLM_MODEL, LLM_FALLBACK_*.
+     Config from env: LLM_PROVIDER, NVIDIA_API_KEY, LLM_API_KEYS_EXTRA (rotate on 429), LLM_MODEL. No fallback provider is used for the Nvidia setup.
    - json(req, parse): ask for JSON only, strip code fences, parse with the supplied zod parse; on failure ONE repair retry that
      includes the validation error; then throw LlmError. temperature default 0.
    - Disk cache in backend/.llm-cache keyed by sha256(provider+model+system+user+schemaName); LLM_CACHE=on|off; report `cached`.

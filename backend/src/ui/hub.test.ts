@@ -96,6 +96,55 @@ describe("UiStateHub", () => {
     });
   });
 
+  it("registers the matching ack before emitting ui_action so an immediate frontend report is not lost", async () => {
+    const sessionId = "immediate-report-session";
+    const initialState: UiState = {
+      ...mockState(1),
+      filters: {},
+    };
+    hub.setState(sessionId, initialState);
+
+    const mockRes = {
+      write: vi.fn((chunk: string) => {
+        const match = chunk.match(/data: (.*)\n\n/);
+        if (!match) return true;
+        const event = JSON.parse(match[1]) as SseEvent;
+        if (event.type === "ui_action") {
+          const filteredState: UiState = {
+            ...initialState,
+            filters: { stockLevel: { op: "eq", value: "low" } },
+            version: 2,
+          };
+          hub.reportState({
+            sessionId,
+            actionId: event.actionId,
+            state: filteredState,
+          });
+        }
+        return true;
+      }),
+      on: vi.fn(),
+      writableEnded: false,
+      destroyed: false,
+    } as unknown as Response;
+
+    hub.addConnection(sessionId, mockRes);
+    const action: UiAction = {
+      type: "set_filter",
+      pageId: "medicines",
+      filterId: "stockLevel",
+      value: { op: "eq", value: "low" },
+    };
+    const { actionId } = hub.dispatch(sessionId, action);
+    const ack = await hub.awaitAck(sessionId, actionId, 1000);
+
+    expect("timeout" in ack).toBe(false);
+    if (!("timeout" in ack)) {
+      expect(ack.state.filters.stockLevel).toEqual({ op: "eq", value: "low" });
+    }
+    expect(hub.getState(sessionId)?.filters.stockLevel).toEqual({ op: "eq", value: "low" });
+  });
+
   it("awaitAck resolves when matching actionId is reported", async () => {
     const { actionId } = hub.dispatch("sess-1", mockAction);
     const expectedState = mockState(2);
@@ -142,17 +191,14 @@ describe("UiStateHub", () => {
     }
   });
 
-  it("awaitAck resolves if report arrived just before awaitAck was called", async () => {
-    const actionId = "early-action-id";
+  it("preserves an immediate matching report until awaitAck is called", async () => {
+    const sessionId = "early-report-session";
     const state = mockState(3);
+    const { actionId } = hub.dispatch(sessionId, mockAction);
 
-    hub.reportState({
-      sessionId: "sess-1",
-      actionId,
-      state,
-    });
+    hub.reportState({ sessionId, actionId, state });
 
-    const result = await hub.awaitAck("sess-1", actionId, 500);
+    const result = await hub.awaitAck(sessionId, actionId, 500);
     expect("timeout" in result).toBe(false);
     if (!("timeout" in result)) {
       expect(result.state).toEqual(state);

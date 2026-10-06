@@ -20,6 +20,7 @@ import {
   FilterValue,
   Page,
   AppMetadata,
+  getWidget,
 } from "@cab/contracts";
 
 export interface ToolRegistryDeps {
@@ -739,6 +740,33 @@ export class DefaultToolRegistry implements ToolRegistry {
     const currentState = await this.deps.ui.getState(ctx.sessionId);
     const app = await this.deps.metadata.getApp(ctx);
     const pageId = currentState?.pageId || app.pages[0]?.id;
+
+    // Resolve the widget across the whole app BEFORE delegating to the data layer.
+    // DataService.widgetData is page-scoped and would otherwise throw a bare
+    // "Unknown page or widget" that the planner cannot recover from.
+    const owner = getWidget(app, args.widgetId);
+    if (!owner) {
+      const onPage = (app.pages.find((p) => p.id === pageId)?.widgets ?? []).map((w) => w.id);
+      return {
+        ok: false,
+        error: {
+          code: "WIDGET_NOT_FOUND",
+          message: `Widget "${args.widgetId}" not found in application "${app.name}"`,
+          candidates: onPage,
+        },
+      };
+    }
+    if (owner.page.id !== pageId) {
+      return {
+        ok: false,
+        error: {
+          code: "WIDGET_NOT_FOUND",
+          message: `Widget "${args.widgetId}" is on page "${owner.page.id}" but the current page is "${pageId}"`,
+          candidates: [owner.page.id],
+          hint: `Navigate to "${owner.page.id}" first, or use query_business_data with dataset "${owner.widget.dataset}" for page-independent evidence.`,
+        },
+      };
+    }
 
     const result = await this.deps.data.widgetData(
       ctx,

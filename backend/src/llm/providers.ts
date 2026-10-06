@@ -1,5 +1,7 @@
 import { LlmError, type SupportedLlmProvider } from "./types";
 
+export const DEFAULT_NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1";
+
 export interface ProviderCallRequest {
   provider: SupportedLlmProvider;
   apiKey: string;
@@ -9,6 +11,7 @@ export interface ProviderCallRequest {
   isJson: boolean;
   temperature?: number;
   ollamaBaseUrl?: string;
+  nvidiaBaseUrl?: string;
   fetchFn?: typeof fetch;
 }
 
@@ -22,7 +25,7 @@ export async function callProviderRest(req: ProviderCallRequest): Promise<Provid
 
   if (req.provider === "gemini") {
     return callGemini(req, fetchFn);
-  } else if (req.provider === "groq" || req.provider === "openrouter" || req.provider === "ollama") {
+  } else if (req.provider === "groq" || req.provider === "openrouter" || req.provider === "ollama" || req.provider === "nvidia") {
     return callOpenAiCompatible(req, fetchFn);
   }
 
@@ -101,10 +104,13 @@ async function callOpenAiCompatible(req: ProviderCallRequest, fetchFn: typeof fe
   } else if (req.provider === "ollama") {
     const base = req.ollamaBaseUrl?.replace(/\/+$/, "") || "http://localhost:11434";
     endpoint = `${base}/v1/chat/completions`;
+  } else if (req.provider === "nvidia") {
+    endpoint = `${normalizeNvidiaBaseUrl(req.nvidiaBaseUrl)}/chat/completions`;
   }
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
+    Accept: "application/json",
   };
 
   if (req.apiKey) {
@@ -120,8 +126,14 @@ async function callOpenAiCompatible(req: ProviderCallRequest, fetchFn: typeof fe
   const body: Record<string, unknown> = {
     model: req.model,
     messages,
-    temperature: req.temperature ?? 0,
+    temperature: req.provider === "nvidia" ? 1.0 : req.temperature ?? 0,
   };
+
+  if (req.provider === "nvidia") {
+    body.stream = false;
+    body.reasoning_effort = "none";
+    body.top_p = 0.95;
+  }
 
   if (req.isJson) {
     body.response_format = { type: "json_object" };
@@ -156,7 +168,8 @@ async function callOpenAiCompatible(req: ProviderCallRequest, fetchFn: typeof fe
   }
 
   const data = (await res.json()) as any;
-  const rawText = data?.choices?.[0]?.message?.content ?? "";
+  const message = data?.choices?.[0]?.message;
+  const rawText = typeof message?.content === "string" ? message.content : "";
 
   const usage = data?.usage
     ? {
@@ -166,6 +179,12 @@ async function callOpenAiCompatible(req: ProviderCallRequest, fetchFn: typeof fe
     : undefined;
 
   return { rawText, usage };
+}
+
+function normalizeNvidiaBaseUrl(baseUrl?: string): string {
+  const trimmedBaseUrl = (baseUrl?.trim() || DEFAULT_NVIDIA_BASE_URL).replace(/\/+$/, "");
+  const withoutVersionSuffix = trimmedBaseUrl.replace(/(?:\/v1)+$/i, "");
+  return `${withoutVersionSuffix}/v1`;
 }
 
 export async function callGeminiEmbeddings(

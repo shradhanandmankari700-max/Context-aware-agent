@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { AgentTurn as AgentTurnSchema, type AgentTurn, type AppMetadata } from "@cab/contracts";
 import hospitalData from "../../../metadata/hospital.json";
-import { normalizeAgentTurnForSchema, validatePlan } from "./validate";
+import { normalizeAgentTurnForSchema, removeUnrequestedAppActions, validatePlan } from "./validate";
 
 const hospitalMetadata = hospitalData as unknown as AppMetadata;
 
@@ -182,6 +182,60 @@ describe("validatePlan", () => {
     expect(result.errors[0]!.code).toBe("FIELD_NOT_ALLOWED");
   });
 
+  it("rejects get_widget_data when the widget's page is not the active page", () => {
+    const dashboardUi = { ...baseUiState, pageId: "dashboard", route: "/dashboard" };
+    const turn: AgentTurn = {
+      intent: "Read medicine stock without opening the page",
+      reasoning: "Widget exists app-wide but its page was never navigated to",
+      steps: [{ tool: "get_widget_data", args: { widgetId: "medicineStock" } }],
+      done: false,
+    };
+
+    const result = validatePlan(hospitalMetadata, dashboardUi, "staff", turn);
+    expect(result.ok).toBe(false);
+    expect(result.errors[0]!.code).toBe("WIDGET_NOT_FOUND");
+    expect(result.errors[0]!.candidates).toContain("medicines");
+    expect(result.errors[0]!.message).toContain("Navigate to \"medicines\"");
+    expect(result.errors[0]!.message).toContain("query_business_data");
+  });
+
+  it("allows get_widget_data once the plan navigates to the widget's page", () => {
+    const dashboardUi = { ...baseUiState, pageId: "dashboard", route: "/dashboard" };
+    const turn: AgentTurn = {
+      intent: "Open the Medicines page and read its stock table",
+      reasoning: "navigate establishes the active page for the widget read",
+      steps: [
+        { tool: "navigate", args: { target: "medicines" } },
+        { tool: "get_widget_data", args: { widgetId: "medicineStock" } },
+      ],
+      done: false,
+    };
+
+    expect(validatePlan(hospitalMetadata, dashboardUi, "staff", turn).ok).toBe(true);
+    // Regression: already being on the Medicines page keeps working (M2 flow).
+    const onPage: AgentTurn = {
+      intent: "Read medicine stock",
+      reasoning: "Active page is already medicines",
+      steps: [{ tool: "get_widget_data", args: { widgetId: "medicineStock" } }],
+      done: false,
+    };
+    expect(validatePlan(hospitalMetadata, baseUiState, "staff", onPage).ok).toBe(true);
+  });
+
+  it("still reports an unknown widget as WIDGET_NOT_FOUND", () => {
+    const turn: AgentTurn = {
+      intent: "Read a widget that does not exist",
+      reasoning: "Invented widget id",
+      steps: [{ tool: "get_widget_data", args: { widgetId: "notAWidget" } }],
+      done: false,
+    };
+
+    const result = validatePlan(hospitalMetadata, baseUiState, "staff", turn);
+    expect(result.ok).toBe(false);
+    expect(result.errors[0]!.code).toBe("WIDGET_NOT_FOUND");
+    expect(result.errors[0]!.message).toContain("not found in application");
+  });
+
   it("repairs malformed query_business_data shapes from the planner before schema validation", () => {
     const rawTurn = {
       intent: "Show medicines that are running low",
@@ -213,6 +267,66 @@ describe("validatePlan", () => {
         },
       },
     });
+  });
+
+  it("coerces breakdownBy object entries to field-name strings before schema validation", () => {
+    // Live M3-1 failure shape: the model emits objects where the schema wants strings.
+    const rawTurn = {
+      intent: "Why are these medicines running low?",
+      reasoning: "Compare recent usage against the prior period, broken down by medicine.",
+      steps: [
+        {
+          tool: "run_analysis",
+          args: {
+            spec: {
+              kind: "period_compare",
+              dataset: "medicine_usage",
+              metric: { field: "quantity", agg: "sum" },
+              dateField: "usage_date",
+              periodA: { start: "2026-09-23", end: "2026-10-06" },
+              periodB: { start: "2026-09-09", end: "2026-09-22" },
+              breakdownBy: [{ field: "medicine" }, { name: "diagnosis" }, "category"],
+              where: [],
+            },
+          },
+        },
+      ],
+      done: true,
+    };
+
+    // Unnormalized the schema rejects it, proving the schema itself is not weakened.
+    expect(() => AgentTurnSchema.parse(rawTurn)).toThrow();
+
+    const normalized = normalizeAgentTurnForSchema(rawTurn) as any;
+    expect(() => AgentTurnSchema.parse(normalized)).not.toThrow();
+    expect(normalized.steps[0].args.spec.breakdownBy).toEqual(["medicine", "diagnosis", "category"]);
+  });
+
+  it("drops breakdownBy entries that have no recoverable field name", () => {
+    const rawTurn = {
+      intent: "Compare medicine usage",
+      reasoning: "Breakdown requested but some entries are unusable.",
+      steps: [
+        {
+          tool: "run_analysis",
+          args: {
+            spec: {
+              kind: "period_compare",
+              dataset: "medicine_usage",
+              metric: { field: "quantity", agg: "sum" },
+              periodA: { token: "last_30_days" },
+              periodB: { token: "last_month" },
+              breakdownBy: [{ unrelated: 7 }, null, 42, { field: "medicine" }],
+            },
+          },
+        },
+      ],
+      done: true,
+    };
+
+    const normalized = normalizeAgentTurnForSchema(rawTurn) as any;
+    expect(() => AgentTurnSchema.parse(normalized)).not.toThrow();
+    expect(normalized.steps[0].args.spec.breakdownBy).toEqual(["medicine"]);
   });
 
   it("rejects adversarial SQL injection in query_business_data", () => {
@@ -294,5 +408,70 @@ describe("validatePlan", () => {
     expect(adminRes.ok).toBe(true);
     expect(adminRes.destructiveActions).toHaveLength(1);
     expect(adminRes.destructiveActions[0]!.actionId).toBe("discardExpiredStock");
+  });
+
+  describe("planner mutation scope", () => {
+    function scopedSteps(message: string, priorContext = "") {
+      const turn = AgentTurnSchema.parse({
+        intent: "Answer current user request",
+        reasoning: "Use relevant reads and analysis.",
+        steps: [
+          {
+            tool: "run_analysis",
+            args: {
+              spec: {
+                kind: "period_compare",
+                dataset: "medicine_usage",
+                metric: { field: "quantity", agg: "sum" },
+                periodA: { token: "last_7_days" },
+                periodB: { token: "last_week" },
+              },
+            },
+          },
+          {
+            tool: "invoke_app_action",
+            args: { actionId: "discardExpiredStock", params: {} },
+          },
+          { tool: "search_metadata", args: { query: priorContext || "medicine evidence" } },
+        ],
+        done: true,
+      });
+      return removeUnrequestedAppActions(turn, message, hospitalMetadata);
+    }
+
+    it("keeps medicine low-stock analysis read-only", () => {
+      const result = scopedSteps("Why are these medicines running low?");
+      expect(result.removedActionIds).toEqual(["discardExpiredStock"]);
+      expect(result.turn.steps.map((step) => step.tool)).toEqual(["run_analysis", "search_metadata"]);
+      expect(result.turn.steps.every((step) => step.tool !== "invoke_app_action")).toBe(true);
+    });
+
+    it("keeps month-to-month comparison read-only", () => {
+      const result = scopedSteps("Compare this month's medicine usage with last month.");
+      expect(result.removedActionIds).toEqual(["discardExpiredStock"]);
+      expect(result.turn.steps.every((step) => step.tool !== "invoke_app_action")).toBe(true);
+    });
+
+    it("keeps the available-rooms request read-only", () => {
+      const result = scopedSteps("Show available rooms under ₹3000 for tomorrow.");
+      expect(result.removedActionIds).toEqual(["discardExpiredStock"]);
+      expect(result.turn.steps.every((step) => step.tool !== "invoke_app_action")).toBe(true);
+    });
+
+    it("allows only the action explicitly requested in the current message", () => {
+      const result = scopedSteps("Discard expired stock.");
+      expect(result.removedActionIds).toEqual([]);
+      expect(result.turn.steps.some(
+        (step) => step.tool === "invoke_app_action" && step.args.actionId === "discardExpiredStock",
+      )).toBe(true);
+    });
+
+    it("does not infer current mutation intent from historical or contextual mentions", () => {
+      const result = scopedSteps(
+        "Why are these medicines running low? Previous notes mention discard expired stock.",
+      );
+      expect(result.removedActionIds).toEqual(["discardExpiredStock"]);
+      expect(result.turn.steps.every((step) => step.tool !== "invoke_app_action")).toBe(true);
+    });
   });
 });

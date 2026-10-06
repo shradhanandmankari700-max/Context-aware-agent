@@ -1,6 +1,9 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { RequestContext, ToolCall, ToolRegistry, UiAdapter } from "@cab/contracts";
-import { createFakeUiAdapter } from "../ui/fake";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { RequestContext, ToolCall, ToolRegistry, UiAdapter, UiState, SseEvent } from "@cab/contracts";
+import type { Response } from "express";
+import { ApiUiAdapter } from "../ui/apiAdapter";
+import { fakeHospitalMetadata, createFakeUiAdapter } from "../ui/fake";
+import { UiStateHub } from "../ui/hub";
 import { createFakeToolRegistry, FakeAnalyticsService, FakeDataService, FakeMetadataStore } from "./fake";
 import { createToolRegistry } from "./registry";
 
@@ -89,6 +92,61 @@ describe("DefaultToolRegistry", () => {
     expectVerifiedAction(await execute({ tool: "clear_filter", args: { filterId: "category" } }));
   });
 
+  it("acknowledges a stockLevel=low filter reported immediately after SSE dispatch", async () => {
+    const hub = new UiStateHub();
+    const medicinesPage = fakeHospitalMetadata.pages.find((page) => page.id === "medicines")!;
+    let currentState: UiState = {
+      appId: fakeHospitalMetadata.appId,
+      pageId: medicinesPage.id,
+      route: medicinesPage.route,
+      filters: {},
+      sort: null,
+      selection: null,
+      disabledFilters: [],
+      version: 1,
+    };
+    hub.setState(ctx.sessionId, currentState);
+
+    const mockRes = {
+      write: vi.fn((chunk: string) => {
+        const match = chunk.match(/data: (.*)\n\n/);
+        if (!match) return true;
+        const event = JSON.parse(match[1]) as SseEvent;
+        if (event.type === "ui_action" && event.action.type === "set_filter") {
+          currentState = {
+            ...currentState,
+            filters: { ...currentState.filters, [event.action.filterId]: event.action.value },
+            version: currentState.version + 1,
+          };
+          hub.reportState({
+            sessionId: ctx.sessionId,
+            actionId: event.actionId,
+            state: currentState,
+          });
+        }
+        return true;
+      }),
+      on: vi.fn(),
+      writableEnded: false,
+      destroyed: false,
+    } as unknown as Response;
+    hub.addConnection(ctx.sessionId, mockRes);
+
+    const actionRegistry = createToolRegistry({
+      metadata: new FakeMetadataStore(),
+      ui: new ApiUiAdapter(hub),
+    });
+    const result = await actionRegistry.execute(ctx, {
+      tool: "set_filter",
+      args: { filterId: "stockLevel", value: "low" },
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.data).toMatchObject({ verified: true, mismatches: [] });
+    expect(mockRes.write).toHaveBeenCalledTimes(1);
+    expect(hub.getState(ctx.sessionId)?.filters.stockLevel).toEqual({ op: "eq", value: "low" });
+  });
+
   it("expands a date token and sorts an allowed field with verified state", async () => {
     await seedMedicinesPage();
     const date = await execute({ tool: "set_date_range", args: { filterId: "expiryDate", token: "this_month" } });
@@ -112,6 +170,34 @@ describe("DefaultToolRegistry", () => {
       direction: "desc", limit: 10, where: [],
     } } });
     expect(analysis.ok).toBe(true);
+  });
+
+  it("rejects get_widget_data when the widget is not on the current page", async () => {
+    // The session starts on Medicines; leave it so the current page becomes the dashboard.
+    expectVerifiedAction(await execute({ tool: "navigate", args: { target: "dashboard" } }));
+
+    const offPage = await execute({ tool: "get_widget_data", args: { widgetId: "medicineStock" } });
+    // Must be an actionable WIDGET_NOT_FOUND, not the data layer's bare "Unknown page or widget".
+    expect(offPage).toMatchObject({
+      ok: false,
+      error: { code: "WIDGET_NOT_FOUND", candidates: ["medicines"] },
+    });
+    if (!offPage.ok) {
+      expect(offPage.error.message).toContain('current page is "dashboard"');
+      expect(offPage.error.hint).toContain('Navigate to "medicines"');
+    }
+
+    // Recovery: navigate to the owning page, then the same call succeeds.
+    expectVerifiedAction(await execute({ tool: "navigate", args: { target: "medicines" } }));
+    const recovered = await execute({ tool: "get_widget_data", args: { widgetId: "medicineStock" } });
+    expect(recovered.ok).toBe(true);
+    if (recovered.ok) expect(recovered.data).toMatchObject({ rowCount: 1 });
+  });
+
+  it("returns WIDGET_NOT_FOUND with current-page widget ids for an unknown widget", async () => {
+    const unknown = await execute({ tool: "get_widget_data", args: { widgetId: "notAWidget" } });
+    expect(unknown).toMatchObject({ ok: false, error: { code: "WIDGET_NOT_FOUND" } });
+    if (!unknown.ok) expect(unknown.error.candidates).toContain("medicineStock");
   });
 
   it("blocks destructive actions until confirmed and enforces role requirements", async () => {

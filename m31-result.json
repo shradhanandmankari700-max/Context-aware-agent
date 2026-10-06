@@ -1,0 +1,55 @@
+{
+    "traceId":  "trace-07a5bdef",
+    "sessionId":  "m31-live-0152b11484",
+    "status":  "failed",
+    "intent":  "Why are these medicines running low?",
+    "answer":  [
+                   {
+                       "type":  "text",
+                       "markdown":  "Failed to parse and validate JSON for AgentTurn after repair attempt: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"object\",\n    \"path\": [\n      \"steps\",\n      5,\n      \"args\",\n      \"spec\",\n      \"breakdownBy\",\n      0\n    ],\n    \"message\": \"Expected string, received object\"\n  }\n]",
+                       "provenance":  [
+
+                                      ]
+                   }
+               ],
+    "steps":  [
+
+              ],
+    "uiState":  {
+                    "appId":  "hospital",
+                    "pageId":  "dashboard",
+                    "route":  "/dashboard",
+                    "filters":  {
+
+                                },
+                    "sort":  null,
+                    "selection":  null,
+                    "disabledFilters":  [
+
+                                        ],
+                    "version":  1
+                },
+    "verification":  {
+                         "ok":  false,
+                         "attempts":  0,
+                         "expected":  null,
+                         "actual":  {
+                                        "appId":  "hospital",
+                                        "pageId":  "dashboard",
+                                        "route":  "/dashboard",
+                                        "filters":  {
+
+                                                    },
+                                        "sort":  null,
+                                        "selection":  null,
+                                        "disabledFilters":  [
+
+                                                            ],
+                                        "version":  1
+                                    },
+                         "mismatches":  [
+
+                                        ]
+                     },
+    "latencyMs":  20789
+}

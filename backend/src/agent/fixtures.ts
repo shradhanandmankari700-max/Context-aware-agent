@@ -10,6 +10,7 @@ import type {
   UiAdapter,
   UiState,
 } from "@cab/contracts";
+import { getWidget } from "@cab/contracts";
 
 export interface MockUiAdapter extends UiAdapter {
   getStateSync(): UiState;
@@ -246,6 +247,32 @@ export function createMockToolRegistry(
       }
 
       if (call.tool === "get_widget_data") {
+        // Mirror the real registry/data layer: widget data is resolved against the
+        // CURRENT page, not the whole app. Tests must navigate before reading a widget.
+        const widgetId = call.args.widgetId;
+        const current = await uiAdapter.getState(ctx.sessionId);
+        const owner = getWidget(app, widgetId);
+        if (!owner) {
+          return {
+            ok: false,
+            error: {
+              code: "WIDGET_NOT_FOUND",
+              message: `Widget "${widgetId}" not found in application`,
+              candidates: (app.pages.find((p) => p.id === current?.pageId)?.widgets ?? []).map((w) => w.id),
+            },
+          };
+        }
+        if (owner.page.id !== current?.pageId) {
+          return {
+            ok: false,
+            error: {
+              code: "WIDGET_NOT_FOUND",
+              message: `Widget "${widgetId}" is on page "${owner.page.id}" but the current page is "${current?.pageId ?? "unknown"}"`,
+              candidates: [owner.page.id],
+              hint: `Navigate to "${owner.page.id}" first, or use query_business_data with dataset "${owner.widget.dataset}" for page-independent evidence.`,
+            },
+          };
+        }
         return {
           ok: true,
           data: {

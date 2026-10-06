@@ -7,8 +7,10 @@ export type AckResult =
 
 interface PendingAck {
   resolve: (result: AckResult) => void;
+  promise: Promise<AckResult>;
   timer?: NodeJS.Timeout;
   baseVersion: number;
+  waiterAttached: boolean;
 }
 
 interface CompletedAck {
@@ -72,6 +74,16 @@ export class UiStateHub {
     const session = this.getOrCreateSession(sessionId);
     const actionId = crypto.randomUUID();
     const baseVersion = session.state?.version ?? 0;
+    let resolveAck!: (result: AckResult) => void;
+    const promise = new Promise<AckResult>((resolve) => {
+      resolveAck = resolve;
+    });
+    session.pendingAcks.set(actionId, {
+      resolve: resolveAck,
+      promise,
+      baseVersion,
+      waiterAttached: false,
+    });
 
     const event: SseEvent = {
       type: "ui_action",
@@ -101,22 +113,34 @@ export class UiStateHub {
       });
     }
 
-    return new Promise<AckResult>((resolve) => {
-      const timer = setTimeout(() => {
-        session.pendingAcks.delete(actionId);
-        resolve({ timeout: true });
-      }, timeoutMs);
-      timer.unref?.();
-
-      session.pendingAcks.set(actionId, {
-        resolve: (result) => {
-          clearTimeout(timer);
-          resolve(result);
-        },
-        timer,
-        baseVersion: session.state?.version ?? 0,
+    let pending = session.pendingAcks.get(actionId);
+    if (!pending) {
+      let resolveAck!: (result: AckResult) => void;
+      const promise = new Promise<AckResult>((resolve) => {
+        resolveAck = resolve;
       });
-    });
+      pending = {
+        resolve: resolveAck,
+        promise,
+        baseVersion: session.state?.version ?? 0,
+        waiterAttached: false,
+      };
+      session.pendingAcks.set(actionId, pending);
+    }
+
+    if (!pending.waiterAttached) {
+      pending.waiterAttached = true;
+      const pendingAck = pending;
+      pending.timer = setTimeout(() => {
+        if (session.pendingAcks.get(actionId) === pendingAck) {
+          session.pendingAcks.delete(actionId);
+          pendingAck.resolve({ timeout: true });
+        }
+      }, timeoutMs);
+      pending.timer.unref?.();
+    }
+
+    return pending.promise;
   }
 
   /**
@@ -146,11 +170,19 @@ export class UiStateHub {
       const pending = session.pendingAcks.get(report.actionId);
       const effectiveState = session.state ?? report.state;
       if (pending) {
+        if (pending.timer) clearTimeout(pending.timer);
         pending.resolve({
           state: effectiveState,
           rejected: report.rejected,
         });
         session.pendingAcks.delete(report.actionId);
+        if (!pending.waiterAttached) {
+          session.recentAcks.set(report.actionId, {
+            state: effectiveState,
+            rejected: report.rejected,
+            timestamp: Date.now(),
+          });
+        }
       } else {
         // Cache recent ack in case awaitAck is registered slightly later
         session.recentAcks.set(report.actionId, {

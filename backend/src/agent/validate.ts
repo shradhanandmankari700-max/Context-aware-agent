@@ -140,6 +140,32 @@ export function normalizeAgentTurnForSchema(raw: unknown): unknown {
         item.args = { spec: normalizedSpec };
       }
 
+      // The model sometimes emits breakdownBy entries as objects (e.g. {field:"medicine"})
+      // even though the schema requires plain field-name strings. Coerce back to the
+      // declared type BEFORE schema validation — this narrows to what the schema already
+      // requires, it never widens it. Entries with no recoverable field name are dropped.
+      if (tool === "run_analysis" && args.spec && typeof args.spec === "object") {
+        const spec = { ...(args.spec as Record<string, unknown>) };
+        if (Array.isArray(spec.breakdownBy)) {
+          spec.breakdownBy = spec.breakdownBy
+            .map((entry: unknown): string | null => {
+              if (typeof entry === "string" && entry.trim()) return entry;
+              if (entry && typeof entry === "object") {
+                const field = entry as Record<string, unknown>;
+                for (const key of ["field", "name", "key", "value"]) {
+                  const value = field[key];
+                  if (typeof value === "string" && value.trim()) return value;
+                }
+              }
+              return null;
+            })
+            .filter((value: string | null): value is string => value !== null);
+        }
+        args.spec = spec;
+        // `args` is a copy of item.args, so it must be written back explicitly.
+        item.args = args;
+      }
+
       if (tool === "invoke_app_action") {
         if (!args.actionId && typeof args.id === "string") args.actionId = args.id;
         if (!args.params && typeof args.arguments === "object" && args.arguments) args.params = args.arguments;
@@ -154,6 +180,56 @@ export function normalizeAgentTurnForSchema(raw: unknown): unknown {
     .filter((step): step is Record<string, unknown> => !!step);
 
   return turn;
+}
+
+function normalizeActionText(value: string): string {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function explicitlyRequestsAction(message: string, actionId: string, actionLabel: string): boolean {
+  const request = normalizeActionText(message);
+  const startsWithMutationRequest =
+    /^(?:(?:please\s+)?(?:discard|delete|remove|cancel|purge|destroy|create|update|change|edit|modify|approve|submit)\b|(?:(?:can|could|would)\s+you|i\s+(?:want|need)\s+you\s+to)\s+(?:please\s+)?(?:discard|delete|remove|cancel|purge|destroy|create|update|change|edit|modify|approve|submit)\b)/.test(
+      request,
+    );
+  if (!startsWithMutationRequest) return false;
+
+  const normalizedLabel = normalizeActionText(actionLabel);
+  const normalizedId = normalizeActionText(actionId);
+  const actionTarget = normalizedLabel.replace(
+    /^(?:discard|delete|remove|cancel|purge|destroy|create|update|change|edit|modify|approve|submit)\s*/,
+    "",
+  );
+  return (
+    (!!actionTarget && request.includes(actionTarget)) ||
+    request.includes(normalizedLabel) ||
+    request.includes(normalizedId)
+  );
+}
+
+export function removeUnrequestedAppActions(
+  turn: AgentTurn,
+  currentMessage: string,
+  app: AppMetadata,
+): { turn: AgentTurn; removedActionIds: string[] } {
+  const removedActionIds: string[] = [];
+  const steps = turn.steps.filter((step) => {
+    if (step.tool !== "invoke_app_action") return true;
+    const action = app.actions.find((candidate) => candidate.id === step.args.actionId);
+    if (action && explicitlyRequestsAction(currentMessage, action.id, action.label)) return true;
+    removedActionIds.push(step.args.actionId);
+    return false;
+  });
+
+  return {
+    turn: steps.length === turn.steps.length ? turn : { ...turn, steps },
+    removedActionIds,
+  };
 }
 
 export function validatePlan(
@@ -398,6 +474,19 @@ export function validatePlan(
             stepIndex: idx,
             code: "WIDGET_NOT_FOUND",
             message: `Widget "${widgetId}" not found in application`,
+          });
+          break;
+        }
+        // get_widget_data resolves the widget against the CURRENT UI page at execution
+        // time (see tools/registry.ts getWidgetData), while this validator historically
+        // looked the widget up across every page. Without this check the plan validates,
+        // then fails in the data layer as a bare "Unknown page or widget".
+        if (activePageId && widgetInfo.page.id !== activePageId) {
+          errors.push({
+            stepIndex: idx,
+            code: "WIDGET_NOT_FOUND",
+            message: `Widget "${widgetId}" lives on page "${widgetInfo.page.id}", not on active page "${activePageId}". Navigate to "${widgetInfo.page.id}" first, or use query_business_data with dataset "${widgetInfo.widget.dataset}" for page-independent evidence.`,
+            candidates: [widgetInfo.page.id],
           });
         }
         break;

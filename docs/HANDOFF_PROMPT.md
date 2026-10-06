@@ -46,7 +46,7 @@ Ports: backend 4000, frontend 5173, database 5432. Demo clock: `DEMO_NOW=2026-10
 ## 5. HARD RULES (every phase)
 
 1. Never edit `contracts/`. NEVER edit `.env`: if a value must change, tell me the exact line and the new value, then wait. Never read, print or log keys, tokens (not even partial), passwords or the JWT secret.
-   To check config print ONLY: `Select-String -Path .env -Pattern '^(LLM_MODEL|LLM_PROVIDER|LLM_FALLBACK_PROVIDER|LLM_FALLBACK_MODEL|LLM_CACHE|UI_ADAPTER|STRICT_REAL)='` (use `grep` on Mac/Linux).
+   To check config print ONLY: `Select-String -Path .env -Pattern '^(LLM_MODEL|LLM_PROVIDER|NVIDIA_API_KEY|LLM_CACHE|UI_ADAPTER|STRICT_REAL)='` (use `grep` on Mac/Linux).
 2. First detect the operating system. Use PowerShell on Windows, bash on Mac/Linux. Forbidden everywhere: `git reset --hard`, `git clean`, `git push` (I push myself), `git merge --force`,
    `npm audit fix --force`, `docker compose down -v`, `docker system prune`.
 3. EVIDENCE: a milestone passes only by a live run on the real stack (real AI, real Postgres, real browser at http://localhost:5173) that you actually observed.
@@ -68,7 +68,7 @@ Ports: backend 4000, frontend 5173, database 5432. Demo clock: `DEMO_NOW=2026-10
 0.2 Check tools: `node -v` (needs 20+), `npm -v`, `git --version`, `docker --version`. Report what is missing.
 0.3 `npm install`, `npm run typecheck`, `npm test`. Report counts. Fix only glue-level failures.
 0.4 `.env` must exist (copied from `.env.example` and filled by me). Check only that file exists and print the allowed config lines. Required values (tell me, do not edit): `LLM_MODEL=gemini-3.5-flash-lite`,
-    `UI_ADAPTER=api` for browser tests, `LLM_CACHE=on`, all `USE_FAKE_*=0`, `STRICT_REAL=0`, a non-empty `LLM_FALLBACK_MODEL`.
+    `UI_ADAPTER=api` for browser tests, `LLM_CACHE=on`, all `USE_FAKE_*=0`, `STRICT_REAL=0`, and a non-empty `NVIDIA_API_KEY`.
 0.5 Database: Docker must be running. `docker compose up -d db`, wait until healthy (`docker compose ps`). Load users: apply `database/seed_users.sql`. List tables.
 0.6 Data: find the seed and import scripts in `package.json` (`seed`, `import:app`) and `README.md`. Run the seed, then import `metadata/hospital.json` and `metadata/hotel.json`.
     Verify with psql: applications has hospital and hotel; counts for `app_hospital.medicines` (expect about 22), `app_hospital.medicine_usage`, `app_hotel.room_availability` (expect 1800).

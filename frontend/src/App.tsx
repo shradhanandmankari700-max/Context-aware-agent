@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { KpiReport as KpiReportContract, type AgentResponse, type AnswerBlock, type AppMetadata, type Filter, type KpiReport, type Page, type QueryResult, type UiAction, type UiState } from "@cab/contracts";
@@ -8,6 +8,15 @@ import { useUiState } from "./hooks/useUiState";
 const palette = ["#665cf6", "#18a882", "#e6a33b", "#ef7279", "#51a4c6"];
 const iconMap: Record<string, string> = { "layout-dashboard": "▦", users: "♙", package: "▣", pill: "◈", truck: "↗", "bar-chart": "▥", bed: "▰", calendar: "▦", banknote: "◉" };
 const num = (value: unknown) => typeof value === "number" ? value.toLocaleString() : value == null ? "—" : String(value);
+
+function clearSessionState() {
+  setAuthToken(null);
+  localStorage.removeItem("cab.user");
+  localStorage.removeItem("cab.app");
+  for (const key of Object.keys(localStorage)) {
+    if (key.startsWith("cab.session.")) localStorage.removeItem(key);
+  }
+}
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem(tokenKey)) || !staticMetadata);
@@ -22,29 +31,43 @@ export default function App() {
   const appChange = (next: string) => { setAppId(next); localStorage.setItem("cab.app", next); navigate("/dashboard"); };
   return <Routes>
     <Route path="/eval" element={<EvalDashboard />} />
-    <Route path="*" element={<Shell metadata={metadata} metadataError={metadataError} apps={apps} appId={appId} onAppChange={appChange} onLogout={() => { setAuthToken(null); setLoggedIn(false); }} />} />
+    <Route path="*" element={<Shell metadata={metadata} metadataError={metadataError} apps={apps} appId={appId} onAppChange={appChange} onLogout={() => { clearSessionState(); setLoggedIn(false); }} />} />
   </Routes>;
 }
 
 function Login({ onLogin }: { onLogin: (token: string, user: string) => void }) {
-  const [email, setEmail] = useState("admin@hospital.demo"); const [password, setPassword] = useState("demo"); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
-  async function submit(event: FormEvent) { event.preventDefault(); setBusy(true); setError(""); try { const result = await api<{ token: string; user?: { email?: string } }>("/api/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }); onLogin(result.token, result.user?.email || email); } catch { onLogin("demo-session", email); } finally { setBusy(false); } }
+  const [email, setEmail] = useState("admin@hospital.demo"); const [password, setPassword] = useState("hospitalAdmin123"); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      const result = await api<{ token: string; user?: { email?: string } }>("/api/auth/login", { method: "POST", body: JSON.stringify({ email, password }) });
+      onLogin(result.token, result.user?.email || email);
+    } catch (requestError) {
+      setError(requestError instanceof Error && requestError.message ? requestError.message : "Unable to sign in right now. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
   return <main className="login-screen"><form className="login-card" onSubmit={submit}><div className="brand-mark">✳</div><p className="eyebrow">CONTEXT WORKSPACE</p><h1>Welcome back</h1><p className="muted">Sign in to continue to your workspace.</p><label>Email<input autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} /></label><label>Password<input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} /></label>{error && <p className="error-text">{error}</p>}<button className="primary full" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button><small>Demo mode uses a local session when the API is unavailable.</small></form></main>;
 }
 
 function Shell({ metadata, metadataError, apps, appId, onAppChange, onLogout }: { metadata: AppMetadata; metadataError: string; apps: AppsList; appId: string; onAppChange: (id: string) => void; onLogout: () => void }) {
   const location = useLocation(); const [chatOpen, setChatOpen] = useState(true); const [debugOpen, setDebugOpen] = useState(false); const [mobileNav, setMobileNav] = useState(false); const [disabledFilters, setDisabledFilters] = useState<string[]>([]); const [agentLive, setAgentLive] = useState("Ready"); const [messages, setMessages] = useState<AgentMessage[]>([]); const [highlight, setHighlight] = useState("");
   const { state, sessionId, change, applyAction, undo } = useUiState(metadata, disabledFilters);
+  const applyActionRef = useRef(applyAction);
+  applyActionRef.current = applyAction;
   const currentToken = localStorage.getItem(tokenKey) || "";
   const page = metadata.pages.find((item) => item.id === state.pageId) || metadata.pages[0];
   const tree = metadata.pages.filter((item) => item.parent === null);
   const children = (parent: string) => metadata.pages.filter((item) => item.parent === parent);
   useEffect(() => { if (!sessionId) return; const eventSource = new EventSource(`${API_BASE}/api/events?sessionId=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(currentToken)}`);
-    const dispatch = (event: MessageEvent) => { try { const payload = JSON.parse(event.data) as { actionId: string; action: UiAction }; applyAction(payload.action, payload.actionId); } catch { /* Ignore malformed events. */ } };
+    const dispatch = (event: MessageEvent) => { try { const payload = JSON.parse(event.data) as { actionId: string; action: UiAction }; applyActionRef.current(payload.action, payload.actionId); } catch { /* Ignore malformed events. */ } };
     eventSource.addEventListener("ui_action", dispatch as EventListener);
     for (const type of ["agent_status", "agent_step"]) eventSource.addEventListener(type, (event) => { try { const data = JSON.parse((event as MessageEvent).data) as { stage?: string; step?: { tool?: string; summary?: string; status?: string } }; setAgentLive(data.stage || `${data.step?.tool || "Step"}: ${data.step?.summary || data.step?.status || "updated"}`); } catch { setAgentLive(type); } });
     eventSource.onerror = () => setAgentLive("Reconnecting to agent…"); return () => eventSource.close();
-  }, [sessionId, currentToken, applyAction]);
+  }, [sessionId, currentToken]);
   useEffect(() => { setMobileNav(false); }, [location.pathname]);
   const applyLocalAction = (action: UiAction) => applyAction(action);
   const navigatePage = (target: Page) => { applyLocalAction({ type: "navigate", pageId: target.id, route: target.route }); };
@@ -101,16 +124,42 @@ function Companion({ metadata, state, sessionId, messages, setMessages, live, on
   const [input, setInput] = useState(""); const [busy, setBusy] = useState(false); const [confirm, setConfirm] = useState<AgentResponse["pendingConfirmation"]>();
   async function send(text = input) { if (!text.trim() || busy) return; const id = crypto.randomUUID(); const next: AgentMessage[] = [{ id: crypto.randomUUID(), role: "user", text }, { id, role: "assistant", pending: true }]; setMessages((old) => [...old, ...next]); setInput(""); setBusy(true); try { const response = await api<AgentResponse>("/api/agent/chat", { method: "POST", body: JSON.stringify({ sessionId, appId: metadata.appId, message: text, uiState: state }) }); setMessages((old) => old.map((message) => message.id === id ? { ...message, pending: false, response } : message)); if (response.pendingConfirmation) setConfirm(response.pendingConfirmation); } catch (error) { setMessages((old) => old.map((message) => message.id === id ? { ...message, pending: false, text: error instanceof Error ? error.message : "Agent is unavailable. Connect the API to start a conversation." } : message)); } finally { setBusy(false); } }
   async function approve(approved: boolean) { if (!confirm) return; try { const response = await api<AgentResponse>("/api/agent/confirm", { method: "POST", body: JSON.stringify({ sessionId, confirmationId: confirm.confirmationId, approve: approved }) }); setMessages((old) => [...old, { id: crypto.randomUUID(), role: "assistant", response }]); } catch { /* Confirmation API may be offline. */ } setConfirm(undefined); }
-  return <aside className="companion"><div className="companion-head"><div className="agent-avatar">✧</div><div><b>Workspace assistant</b><small><i className="online-dot" />{live}</small></div><button className="icon-button" title="Close assistant">···</button></div><div className="suggestion-block"><p className="eyebrow">YOUR CONTEXT</p><div className="context-pill"><span>◌</span> {metadata.name}<span>·</span>{metadata.pages.find((p) => p.id === state.pageId)?.name}</div></div><div className="chat-history">{messages.length === 0 && <div className="welcome"><div className="welcome-icon">✧</div><h2>How can I help?</h2><p>I can navigate your workspace, explore data, and help you find answers.</p><div className="suggestions">{metadata.pages.slice(0, 3).map((page) => <button key={page.id} onClick={() => void send(`Show me ${page.name}`)}>Explore {page.name} <span>↗</span></button>)}</div></div>}{messages.map((message) => <div key={message.id} className={`message ${message.role}`}>{message.role === "assistant" && <span className="message-mark">✧</span>}<div className="message-body">{message.text && <p>{message.text}</p>}{message.pending && <div className="thinking"><span className="spinner" />Thinking…</div>}{message.response && <ResponseView response={message.response} onNavigate={onNavigate} onUndo={onUndo} onChoice={(choice) => void send(choice)} />}</div></div>)}</div>{confirm && <div className="confirm-card"><b>Confirmation needed</b><p>{confirm.description}</p><div><button className="secondary" onClick={() => void approve(false)}>Cancel</button><button className="primary" onClick={() => void approve(true)}>Confirm</button></div></div>}<div className="chat-compose"><textarea data-testid="chat-input" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }} placeholder="Ask anything about your workspace…" rows={2} /><div className="compose-bottom"><span>↵ &nbsp; Enter to send</span><button data-testid="chat-send" disabled={!input.trim() || busy} onClick={() => void send()} aria-label="Send message">↑</button></div></div><div className="chat-footer">AI can make mistakes. Verify important information.</div></aside>;
+  return <aside className="companion"><div className="companion-head"><div className="agent-avatar">✧</div><div><b>Workspace assistant</b><small><i className="online-dot" />{live}</small></div><button className="icon-button" title="Close assistant">···</button></div><div className="suggestion-block"><p className="eyebrow">YOUR CONTEXT</p><div className="context-pill"><span>◌</span> {metadata.name}<span>·</span>{metadata.pages.find((p) => p.id === state.pageId)?.name}</div></div><div className="chat-history">{messages.length === 0 && <div className="welcome"><div className="welcome-icon">✧</div><h2>How can I help?</h2><p>I can navigate your workspace, explore data, and help you find answers.</p><div className="suggestions">{metadata.pages.slice(0, 3).map((page) => <button key={page.id} onClick={() => void send(`Show me ${page.name}`)}>Explore {page.name} <span>↗</span></button>)}</div></div>}{messages.map((message) => <div key={message.id} className={`message ${message.role}`}>{message.role === "assistant" && <span className="message-mark">✧</span>}<div className="message-body">{message.text && !message.response && <p>{message.text}</p>}{message.pending && <div className="thinking"><span className="spinner" />Thinking…</div>}{message.response && <ResponseView response={message.response} metadata={metadata} onNavigate={onNavigate} onUndo={onUndo} onChoice={(choice) => void send(choice)} />}</div></div>)}</div>{confirm && <div className="confirm-card"><b>Confirmation needed</b><p>{confirm.description}</p><div><button className="secondary" onClick={() => void approve(false)}>Cancel</button><button className="primary" onClick={() => void approve(true)}>Confirm</button></div></div>}<div className="chat-compose"><textarea data-testid="chat-input" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }} placeholder="Ask anything about your workspace…" rows={2} /><div className="compose-bottom"><span>↵ &nbsp; Enter to send</span><button data-testid="chat-send" disabled={!input.trim() || busy} onClick={() => void send()} aria-label="Send message">↑</button></div></div><div className="chat-footer">AI can make mistakes. Verify important information.</div></aside>;
 }
 
-function ResponseView({ response, onNavigate, onUndo, onChoice }: { response: AgentResponse; onNavigate: (pageId: string, widgetId?: string) => void; onUndo: () => void; onChoice: (choice: string) => void }) {
-  return <div className="response-view"><span className={`status-badge ${response.status}`}>{response.status.replaceAll("_", " ")}</span>{response.answer.map((block, index) => <Answer key={index} block={block} onNavigate={onNavigate} />)}{response.steps.length > 0 && <details className="steps-list"><summary>Steps · {response.steps.length}</summary>{response.steps.map((step) => <div key={step.index}><span className={step.status === "ok" ? "step-ok" : "step-fail"}>{step.status === "ok" ? "✓" : "×"}</span><b>{step.tool}</b><small>{step.summary}</small>{step.recovery && <small>Recovery: {step.recovery.detail}</small>}</div>)}</details>}{response.clarification && <div className="clarify"><p>{response.clarification.question}</p>{response.clarification.options?.map((option) => <button key={option} onClick={() => onChoice(option)}>{option}</button>)}</div>}{response.deepLink && <a className="open-app" href={response.deepLink}>Open in app ↗</a>}{response.uiState && <button className="undo-link" onClick={onUndo}>↶ Undo</button>}</div>;
-}
-function Answer({ block, onNavigate }: { block: AnswerBlock; onNavigate: (pageId: string, widgetId?: string) => void }) {
-  return <div className="answer-block">{block.type === "text" && <p>{block.markdown}</p>}{block.type === "kpi" && <div className="answer-kpi"><b>{num(block.value)}</b><span>{block.label}</span></div>}{block.type === "table" && <div className="answer-table"><b>{block.title}</b><table><thead><tr>{block.columns.map((col) => <th key={col.name}>{col.label}</th>)}</tr></thead><tbody>{block.rows.slice(0, 5).map((row, i) => <tr key={i}>{block.columns.map((col) => <td key={col.name}>{num(row[col.name])}</td>)}</tr>)}</tbody></table></div>}{block.type === "chart" && <div className="answer-table"><b>{block.title}</b>{block.data.slice(0, 4).map((row, i) => <div className="mini-chart-row" key={i}><span>{num(row[block.xKey])}</span><b>{block.yKeys.map((key) => num(row[key])).join(" · ")}</b></div>)}</div>}{block.type === "comparison" && <div className="answer-kpi"><b>{num(block.a.value)} → {num(block.b.value)}</b><span>{block.title} · {block.pctChange == null ? "—" : `${(block.pctChange * 100).toFixed(1)}%`}</span></div>}{block.provenance.map((source) => <button className="provenance-chip" key={source.resultId} onClick={() => source.pageId && onNavigate(source.pageId, source.widgetId)} title={source.description}>↗ {source.pageId || source.dataset}{source.widgetId ? ` · ${source.widgetId}` : ""}</button>)}</div>;
+function escapeMarkdownHtml(value: string) {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+function renderMarkdown(markdown: string) {
+  const escaped = escapeMarkdownHtml(markdown)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/`(.+?)`/g, "<code>$1</code>")
+    .replace(/\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>')
+    .replace(/\n/g, "<br />");
+
+  return escaped
+    .split(/<br \/>\s*<br \/>/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .map((paragraph) => `<p>${paragraph}</p>`)
+    .join("");
+}
+
+function sourceLabel(source: { description?: string; pageId?: string; dataset?: string; widgetId?: string }, metadata: AppMetadata) {
+  const pageName = source.pageId ? metadata.pages.find((page) => page.id === source.pageId)?.name : undefined;
+  const label = pageName || source.dataset || source.description || "Source";
+  return source.widgetId ? `${label} · ${source.widgetId}` : label;
+}
+
+function ResponseView({ response, metadata, onNavigate, onUndo, onChoice }: { response: AgentResponse; metadata: AppMetadata; onNavigate: (pageId: string, widgetId?: string) => void; onUndo: () => void; onChoice: (choice: string) => void }) {
+  return <div className="response-view"><span className={`status-badge ${response.status}`}>{response.status.replaceAll("_", " ")}</span>{response.answer.map((block, index) => <Answer key={index} block={block} metadata={metadata} onNavigate={onNavigate} />)}{response.steps.length > 0 && <details className="steps-list"><summary>Steps · {response.steps.length}</summary>{response.steps.map((step) => <div key={step.index}><span className={step.status === "ok" ? "step-ok" : "step-fail"}>{step.status === "ok" ? "✓" : "×"}</span><b>{step.tool}</b><small>{step.summary}</small>{step.recovery && <small>Recovery: {step.recovery.detail}</small>}</div>)}</details>}{response.clarification && <div className="clarify"><p>{response.clarification.question}</p>{response.clarification.options?.map((option) => <button key={option} onClick={() => onChoice(option)}>{option}</button>)}</div>}{response.deepLink && <a className="open-app" href={response.deepLink}>Open in app ↗</a>}{response.uiState && <button className="undo-link" onClick={onUndo}>↶ Undo</button>}</div>;
+}
+
+function Answer({ block, metadata, onNavigate }: { block: AnswerBlock; metadata: AppMetadata; onNavigate: (pageId: string, widgetId?: string) => void }) {
+  return <div className="answer-block">{block.type === "text" && <div className="answer-markdown" dangerouslySetInnerHTML={{ __html: renderMarkdown(block.markdown) }} />}{block.type === "kpi" && <div className="answer-kpi"><b>{num(block.value)}</b><span>{block.label}</span></div>}{block.type === "table" && <div className="answer-table"><b>{block.title}</b><table><thead><tr>{block.columns.map((col) => <th key={col.name}>{col.label}</th>)}</tr></thead><tbody>{block.rows.slice(0, 5).map((row, i) => <tr key={i}>{block.columns.map((col) => <td key={col.name}>{num(row[col.name])}</td>)}</tr>)}</tbody></table></div>}{block.type === "chart" && <div className="answer-table"><b>{block.title}</b>{block.data.slice(0, 4).map((row, i) => <div className="mini-chart-row" key={i}><span>{num(row[block.xKey])}</span><b>{block.yKeys.map((key) => num(row[key])).join(" · ")}</b></div>)}</div>}{block.type === "comparison" && <div className="answer-kpi"><b>{num(block.a.value)} → {num(block.b.value)}</b><span>{block.title} · {block.pctChange == null ? "—" : `${(block.pctChange * 100).toFixed(1)}%`}</span></div>}{block.provenance.map((source) => <button className="provenance-chip" key={source.resultId} onClick={() => source.pageId && onNavigate(source.pageId, source.widgetId)} title={source.description}>↗ {sourceLabel(source, metadata)}</button>)}</div>;
+}
 function DebugPanel({ onClose }: { onClose: () => void }) { const [traceId, setTraceId] = useState(""); const [trace, setTrace] = useState<unknown>(); const [error, setError] = useState(""); async function load() { if (!traceId) return; try { setTrace(await api(`/api/traces/${encodeURIComponent(traceId)}`)); setError(""); } catch (err) { setError(err instanceof Error ? err.message : "Trace unavailable"); } } return <section className="debug-panel"><div><b>Debug trace</b><button className="icon-button" onClick={onClose}>×</button></div><label>Trace ID<input value={traceId} onChange={(e) => setTraceId(e.target.value)} placeholder="Paste a trace id" /></label><button className="secondary" onClick={() => void load()}>Load trace</button>{error && <p className="error-text">{error}</p>}{trace !== undefined ? <pre>{JSON.stringify(trace, null, 2)}</pre> : null}</section>; }
 
 const sample: KpiReport = { runId: "sample-run", createdAt: "2026-10-07T09:00:00.000Z", llm: { provider: "Sample", model: "Demo model", cache: true }, counts: { cases: 120, byKind: { navigate: 24, operate: 28, analyze: 22, multistep: 15, followup: 12, clarify: 9, adversarial: 10 } }, kpis: { intentToDestination: 0.94, uiState: { fieldLevel: 0.91, exactMatch: 0.84 }, taskSuccess: { rate: 0.88, avgSteps: 2.6 }, analytical: { numericMatch: 0.92, cases: 37 }, faithfulness: { traceableClaims: 0.96, totalClaims: 95 }, retrieval: { precisionAt1: 0.9, recallAt5: 0.95, mrr: 0.89, byScale: [{ pages: 5, mrr: 0.95, recallAt5: 0.98 }, { pages: 20, mrr: 0.9, recallAt5: 0.96 }, { pages: 50, mrr: 0.85, recallAt5: 0.91 }, { pages: 100, mrr: 0.8, recallAt5: 0.86 }] }, safety: { invalidActionsBlocked: 14, invalidActionsExecuted: 0, adversarialPassRate: 0.9 }, recovery: { attempted: 12, recovered: 10, rate: 0.83 }, latencyMs: { p50: 720, p95: 1880 }, ux: { avgManualClicksSaved: 5.4 } }, failures: [{ caseId: "sample-042", reason: "Follow-up filter context was ambiguous." }, { caseId: "sample-088", reason: "Long page name was not ranked first." }] };
